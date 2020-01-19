@@ -2,11 +2,6 @@
 
 namespace Pandemic {
 
-Player::Player()
-{
-
-}
-
 void Player::setCurrentCity(std::shared_ptr<City> city)
 {
     m_currentCity = city;

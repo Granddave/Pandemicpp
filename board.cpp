@@ -10,13 +10,40 @@ namespace Pandemic {
 
 Board::Board()
 {
-    //srand(time(0));
+#if 1
+    unsigned int seed = time(0);
+#else
+    unsigned int seed = 1;
+#endif
+    std::cout << "seed: " << seed << "\n";
+    srand(seed);
 
+    init();
+}
+
+void Board::reset()
+{
+    m_playerDeck.clear();
+    m_playerDiscardPile.clear();
+    m_infectionDeck.clear();
+    m_infectionDiscardPile.clear();
+    m_players.clear();
+    m_cities.clear();
+    m_mainCity.reset();
+    m_cures.clear();
+    m_numOutbreaks = 0;
+    m_infectionRateIndex = 0;
+}
+
+void Board::init()
+{
     initCures();
     initCities();
     initInfections();
+    insertEventCards();
     initPlayers(2);
-    initPlayerCards();
+    distributePlayerCards();
+    insertEpidemicCards(4);
 }
 
 void Board::initCures()
@@ -29,7 +56,8 @@ void Board::initCures()
 
 void Board::initCities()
 {
-    // Todo: Automize and read from file
+#if 0
+    // Todo: Parse from file
     auto algiers = std::make_shared<City>("Algiers", DiseaseType::Black);
     auto atlanta = std::make_shared<City>("Atlanta", DiseaseType::Blue);
     auto baghdad = std::make_shared<City>("Baghdad", DiseaseType::Black);
@@ -134,20 +162,36 @@ void Board::initCities()
     lima->addNeighbour(mexicoCity);
     mexicoCity->addNeighbour(chicago);
 
-    atlanta->setHasResearchStation(true);
+    setStartCity(atlanta);
+}
+
+void Board::addCity(std::shared_ptr<City> city)
+{
+    m_playerDeck.push_back(std::make_shared<PlayerCityCard>(city));
+    m_infectionDeck.push_back(std::make_shared<InfectionCard>(city));
+    m_cities.push_back(city);
+}
+
+void Board::setStartCity(std::shared_ptr<City> city)
+{
+    city->setHasResearchStation(true);
+    m_mainCity = city;
 }
 
 void Board::initInfections()
 {
+    std::cout << "--- Initializing infections\n";
+    assert(m_infectionDeck.size() > 3*3);
     std::random_shuffle(m_infectionDeck.begin(), m_infectionDeck.end());
     for (int numCubes = 3; numCubes != 0; numCubes--)
     {
-        std::cout << numCubes << " cubes: \n";
-        for (int y = 0; y < 3; y++)
+        std::cout << numCubes << " cubes:\n";
+        for (int cityIx = 0; cityIx < 3; cityIx++)
         {
             std::shared_ptr<InfectionCard> card = m_infectionDeck.front();
-            std::cout << " " << card->city->getName() << "\n";
             m_infectionDeck.pop_front();
+            assert(card);
+            std::cout << " " << card->city->getName() << "\n";
             for (int i = 0; i < numCubes; i++)
             {
                 card->city->addDisease();
@@ -159,48 +203,97 @@ void Board::initInfections()
 
 void Board::initPlayers(const int numPlayers)
 {
+    assert(numPlayers >= 2);
+    assert(numPlayers <= 4);
+
     // Find start city
-    auto startCity = std::find_if(m_cities.begin(),
-                           m_cities.end(),
-                           [&](std::shared_ptr<City> const& p)
+    auto startCity = std::find_if(m_cities.begin(), m_cities.end(),
+                                  [&](const std::shared_ptr<City>& c)
     {
-        return p->getName() == "Atlanta";
+        return c->getName() == m_mainCity->getName();
     });
     assert(*startCity);
 
-    for (int i = 0; i < numPlayers; i++)
+    for (int playerIx = 0; playerIx < numPlayers; playerIx++)
     {
         std::shared_ptr<Player> player = std::make_shared<Player>();
         player->setCurrentCity(*startCity);
-        m_players.push_back(player);
 
-        // Todo: Set random Role to player
+        while (true)
+        {
+            Role role = static_cast<Role>(std::rand() % c_numRoles);
+
+            auto roleCollision = std::find_if(m_players.begin(), m_players.end(),
+                                              [&](const std::shared_ptr<Player>& p)
+            {
+                return p->getRole() == role;
+            });
+
+            if (roleCollision != m_players.end())
+            {
+                continue;
+            }
+
+            player->setRole(role);
+            break;
+        }
+
+        m_players.push_back(player);
     }
 }
 
-void Board::initPlayerCards()
+void Board::insertEventCards()
+{
+    for (int i = 0; i < c_numEventCards; ++i)
+    {
+        const auto type = static_cast<EventCardType>(i);
+        m_playerDeck.push_back(std::make_shared<EventCard>(type));
+    }
+}
+
+void Board::distributePlayerCards()
 {
     assert(m_players.size() <= 4);
 
+    std::cout << "\n--- Distribute player cards\n";
     std::random_shuffle(m_playerDeck.begin(), m_playerDeck.end());
     for (const std::shared_ptr<Player> p : m_players)
     {
-        std::cout << static_cast<int>(p->getRole()) << "\n";
-        for (int i = 0; i < 6 - m_players.size(); i++)
+        /* Distribute cards to players.
+         *  2 players: 4 each
+         *  3 players: 3 each
+         *  4 players: 2 each
+         */
+        std::cout << roleToString(p->getRole()) << " gets \n";
+        for (size_t i = 0; i < 6 - m_players.size(); i++)
         {
             std::shared_ptr<PlayerCard> card = m_playerDeck.front();
+            std::cout << " - " << card->getName() << "\n";
             m_playerDeck.pop_front();
-            std::cout << card->getName() << "\n";
             p->addCard(card);
         }
     }
 }
 
-void Board::addCity(std::shared_ptr<City> city)
+void Board::insertEpidemicCards(const int numEpidemicCards)
 {
-    m_playerDeck.push_back(std::make_shared<PlayerCityCard>(city));
-    m_infectionDeck.push_back(std::make_shared<InfectionCard>(city));
-    m_cities.push_back(city);
+    std::random_shuffle(m_playerDeck.begin(), m_playerDeck.end());
+
+    const int piles = numEpidemicCards;
+    const size_t deckSize = m_playerDeck.size();
+    const size_t pileSize = deckSize / piles;
+    size_t remainder = deckSize % piles;
+    auto begin = m_playerDeck.begin();
+    auto end = begin;
+
+    for (int pileIx = 0; pileIx < piles; pileIx++)
+    {
+        end += (remainder > 0) ? (pileSize + !!(remainder--)) : pileSize;
+        end = m_playerDeck.insert(end, std::make_shared<EpidemicCard>());
+        end++;
+        std::random_shuffle(begin, end);
+        begin = end;
+    }
 }
 
 }
