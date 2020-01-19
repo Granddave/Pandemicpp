@@ -56,7 +56,6 @@ void Board::initCures()
 
 void Board::initCities()
 {
-#if 0
     // Todo: Parse from file
     auto algiers = std::make_shared<City>("Algiers", DiseaseType::Black);
     auto atlanta = std::make_shared<City>("Atlanta", DiseaseType::Blue);
