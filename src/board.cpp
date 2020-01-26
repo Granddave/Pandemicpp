@@ -9,13 +9,25 @@
 
 namespace Pandemic {
 
-Board::Board()
+int numEpidemicCards(Difficulty difficulty)
 {
-#if 0
-    auto seed = static_cast<unsigned int>(time(nullptr));
-#else
-    unsigned int seed = 1;
-#endif
+    switch (difficulty)
+    {
+        case Difficulty::Easy:   return 4;
+        case Difficulty::Medium: return 5;
+        case Difficulty::Hard:   return 6;
+    }
+    return 4;
+}
+
+Board::Board(const Config& config)
+    : m_config(config)
+{
+    unsigned int seed = m_config.seed;
+    if (m_config.seed == 0)
+    {
+        seed = static_cast<unsigned int>(time(nullptr));
+    }
     std::cout << "seed: " << seed << "\n";
     srand(seed);
 
@@ -43,9 +55,9 @@ void Board::init()
     initCities();
     initInfections();
     insertEventCards();
-    initPlayers(2);
+    initPlayers(m_config.numPlayers);
     distributePlayerCards();
-    insertEpidemicCards(4);
+    insertEpidemicCards(numEpidemicCards(m_config.difficulty));
 }
 
 void Board::printStatus()
@@ -87,7 +99,7 @@ void Board::initCures()
 
 void Board::initCities()
 {
-    CityReader reader("cities_data.txt");
+    CityReader reader(m_config.citiesFile);
     m_mainCity = reader.getMainCity();
     m_cities = reader.getCities();
 

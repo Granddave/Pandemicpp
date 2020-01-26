@@ -10,10 +10,25 @@
 
 namespace Pandemic {
 
+enum class Difficulty
+{
+    Easy,
+    Medium,
+    Hard
+};
+
+struct Config
+{
+    int numPlayers = 2;
+    Difficulty difficulty = Difficulty::Easy;
+    std::string citiesFile = "cities_data.txt";
+    unsigned int seed = 0;
+};
+
 class Board
 {
 public:
-    Board();
+    Board(const Config& config);
     void reset();
     void init();
     void printStatus();
@@ -29,6 +44,7 @@ private:
     void distributePlayerCards();
     void insertEpidemicCards(const int numEpidemicCards);
 
+    Config m_config;
     std::deque<std::shared_ptr<PlayerCard>> m_playerDeck;
     std::deque<std::shared_ptr<PlayerCard>> m_playerDiscardPile;
     std::deque<std::shared_ptr<InfectionCard>> m_infectionDeck;
