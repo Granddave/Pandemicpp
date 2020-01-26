@@ -1,5 +1,8 @@
 #pragma once
 
+#include <map>
+#include <numeric>
+
 namespace Pandemic {
 
 const int c_numDiseases = 4;
@@ -17,6 +20,16 @@ enum class DiseaseType
 };
 
 using DiseaseCube = DiseaseType;
+
+inline int getNumDiseaseCubes(const std::map<DiseaseCube, int>& cubes)
+{
+    return std::accumulate(
+                std::begin(cubes), std::end(cubes), 0,
+                [] (int value, const std::map<Pandemic::DiseaseType, int>::value_type& p)
+    {
+        return value + p.second;
+    });
+}
 
 struct Cure
 {

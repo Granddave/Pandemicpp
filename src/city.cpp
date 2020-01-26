@@ -34,8 +34,7 @@ void City::addNeighbour(std::shared_ptr<City> other)
 
 void City::addDisease(const DiseaseType type)
 {
-    if (m_diseaseCubes.size() != 0 &&
-        m_diseaseCubes.count(type) == c_maxCubesInCity)
+    if (m_diseaseCubes.count(type) == c_maxCubesInCity)
     {
         // Trigger outbreak
     }
@@ -106,7 +105,7 @@ void CityReader::parseFile(const std::string& filepath)
 
         if (line.at(0) == '*')
         {
-            assert(startCityFound == false); // Only one city may be the starting city
+            assert(!startCityFound); // Only one city may be the starting city
             startCityFound = true;
 
             city.startCity = true;
@@ -122,11 +121,14 @@ void CityReader::parseFile(const std::string& filepath)
             city.neighbours.push_back(titleCase(splittedLine.at(i)));
         }
 
-
         m_rawCities.push_back(city);
     }
 
-    assert(startCityFound);
+    if (!startCityFound)
+    {
+        std::cerr << "No start city found!" << std::endl;
+        assert(startCityFound);
+    }
     file.close();
 }
 

@@ -74,13 +74,7 @@ void Board::printStatus()
     std::cout << "\n- Diseases:\n";
     for (const auto& city : m_cities)
     {
-        const auto cubes = city->getDiseaseCubes();
-        int numCubes = std::accumulate(std::begin(cubes), std::end(cubes), 0,
-                        [] (int value, const std::map<DiseaseType, int>::value_type& p)
-        {
-            return value + p.second;
-        });
-
+        const int numCubes = getNumDiseaseCubes(city->getDiseaseCubes());
         if (numCubes > 0)
         {
             std::cout << city->getName() << " - " << numCubes << '\n';
