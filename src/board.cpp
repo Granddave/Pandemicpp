@@ -87,7 +87,7 @@ void Board::initCures()
 
 void Board::initCities()
 {
-    CityReader reader("/home/david/Dev/pandemic/cities_data.txt");
+    CityReader reader("cities_data.txt");
     m_mainCity = reader.getMainCity();
     m_cities = reader.getCities();
 
