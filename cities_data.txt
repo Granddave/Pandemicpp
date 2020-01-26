@@ -1,0 +1,48 @@
+0 bogota miami sao_paolo buenos_aires lima mexico_city
+0 buenos_aires sao_paolo bogota
+0 johannesburg khartoum kinshasa
+0 khartoum johannesburg kinshasa lagos cairo
+0 kinshasa khartoum johannesburg lagos
+0 lagos khartoum kinshasa sao_paolo
+0 lima bogota santiago mexico_city
+0 los_angeles chicago mexico_city sydney san_francisco
+0 mexico_city chicago miami bogota lima los_angeles
+0 miami washington bogota mexico_city atlanta
+0 santiago lima
+0 sao_paolo madrid lagos buenos_aires bogota
+1 bangkok hong_kong ho_chi_minh_city jakarta chennai kolkata
+1 beijing seoul shanghai
+1 ho_chi_minh_city hong_kong manila jakarta bangkok
+1 hong_kong taipei manila ho_chi_minh_city bangkok kolkata shanghai
+1 jakarta bangkok ho_chi_minh_city sydney chennai
+1 manila san_francisco sydney ho_chi_minh_city hong_kong taipei
+1 osaka taipei tokyo
+1 seoul tokyo shanghai beijing
+1 shanghai seoul tokyo hong_kong beijing
+1 sydney los_angeles jakarta manila
+1 taipei osaka manila hong_kong shanghai
+1 tokyo san_francisco osaka shanghai seoul
+*2 atlanta washington miami chicago
+2 chicago montreal atlanta mexico_city los_angeles san_francisco
+2 essen st_petersburg milan paris london
+2 london essen paris madrid new_york
+2 madrid london paris algiers sao_paolo new_york
+2 milan essen istanbul paris
+2 montreal chicago new_york washington
+2 new_york london madrid washington montreal
+2 paris essen milan algiers madrid london
+2 san_francisco chicago los_angeles manila tokyo
+2 st_petersburg moscow istanbul essen
+2 washington montreal new_york atlanta
+3 algiers istanbul cairo madrid paris
+3 baghdad tehran karachi riyadh cairo istanbul
+3 cairo istanbul baghdad riyadh khartoum algiers
+3 chennai kolkata bangkok jakarta mumbai delhi
+3 delhi kolkata chennai mumbai karachi tehran
+3 istanbul st_petersburg moscow baghdad cairo algiers milan
+3 karachi delhi mumbai riyadh baghdad tehran
+3 kolkata hong_kong bangkok chennai delhi
+3 moscow tehran istanbul st_petersburg
+3 mumbai delhi chennai karachi
+3 riyadh karachi cairo baghdad
+3 tehran delhi karachi baghdad moscow

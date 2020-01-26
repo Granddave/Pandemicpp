@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <map>
 
 #include "disease.h"
 
@@ -15,12 +16,13 @@ public:
 
     std::string getName() const { return m_name; }
 
-    bool setHasResearchStation(const bool b) { m_hasResearchStation = b; }
+    void setHasResearchStation(const bool b) { m_hasResearchStation = b; }
     bool getHasResearchStation() const { return m_hasResearchStation; }
 
     void addNeighbour(std::shared_ptr<City> other);
     //std::vector<std::shared_ptr<City>> getNeighbours() const;
 
+    std::map<DiseaseCube, int> getDiseaseCubes() const { return m_diseaseCubes; }
     void addDisease(const DiseaseType type);
     void addDisease();
     void cureDisease();
@@ -33,7 +35,34 @@ private:
     //point2i m_coordinates;
     std::vector<std::shared_ptr<City>> m_neighbours;
     DiseaseType m_diseaseType;
-    std::vector<DiseaseCube> m_diseaseCubes;
+    std::map<DiseaseCube, int> m_diseaseCubes;
 };
 
+class CityReader
+{
+public:
+    CityReader(const std::string& filepath);
+
+    std::vector<std::shared_ptr<City>> getCities() const { return m_cities; }
+    std::shared_ptr<City> getMainCity() const { return m_startCity; }
+
+private:
+    struct RawCity
+    {
+        std::string name;
+        std::vector<std::string> neighbours;
+        int disease = -1;
+        bool startCity = false;
+    };
+
+    void parseFile(const std::string& filepath);
+    void createCities();
+
+    std::vector<RawCity> m_rawCities;
+    std::vector<std::shared_ptr<City>> m_cities;
+    std::shared_ptr<City> m_startCity;
+};
+
+
 }
+

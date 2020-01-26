@@ -10,18 +10,17 @@
 
 namespace Pandemic {
 
-
 class Board
 {
 public:
     Board();
     void reset();
+    void init();
 
 private:
-    void init();
     void initCures();
     void initCities();
-    void addCity(std::shared_ptr<City> city);
+    void createCityCard(std::shared_ptr<City> city);
     void setStartCity(std::shared_ptr<City> city);
     void initInfections();
     void initPlayers(const int numPlayers);
