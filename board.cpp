@@ -10,8 +10,8 @@ namespace Pandemic {
 
 Board::Board()
 {
-#if 1
-    unsigned int seed = time(0);
+#if 0
+    auto seed = static_cast<unsigned int>(time(nullptr));
 #else
     unsigned int seed = 1;
 #endif
@@ -110,7 +110,7 @@ void Board::initPlayers(const int numPlayers)
     auto startCity = std::find_if(m_cities.begin(), m_cities.end(),
                                   [&](const std::shared_ptr<City>& c)
     {
-        return c->getName() == m_mainCity->getName();
+        return c == m_mainCity;
     });
     assert(*startCity);
 
@@ -157,13 +157,12 @@ void Board::distributePlayerCards()
 
     std::cout << "\n--- Distribute player cards\n";
     std::random_shuffle(m_playerDeck.begin(), m_playerDeck.end());
-    for (const std::shared_ptr<Player> p : m_players)
+    for (const std::shared_ptr<Player>& p : m_players)
     {
         /* Distribute cards to players.
          *  2 players: 4 each
          *  3 players: 3 each
-         *  4 players: 2 each
-         */
+         *  4 players: 2 each */
         std::cout << roleToString(p->getRole()) << " gets \n";
         for (size_t i = 0; i < 6 - m_players.size(); i++)
         {
@@ -180,15 +179,15 @@ void Board::insertEpidemicCards(const int numEpidemicCards)
     std::random_shuffle(m_playerDeck.begin(), m_playerDeck.end());
 
     const int piles = numEpidemicCards;
-    const size_t deckSize = m_playerDeck.size();
-    const size_t pileSize = deckSize / piles;
-    size_t remainder = deckSize % piles;
+    const int deckSize = static_cast<int>(m_playerDeck.size());
+    const int subPileSize = deckSize / piles;
+    int remainder = deckSize % piles;
     auto begin = m_playerDeck.begin();
     auto end = begin;
 
-    for (int pileIx = 0; pileIx < piles; pileIx++)
+    for (int subPileIx = 0; subPileIx < piles; subPileIx++)
     {
-        end += (remainder > 0) ? (pileSize + !!(remainder--)) : pileSize;
+        end += (remainder > 0) ? (subPileSize + !!(remainder--)) : subPileSize;
         end = m_playerDeck.insert(end, std::make_shared<EpidemicCard>());
         end++;
         std::random_shuffle(begin, end);
