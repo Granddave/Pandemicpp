@@ -4,7 +4,6 @@ set(SRC
     board.cpp
     card.cpp
     city.cpp
-    main.cpp
     player.cpp)
 
 set(HDR
@@ -14,7 +13,11 @@ set(HDR
     disease.h
     player.h)
 
-add_executable(pandemic ${SRC} ${HDR})
+add_library(pandemic-lib STATIC ${SRC} ${HDR})
+target_include_directories(pandemic-lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_executable(pandemic main.cpp)
+target_link_libraries(pandemic PRIVATE pandemic-lib)
 
 configure_file(
     ${CMAKE_SOURCE_DIR}/res/cities_data.txt

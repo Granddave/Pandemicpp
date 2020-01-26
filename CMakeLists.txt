@@ -12,4 +12,6 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
+add_subdirectory(external/catch)
 add_subdirectory(src)
+add_subdirectory(test)
