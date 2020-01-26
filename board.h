@@ -16,6 +16,7 @@ public:
     Board();
     void reset();
     void init();
+    void printStatus();
 
 private:
     void initCures();

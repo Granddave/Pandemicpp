@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <algorithm>
+#include <numeric>
 #include <assert.h>
 #include <ctime>
 
@@ -19,6 +20,7 @@ Board::Board()
     srand(seed);
 
     init();
+    printStatus();
 }
 
 void Board::reset()
@@ -44,6 +46,35 @@ void Board::init()
     initPlayers(2);
     distributePlayerCards();
     insertEpidemicCards(4);
+}
+
+void Board::printStatus()
+{
+    std::cout << "\n--- Game status\n";
+
+    std::cout << "\n- Player positions:\n";
+    for (const auto& player : m_players)
+    {
+        std::cout << roleToString(player->getRole()) << " is in "
+                  << player->getCurrentCity()->getName() << '\n';
+    }
+
+    std::cout << "\n- Diseases:\n";
+    for (const auto& city : m_cities)
+    {
+        const auto cubes = city->getDiseaseCubes();
+        int numCubes = std::accumulate(std::begin(cubes), std::end(cubes), 0,
+                        [] (int value, const std::map<DiseaseType, int>::value_type& p)
+        {
+            return value + p.second;
+        });
+
+        if (numCubes > 0)
+        {
+            std::cout << city->getName() << " - " << numCubes << '\n';
+        }
+    }
+    std::cout << std::endl;
 }
 
 void Board::initCures()
