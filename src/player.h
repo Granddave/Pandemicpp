@@ -8,6 +8,8 @@
 
 namespace Pandemic {
 
+const int c_minPlayers = 2;
+const int c_maxPlayers = 4;
 const int c_handLimit = 7;
 const int c_numRoles = 7;
 
@@ -33,8 +35,8 @@ inline std::string roleToString(const Role role)
         case Role::QuarantineSpecialist: return "Quarantine specialist";
         case Role::Researcher:           return "Researcher";
         case Role::Scientist:            return "Scientist";
-        default: return "Unknown role";
     }
+    return "Unknown role";
 }
 
 class Player

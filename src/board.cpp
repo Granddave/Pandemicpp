@@ -146,8 +146,8 @@ void Board::initInfections()
 
 void Board::initPlayers(const int numPlayers)
 {
-    assert(numPlayers >= 2);
-    assert(numPlayers <= 4);
+    assert(numPlayers >= c_minPlayers);
+    assert(numPlayers <= c_maxPlayers);
 
     // Find start city
     auto startCity = std::find_if(m_cities.begin(), m_cities.end(),
@@ -162,10 +162,10 @@ void Board::initPlayers(const int numPlayers)
         std::shared_ptr<Player> player = std::make_shared<Player>();
         player->setCurrentCity(*startCity);
 
+        // Randomize the players role
         while (true)
         {
             Role role = static_cast<Role>(std::rand() % c_numRoles);
-
             auto roleCollision = std::find_if(m_players.begin(), m_players.end(),
                                               [&](const std::shared_ptr<Player>& p)
             {
@@ -196,7 +196,8 @@ void Board::insertEventCards()
 
 void Board::distributePlayerCards()
 {
-    assert(m_players.size() <= 4);
+    assert(m_players.size() >= c_minPlayers);
+    assert(m_players.size() <= c_maxPlayers);
 
     std::cout << "\n--- Distribute player cards\n";
     std::random_shuffle(m_playerDeck.begin(), m_playerDeck.end());

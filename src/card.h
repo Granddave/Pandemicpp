@@ -26,8 +26,8 @@ inline std::string eventCardToString(const EventCardType card)
         case EventCardType::Forecast:            return "Forecast";
         case EventCardType::OneQuietNight:       return "One Quiet Night";
         case EventCardType::GovernmentGrant:     return "Government Grant";
-        default: return "Unknown role";
     }
+    return "Unknown role";
 }
 
 
