@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <istream>
 #include <memory>
 #include <vector>
 #include <map>
@@ -40,24 +41,27 @@ private:
 class CityReader
 {
 public:
+    CityReader() {}
     CityReader(const std::string& filepath);
+    void parseString(const std::string& string);
 
     std::vector<std::shared_ptr<City>> getCities() const { return m_cities; }
     std::shared_ptr<City> getMainCity() const { return m_startCity; }
 
 private:
-    struct RawCity
+    struct parsedCity
     {
         std::string name;
         std::vector<std::string> neighbours;
-        int disease = -1;
+        int diseaseType = -1;
         bool startCity = false;
     };
 
-    void parseFile(const std::string& filepath);
+    void readFile(const std::string& filepath);
+    void parseContent(std::istream& stream);
     void createCities();
 
-    std::vector<RawCity> m_rawCities;
+    std::vector<parsedCity> m_parsedCities;
     std::vector<std::shared_ptr<City>> m_cities;
     std::shared_ptr<City> m_startCity;
 };

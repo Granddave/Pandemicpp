@@ -81,13 +81,20 @@ std::string titleCase(std::string str)
 
 CityReader::CityReader(const std::string& filepath)
 {
-    parseFile(filepath);
+    readFile(filepath);
     createCities();
 }
 
-void CityReader::parseFile(const std::string& filepath)
+void CityReader::parseString(const std::string &str)
 {
-    std::cout << std::endl;
+    assert(str.length() != 0);
+    std::istringstream iss(str);
+    parseContent(iss);
+    createCities();
+}
+
+void CityReader::readFile(const std::string& filepath)
+{
     std::ifstream file(filepath);
     if (!file.is_open() || !file.good())
     {
@@ -95,17 +102,21 @@ void CityReader::parseFile(const std::string& filepath)
         assert(0);
         return;
     }
+    parseContent(file);
+    file.close();
+}
 
+void CityReader::parseContent(std::istream& stream)
+{
     bool startCityFound = false;
     std::string line;
-    while(std::getline(file, line))
+    while(std::getline(stream, line))
     {
         if (line.size() == 0)
         {
             break;
         }
-        std::cout << line << '\n';
-        RawCity city;
+        parsedCity city;
 
         if (line.at(0) == '*')
         {
@@ -117,7 +128,7 @@ void CityReader::parseFile(const std::string& filepath)
         }
 
         std::vector<std::string> splittedLine = split(line, ' ');
-        city.disease = std::stoi(splittedLine.at(0));
+        city.diseaseType = std::stoi(splittedLine.at(0));
         city.name = titleCase(splittedLine.at(1));
 
         for (size_t i = 2; i < splittedLine.size(); i++)
@@ -125,24 +136,22 @@ void CityReader::parseFile(const std::string& filepath)
             city.neighbours.push_back(titleCase(splittedLine.at(i)));
         }
 
-        m_rawCities.push_back(city);
+        m_parsedCities.push_back(city);
     }
-
     if (!startCityFound)
     {
         std::cerr << "No start city found!" << std::endl;
         assert(startCityFound);
     }
-    file.close();
 }
 
 void CityReader::createCities()
 {
-    for (const RawCity& rawCity : m_rawCities)
+    for (const parsedCity& parsedCity : m_parsedCities)
     {
-        auto diseaseType = static_cast<DiseaseType>(rawCity.disease);
-        auto city = std::make_shared<City>(rawCity.name, diseaseType);
-        if (rawCity.startCity)
+        auto diseaseType = static_cast<DiseaseType>(parsedCity.diseaseType);
+        auto city = std::make_shared<City>(parsedCity.name, diseaseType);
+        if (parsedCity.startCity)
         {
             m_startCity = city;
             city->setHasResearchStation(true);
@@ -150,14 +159,14 @@ void CityReader::createCities()
         m_cities.push_back(city);
     }
 
-    for (size_t i = 0; i < m_rawCities.size(); i++)
+    for (size_t i = 0; i < m_parsedCities.size(); i++)
     {
-        for (size_t j = 0; j < m_rawCities[i].neighbours.size(); j++)
+        for (size_t j = 0; j < m_parsedCities[i].neighbours.size(); j++)
         {
             auto city = std::find_if(m_cities.begin(), m_cities.end(),
                                      [&](const std::shared_ptr<City>& c)
             {
-                return c->getName() == m_rawCities[i].neighbours[j];
+                return c->getName() == m_parsedCities[i].neighbours[j];
             });
             if (*city != nullptr)
             {
