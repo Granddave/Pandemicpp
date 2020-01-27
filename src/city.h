@@ -20,12 +20,11 @@ public:
     bool getHasResearchStation() const { return m_hasResearchStation; }
 
     void addNeighbour(std::shared_ptr<City> other);
-    //std::vector<std::shared_ptr<City>> getNeighbours() const;
+    std::vector<std::shared_ptr<City>> getNeighbours() const { return m_neighbours; }
 
     std::map<DiseaseCube, int> getDiseaseCubes() const { return m_diseaseCubes; }
-    void addDisease(const DiseaseType type);
-    void addDisease();
-    void cureDisease();
+    bool addDisease(const DiseaseType type);
+    void cureDisease(const DiseaseType type);
 
     DiseaseType getDiseaseType() const { return m_diseaseType; }
 

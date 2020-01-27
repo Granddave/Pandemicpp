@@ -88,6 +88,34 @@ void Board::printStatus()
     std::cout << std::endl;
 }
 
+void Board::addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType disease)
+{
+    if (cityHadOutbreak(city))
+    {
+        std::cout << city->getName() << " already had an outbreak" << std::endl;
+        return;
+    }
+
+    if (!outbreak)
+    {
+        disease = city->getDiseaseType();
+    }
+
+    std::cout << "Adding disease " << diseaseToString(disease)
+              << " to " << city->getName() << std::endl;
+    const bool triggeredOutbreak = city->addDisease(disease);
+    if (triggeredOutbreak)
+    {
+        std::cout << "Outbreak in " << city->getName() << '!' << std::endl;
+        m_numOutbreaks++;
+        m_outbreakCities.push_back(city);
+        for (auto& neighbour : city->getNeighbours())
+        {
+            addDisease(neighbour, true, disease);
+        }
+    }
+}
+
 void Board::initCures()
 {
     m_cures.emplace_back(DiseaseType::Yellow);
@@ -136,7 +164,7 @@ void Board::initInfections()
             std::cout << " " << card->city->getName() << "\n";
             for (int i = 0; i < numCubes; i++)
             {
-                card->city->addDisease();
+                card->city->addDisease(card->city->getDiseaseType());
             }
             m_infectionDiscardPile.push_front(card);
         }
@@ -236,6 +264,11 @@ void Board::insertEpidemicCards(const int numEpidemicCards)
         std::random_shuffle(begin, end);
         begin = end;
     }
+}
+
+bool Board::cityHadOutbreak(std::shared_ptr<City>& city) const
+{
+    return std::find(m_outbreakCities.begin(), m_outbreakCities.end(), city) != m_outbreakCities.end();
 }
 
 std::shared_ptr<City> Board::getCity(const std::string& cityName)

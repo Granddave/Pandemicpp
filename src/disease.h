@@ -21,6 +21,18 @@ enum class DiseaseType
 
 using DiseaseCube = DiseaseType;
 
+inline std::string diseaseToString(const DiseaseType disease)
+{
+    switch (disease)
+    {
+        case DiseaseType::Yellow: return "Yellow";
+        case DiseaseType::Red:    return "Red";
+        case DiseaseType::Blue:   return "Blue";
+        case DiseaseType::Black:  return "Black";
+    }
+    return "Unknown disease";
+}
+
 inline int getNumDiseaseCubes(const std::map<DiseaseCube, int>& cubes)
 {
     return std::accumulate(

@@ -32,21 +32,25 @@ void City::addNeighbour(std::shared_ptr<City> other)
     }
 }
 
-void City::addDisease(const DiseaseType type)
+bool City::addDisease(const DiseaseType type)
 {
-    if (m_diseaseCubes.count(type) == c_maxCubesInCity)
+    const int num = m_diseaseCubes.at(type);
+    if (num == c_maxCubesInCity)
     {
         // Trigger outbreak
+        return true;
     }
-    else
-    {
-        m_diseaseCubes.at(type)++;
-    }
+
+    m_diseaseCubes.at(type)++;
+    return false;
 }
 
-void City::addDisease()
+void City::cureDisease(const DiseaseType type)
 {
-    addDisease(m_diseaseType);
+    if (m_diseaseCubes.count(type) > 0)
+    {
+        m_diseaseCubes.at(type)--;
+    }
 }
 
 std::vector<std::string> split(std::string strToSplit, char delimeter)

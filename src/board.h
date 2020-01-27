@@ -32,6 +32,9 @@ public:
     void reset();
     void init();
     void printStatus();
+    void addDisease(std::shared_ptr<City> city,
+                    bool outbreak = false,
+                    DiseaseType disease = DiseaseType::Blue);
 
 private:
     void initCures();
@@ -43,6 +46,7 @@ private:
     void insertEventCards();
     void distributePlayerCards();
     void insertEpidemicCards(const int numEpidemicCards);
+    bool cityHadOutbreak(std::shared_ptr<City>& city) const;
     std::shared_ptr<City> getCity(const std::string& cityName);
 
     Config m_config;
@@ -51,6 +55,7 @@ private:
     std::deque<std::shared_ptr<InfectionCard>> m_infectionDeck;
     std::deque<std::shared_ptr<InfectionCard>> m_infectionDiscardPile;
     std::vector<std::shared_ptr<City>> m_cities;
+    std::vector<std::shared_ptr<City>> m_outbreakCities;
     std::shared_ptr<City> m_mainCity;
     int m_numOutbreaks = 0;
     int m_infectionRateIndex = 0;
