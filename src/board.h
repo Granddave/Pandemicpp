@@ -36,13 +36,14 @@ public:
 private:
     void initCures();
     void initCities();
-    void createCityCard(std::shared_ptr<City> city);
-    void setStartCity(std::shared_ptr<City> city);
+    void createCityCard(const std::shared_ptr<City> &city);
+    void setStartCity(std::shared_ptr<City>& city);
     void initInfections();
     void initPlayers(const int numPlayers);
     void insertEventCards();
     void distributePlayerCards();
     void insertEpidemicCards(const int numEpidemicCards);
+    std::shared_ptr<City> getCity(const std::string& cityName);
 
     Config m_config;
     std::deque<std::shared_ptr<PlayerCard>> m_playerDeck;

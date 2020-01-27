@@ -62,13 +62,18 @@ void Board::init()
 
 void Board::printStatus()
 {
-    std::cout << "\n--- Game status\n";
-
-    std::cout << "\n- Player positions:\n";
+    std::cout << "\n--- Game status\n"
+              << "- Players:\n";
     for (const auto& player : m_players)
     {
         std::cout << roleToString(player->getRole()) << " is in "
-                  << player->getCurrentCity()->getName() << '\n';
+                  << player->getCurrentCity()->getName()
+                  << " and has " <<'\n';
+
+        for (const auto& card : player->getCards())
+        {
+            std::cout << " * " << card->getName() << '\n';
+        }
     }
 
     std::cout << "\n- Diseases:\n";
@@ -77,7 +82,7 @@ void Board::printStatus()
         const int numCubes = getNumDiseaseCubes(city->getDiseaseCubes());
         if (numCubes > 0)
         {
-            std::cout << city->getName() << " - " << numCubes << '\n';
+            std::cout << ' ' << city->getName() << " - " << numCubes << '\n';
         }
     }
     std::cout << std::endl;
@@ -103,13 +108,13 @@ void Board::initCities()
     }
 }
 
-void Board::createCityCard(std::shared_ptr<City> city)
+void Board::createCityCard(const std::shared_ptr<City>& city)
 {
     m_playerDeck.push_back(std::make_shared<PlayerCityCard>(city));
     m_infectionDeck.push_back(std::make_shared<InfectionCard>(city));
 }
 
-void Board::setStartCity(std::shared_ptr<City> city)
+void Board::setStartCity(std::shared_ptr<City>& city)
 {
     city->setHasResearchStation(true);
     m_mainCity = city;
@@ -231,6 +236,17 @@ void Board::insertEpidemicCards(const int numEpidemicCards)
         std::random_shuffle(begin, end);
         begin = end;
     }
+}
+
+std::shared_ptr<City> Board::getCity(const std::string& cityName)
+{
+    auto city = std::find_if(m_cities.begin(), m_cities.end(),
+                                  [&](const std::shared_ptr<City>& c)
+    {
+        return c->getName() == cityName;
+    });
+    assert(*city);
+    return *city;
 }
 
 }
