@@ -47,6 +47,7 @@ public:
     void setRole(const Role role) { m_role = role; }
     Role getRole() const { return m_role; }
     void addCard(std::shared_ptr<PlayerCard> card);
+    std::deque<std::shared_ptr<PlayerCard>> getCards() const { return m_cards; }
 private:
     Role m_role;
     std::shared_ptr<City> m_currentCity;
