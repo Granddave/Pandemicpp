@@ -6,7 +6,12 @@
 #include <sstream>
 #include <assert.h>
 
+#include "utils.h"
+
 namespace Pandemic {
+
+// -----------------------------------------------------------------------------
+// City
 
 City::City(const std::string& name, const DiseaseType diseaseType)
     : m_name(name),
@@ -53,31 +58,8 @@ void City::cureDisease(const DiseaseType type)
     }
 }
 
-std::vector<std::string> split(std::string strToSplit, char delimeter)
-{
-    std::stringstream ss(strToSplit);
-    std::string item;
-    std::vector<std::string> splittedStrings;
-    while (std::getline(ss, item, delimeter))
-    {
-        splittedStrings.push_back(item);
-    }
-    return splittedStrings;
-}
-
-std::string titleCase(std::string str)
-{
-    std::replace(str.begin(), str.end(), '_', ' ');
-
-    char last = ' ';
-    std::for_each(str.begin(), str.end(), [&](char& c) {
-        if(last == ' ' && c != ' ' && ::isalpha(c))
-            c = static_cast<char>(::toupper(c));
-        last = c;
-    });
-
-    return str;
-}
+// -----------------------------------------------------------------------------
+// City reader
 
 CityReader::CityReader(const std::string& filepath)
 {
@@ -85,7 +67,7 @@ CityReader::CityReader(const std::string& filepath)
     createCities();
 }
 
-void CityReader::parseString(const std::string &str)
+void CityReader::parseString(const std::string& str)
 {
     assert(str.length() != 0);
     std::istringstream iss(str);
@@ -103,6 +85,7 @@ void CityReader::readFile(const std::string& filepath)
         return;
     }
     parseContent(file);
+    std::cout << "Reading " << filepath << "...\n";
     file.close();
 }
 
@@ -168,14 +151,19 @@ void CityReader::createCities()
             {
                 return c->getName() == m_parsedCities[i].neighbours[j];
             });
-            if (*city != nullptr)
+            if (*city == nullptr)
+            {
+                std::cerr << "Failed to find neighbour "
+                          << m_parsedCities[i].neighbours[j]
+                          << " for " << m_parsedCities[i].name << std::endl;
+            }
+            else
             {
                 m_cities[i]->addNeighbour(*city);
             }
         }
     }
+    std::cout << "Found " << m_cities.size() << " cities" << std::endl;
 }
-
-
 
 }

@@ -30,6 +30,8 @@ inline std::string eventCardToString(const EventCardType card)
     return "Unknown role";
 }
 
+// -----------------------------------------------------------------------------
+// Player cards
 
 struct PlayerCard
 {
@@ -70,6 +72,9 @@ struct EventCard : PlayerCard
 
     EventCardType eventType;
 };
+
+// -----------------------------------------------------------------------------
+// Infection cards
 
 struct InfectionCard
 {

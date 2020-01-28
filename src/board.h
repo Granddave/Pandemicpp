@@ -17,50 +17,42 @@ enum class Difficulty
     Hard
 };
 
-struct Config
-{
-    int numPlayers = 2;
-    Difficulty difficulty = Difficulty::Easy;
-    std::string citiesFile = "cities_data.txt";
-    unsigned int seed = 0;
-};
-
 class Board
 {
 public:
-    Board(const Config& config);
+    Board();
     void reset();
-    void init();
-    void printStatus();
-    void addDisease(std::shared_ptr<City> city,
-                    bool outbreak = false,
-                    DiseaseType disease = DiseaseType::Blue);
 
-private:
     void initCures();
-    void initCities();
-    void createCityCard(const std::shared_ptr<City> &city);
+    void initCities(const std::string& filepath);
+    void createCityCard(std::shared_ptr<City>& city);
     void setStartCity(std::shared_ptr<City>& city);
     void initInfections();
-    void initPlayers(const int numPlayers);
     void insertEventCards();
-    void distributePlayerCards();
+    void distributePlayerCards(std::vector<std::shared_ptr<Player>>& players);
     void insertEpidemicCards(const int numEpidemicCards);
-    bool cityHadOutbreak(std::shared_ptr<City>& city) const;
-    std::shared_ptr<City> getCity(const std::string& cityName);
 
-    Config m_config;
+    std::shared_ptr<City> getCity(const std::string& cityName);
+    std::shared_ptr<City>& getStartCity() { return m_startingCity; }
+    std::vector<std::shared_ptr<City>>& getCities() { return m_cities; }
+
+    void addDisease(std::shared_ptr<City> city);
+
+    int getNumOutbreaks() const { return m_numOutbreaks; }
+
+private:
+    void addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType disease);
+
     std::deque<std::shared_ptr<PlayerCard>> m_playerDeck;
     std::deque<std::shared_ptr<PlayerCard>> m_playerDiscardPile;
     std::deque<std::shared_ptr<InfectionCard>> m_infectionDeck;
     std::deque<std::shared_ptr<InfectionCard>> m_infectionDiscardPile;
     std::vector<std::shared_ptr<City>> m_cities;
     std::vector<std::shared_ptr<City>> m_outbreakCities;
-    std::shared_ptr<City> m_mainCity;
+    std::shared_ptr<City> m_startingCity;
     int m_numOutbreaks = 0;
     int m_infectionRateIndex = 0;
     std::vector<Cure> m_cures;
-    std::vector<std::shared_ptr<Player>> m_players;
 };
 
 }

@@ -15,19 +15,16 @@ class City : public std::enable_shared_from_this<City>
 public:
     City(const std::string& name, const DiseaseType diseaseType);
 
-    std::string getName() const { return m_name; }
-
-    void setHasResearchStation(const bool b) { m_hasResearchStation = b; }
-    bool getHasResearchStation() const { return m_hasResearchStation; }
-
     void addNeighbour(std::shared_ptr<City> other);
-    std::vector<std::shared_ptr<City>> getNeighbours() const { return m_neighbours; }
-
-    std::map<DiseaseCube, int> getDiseaseCubes() const { return m_diseaseCubes; }
     bool addDisease(const DiseaseType type);
+    void setHasResearchStation(const bool b) { m_hasResearchStation = b; }
     void cureDisease(const DiseaseType type);
 
+    std::string getName() const { return m_name; }
+    bool getHasResearchStation() const { return m_hasResearchStation; }
+    std::vector<std::shared_ptr<City>> getNeighbours() const { return m_neighbours; }
     DiseaseType getDiseaseType() const { return m_diseaseType; }
+    std::map<DiseaseCube, int> getDiseaseCubes() const { return m_diseaseCubes; }
 
 private:
     std::string m_name;
@@ -46,7 +43,7 @@ public:
     void parseString(const std::string& string);
 
     std::vector<std::shared_ptr<City>> getCities() const { return m_cities; }
-    std::shared_ptr<City> getMainCity() const { return m_startCity; }
+    std::shared_ptr<City> getStartCity() const { return m_startCity; }
 
 private:
     struct parsedCity

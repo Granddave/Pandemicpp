@@ -4,14 +4,18 @@ set(SRC
     board.cpp
     card.cpp
     city.cpp
-    player.cpp)
+    game.cpp
+    player.cpp
+    utils.cpp)
 
 set(HDR
     board.h
     card.h
     city.h
     disease.h
-    player.h)
+    game.h
+    player.h
+    utils.h)
 
 add_library(pandemic-lib STATIC ${SRC} ${HDR})
 target_include_directories(pandemic-lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

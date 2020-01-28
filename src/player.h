@@ -13,6 +13,18 @@ const int c_maxPlayers = 4;
 const int c_handLimit = 7;
 const int c_numRoles = 7;
 
+enum class Action
+{
+    Drive,
+    DirectFly,
+    CharterFlight,
+    ShuttleFlight,
+    BuildResearchStation,
+    TreatDisease,
+    ShareKnowledge,
+    DiscoverCure
+};
+
 enum class Role
 {
     ContingencyPlanner,
@@ -42,12 +54,13 @@ inline std::string roleToString(const Role role)
 class Player
 {
 public:
-    void setCurrentCity(std::shared_ptr<City> city);
+    void setCurrentCity(std::shared_ptr<City>& city);
     std::shared_ptr<City> getCurrentCity() const { return m_currentCity; }
     void setRole(const Role role) { m_role = role; }
     Role getRole() const { return m_role; }
-    void addCard(std::shared_ptr<PlayerCard> card);
+    void addCard(std::shared_ptr<PlayerCard>& card);
     std::deque<std::shared_ptr<PlayerCard>> getCards() const { return m_cards; }
+
 private:
     Role m_role;
     std::shared_ptr<City> m_currentCity;
