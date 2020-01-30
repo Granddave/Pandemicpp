@@ -13,10 +13,10 @@ const int c_infectionRates[] = { 2, 2, 2, 3, 3, 4, 4 };
 
 enum class DiseaseType
 {
-    Yellow,
-    Red,
-    Blue,
-    Black
+    Yellow = 0,
+    Red = 1,
+    Blue = 2,
+    Black = 3
 };
 
 using DiseaseCube = DiseaseType;
