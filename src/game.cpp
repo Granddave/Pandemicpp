@@ -26,6 +26,7 @@ void Game::init()
 {
     m_board.initCures();
     m_board.initCities(m_config.citiesFile);
+    m_board.createCityCards();
     m_board.initInfections();
     m_board.insertEventCards();
     initPlayers(m_config.numPlayers);

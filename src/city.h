@@ -35,12 +35,10 @@ private:
     std::map<DiseaseCube, int> m_diseaseCubes;
 };
 
-class CityReader
+class CityParser
 {
 public:
-    CityReader() {}
-    CityReader(const std::string& filepath);
-    void parseString(const std::string& string);
+    CityParser(const std::string& str);
 
     std::vector<std::shared_ptr<City>> getCities() const { return m_cities; }
     std::shared_ptr<City> getStartCity() const { return m_startCity; }
@@ -54,8 +52,7 @@ private:
         bool startCity = false;
     };
 
-    void readFile(const std::string& filepath);
-    void parseContent(std::istream& stream);
+    void parseContent(const std::string& str);
     void createCities();
 
     std::vector<parsedCity> m_parsedCities;

@@ -1,7 +1,6 @@
 #include "city.h"
 
 #include <algorithm>
-#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <assert.h>
@@ -59,41 +58,20 @@ void City::cureDisease(const DiseaseType type)
 }
 
 // -----------------------------------------------------------------------------
-// City reader
+// City parser
 
-CityReader::CityReader(const std::string& filepath)
+CityParser::CityParser(const std::string& str)
 {
-    readFile(filepath);
+    parseContent(str);
     createCities();
 }
 
-void CityReader::parseString(const std::string& str)
-{
-    assert(str.length() != 0);
-    std::istringstream iss(str);
-    parseContent(iss);
-    createCities();
-}
-
-void CityReader::readFile(const std::string& filepath)
-{
-    std::ifstream file(filepath);
-    if (!file.is_open() || !file.good())
-    {
-        std::cerr << "Failed to open file: " << filepath << std::endl;
-        assert(0);
-        return;
-    }
-    parseContent(file);
-    std::cout << "Reading " << filepath << "...\n";
-    file.close();
-}
-
-void CityReader::parseContent(std::istream& stream)
+void CityParser::parseContent(const std::string& str)
 {
     bool startCityFound = false;
     std::string line;
-    while(std::getline(stream, line))
+    std::stringstream ss(str);
+    while(std::getline(ss, line))
     {
         if (line.size() == 0)
         {
@@ -128,7 +106,7 @@ void CityReader::parseContent(std::istream& stream)
     }
 }
 
-void CityReader::createCities()
+void CityParser::createCities()
 {
     for (const parsedCity& parsedCity : m_parsedCities)
     {

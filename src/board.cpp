@@ -7,6 +7,8 @@
 #include <assert.h>
 #include <ctime>
 
+#include "utils.h"
+
 namespace Pandemic {
 
 
@@ -43,20 +45,18 @@ void Board::initCures()
 
 void Board::initCities(const std::string& filepath)
 {
-    CityReader reader(filepath);
+    CityParser reader(readFile(filepath));
     m_startingCity = reader.getStartCity();
     m_cities = reader.getCities();
-
-    for (auto& city : m_cities)
-    {
-        createCityCard(city);
-    }
 }
 
-void Board::createCityCard(std::shared_ptr<City>& city)
+void Board::createCityCards()
 {
-    m_playerDeck.push_back(std::make_shared<PlayerCityCard>(city));
-    m_infectionDeck.push_back(std::make_shared<InfectionCard>(city));
+    for (auto& city : m_cities)
+    {
+        m_playerDeck.push_back(std::make_shared<PlayerCityCard>(city));
+        m_infectionDeck.push_back(std::make_shared<InfectionCard>(city));
+    }
 }
 
 void Board::setStartCity(std::shared_ptr<City>& city)

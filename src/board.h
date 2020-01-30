@@ -25,7 +25,7 @@ public:
 
     void initCures();
     void initCities(const std::string& filepath);
-    void createCityCard(std::shared_ptr<City>& city);
+    void createCityCards();
     void setStartCity(std::shared_ptr<City>& city);
     void initInfections();
     void insertEventCards();

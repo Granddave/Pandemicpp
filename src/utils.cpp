@@ -1,7 +1,10 @@
 #include "utils.h"
 
-#include <sstream>
 #include <algorithm>
+#include <assert.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 std::vector<std::string> split(const std::string& strToSplit, char delimeter)
 {
@@ -27,4 +30,18 @@ std::string titleCase(std::string str, char delimiter)
     });
 
     return str;
+}
+
+std::string readFile(const std::string& filepath)
+{
+    std::ifstream file(filepath);
+    if (!file.is_open() || !file.good())
+    {
+        std::cerr << "Failed to open file: " << filepath << std::endl;
+        assert(0);
+        return std::string();
+    }
+    std::stringstream ss;
+    ss << file.rdbuf();
+    return ss.str();
 }
