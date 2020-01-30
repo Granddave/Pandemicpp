@@ -11,7 +11,6 @@ namespace Pandemic
 TEST_CASE("Infection Rate")
 {
     Board board;
-
     REQUIRE(board.getInfectionRate() == c_infectionRates[0]);
 
     // Increase more than allowed
@@ -25,21 +24,21 @@ TEST_CASE("Infection Rate")
         board.increaseInfectionRate();
     }
 
-    // Rate is maxed out
+    // Infection rate is maxed out
     const int highestRate = c_infectionRates[c_infectionRateSize-1];
     REQUIRE(board.getInfectionRate() == highestRate);
 }
 
 TEST_CASE("Adding and curing a disease")
 {
-    auto disease = DiseaseType::Blue;
+    const auto disease = DiseaseType::Blue;
     City city("atlanta", disease);
 
-    // Add diseases
+    // Add more diseases than a city can hold
     for (int i = 1; i <= c_maxCubesInCity+1; ++i)
     {
         CAPTURE(i);
-        bool triggeredOutbreak = city.addDisease(disease);
+        const bool triggeredOutbreak = city.addDisease(disease);
         if (i <= c_maxCubesInCity)
         {
             REQUIRE(getNumDiseaseCubes(city.getDiseaseCubes()) == i);
