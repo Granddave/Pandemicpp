@@ -4,6 +4,8 @@
 #include <assert.h>
 #include <algorithm>
 
+#include "utils.h"
+
 namespace Pandemic {
 
 Game::Game(const Config& config)
@@ -25,7 +27,7 @@ Game::Game(const Config& config)
 void Game::init()
 {
     m_board.initCures();
-    m_board.initCities(m_config.citiesFile);
+    m_board.initCities(readFile(m_config.citiesFile));
     m_board.createCityCards();
     m_board.initInfections();
     m_board.insertEventCards();

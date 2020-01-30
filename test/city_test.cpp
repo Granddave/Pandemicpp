@@ -3,6 +3,7 @@
 #include "board.h"
 #include "city.h"
 #include "disease.h"
+#include "utils.h"
 
 const std::string c_exampleCities = R"(0 A B D
                                        *0 B A D
@@ -81,7 +82,7 @@ TEST_CASE("Outbreaks")
 {
     Pandemic::Board board;
     board.initCures();
-    board.initCities("cities_data.txt");
+    board.initCities(readFile("cities_data.txt"));
 
     for (int i = 0; i < Pandemic::c_maxCubesInCity; ++i) {
         board.addDisease(board.getCity("Madrid"));

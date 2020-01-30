@@ -43,9 +43,9 @@ void Board::initCures()
     m_cures.emplace_back(DiseaseType::Black);
 }
 
-void Board::initCities(const std::string& filepath)
+void Board::initCities(const std::string& str)
 {
-    CityParser reader(readFile(filepath));
+    CityParser reader(str);
     m_startingCity = reader.getStartCity();
     m_cities = reader.getCities();
 }

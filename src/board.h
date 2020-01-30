@@ -24,7 +24,7 @@ public:
     void reset();
 
     void initCures();
-    void initCities(const std::string& filepath);
+    void initCities(const std::string& str);
     void createCityCards();
     void setStartCity(std::shared_ptr<City>& city);
     void initInfections();
