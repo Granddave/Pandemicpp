@@ -25,6 +25,7 @@ public:
     std::vector<std::shared_ptr<City>> getNeighbours() const { return m_neighbours; }
     DiseaseType getDiseaseType() const { return m_diseaseType; }
     std::map<DiseaseCube, int> getDiseaseCubes() const { return m_diseaseCubes; }
+    int getNumDiseaseCubes(DiseaseType type) const { return m_diseaseCubes.at(type); }
 
 private:
     std::string m_name;
