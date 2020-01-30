@@ -153,6 +153,35 @@ std::shared_ptr<City> Board::getCity(const std::string& cityName)
     return *city;
 }
 
+std::shared_ptr<InfectionCard> Board::infect()
+{
+    assert(m_infectionDeck.size() > 0);
+    auto card = m_infectionDeck.front();
+    m_infectionDeck.pop_front();
+
+    addDisease(card->city);
+
+    m_infectionDiscardPile.push_front(card);
+    return card;
+}
+
+int Board::getInfectionRate() const
+{
+    if (m_infectionRateIndex < c_infectionRateSize)
+    {
+        return c_infectionRates[m_infectionRateIndex];
+    }
+    return c_infectionRates[c_infectionRateSize-1];
+}
+
+void Board::increaseInfectionRate()
+{
+    if (m_infectionRateIndex++ == c_infectionRateSize)
+    {
+        m_infectionRateIndex = c_infectionRateSize-1;
+    }
+}
+
 void Board::addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType disease)
 {
     if (std::find(m_outbreakCities.begin(), m_outbreakCities.end(), city)

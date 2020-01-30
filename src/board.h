@@ -36,6 +36,11 @@ public:
     std::shared_ptr<City>& getStartCity() { return m_startingCity; }
     std::vector<std::shared_ptr<City>>& getCities() { return m_cities; }
 
+    std::shared_ptr<InfectionCard> infect();
+
+    int getInfectionRate() const;
+    void increaseInfectionRate();
+
     void addDisease(std::shared_ptr<City> city);
 
     int getNumOutbreaks() const { return m_numOutbreaks; }
