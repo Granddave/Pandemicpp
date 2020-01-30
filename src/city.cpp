@@ -73,12 +73,13 @@ void CityParser::parseContent(const std::string& str)
     std::stringstream ss(str);
     while(std::getline(ss, line))
     {
+        line = trim(line);
         if (line.size() == 0)
         {
             break;
         }
-        parsedCity city;
 
+        parsedCity city;
         if (line.at(0) == '*')
         {
             assert(!startCityFound); // Only one city may be the starting city
@@ -89,6 +90,7 @@ void CityParser::parseContent(const std::string& str)
         }
 
         std::vector<std::string> splittedLine = split(line, ' ');
+        assert(splittedLine.size() > 2);
         city.diseaseType = std::stoi(splittedLine.at(0));
         city.name = titleCase(splittedLine.at(1));
 
