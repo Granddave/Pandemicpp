@@ -51,7 +51,7 @@ bool City::addDisease(const DiseaseType type)
 
 void City::cureDisease(const DiseaseType type)
 {
-    if (m_diseaseCubes.count(type) > 0)
+    if (m_diseaseCubes.count(type) > 0 && m_diseaseCubes.at(type) > 0)
     {
         m_diseaseCubes.at(type)--;
     }
