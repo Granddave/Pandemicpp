@@ -6,6 +6,8 @@
 
 namespace Pandemic {
 
+const int c_numActionsPerTurn = 4;
+const int c_numPlayerCardsToDraw = 2;
 
 struct Config
 {
@@ -22,6 +24,8 @@ public:
 
     void init();
     void reset();
+    void run();
+    void doTurn();
 
     void printStatus();
 
@@ -30,8 +34,9 @@ private:
     int numEpidemicCards(Difficulty difficulty) const;
 
     bool m_gameOver = false;
-    Board m_board;
+    bool m_gameWon = false;
     Config m_config;
+    Board m_board;
     std::vector<std::shared_ptr<Player>> m_players;
     int m_currentPlayer = 0;
 };

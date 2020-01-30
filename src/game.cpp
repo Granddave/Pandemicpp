@@ -20,7 +20,7 @@ Game::Game(const Config& config)
     srand(seed);
 
     init();
-    printStatus();
+    run();
     reset();
 }
 
@@ -38,10 +38,44 @@ void Game::init()
 
 void Game::reset()
 {
+    m_gameOver = false;
+    m_gameWon = false;
     m_board.reset();
     m_players.clear();
     m_currentPlayer = 0;
-    m_gameOver = false;
+}
+
+void Game::run()
+{
+    while (!m_gameOver && !m_gameWon)
+    {
+        // Check if game over or win
+
+        doTurn();
+        m_currentPlayer++;
+    }
+}
+
+void Game::doTurn()
+{
+    // Four actions
+    for (int i = 0; i < c_numActionsPerTurn; ++i)
+    {
+
+    }
+
+    // Draw two player cards
+    for (int i = 0; i < c_numPlayerCardsToDraw; ++i)
+    {
+        auto card = m_board.drawPlayerCard();
+
+    }
+
+    // Infect cities
+    for (int i = 0; i < m_board.getInfectionRate(); ++i)
+    {
+        m_board.infect();
+    }
 }
 
 void Game::printStatus()

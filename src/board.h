@@ -37,13 +37,13 @@ public:
     std::vector<std::shared_ptr<City>>& getCities() { return m_cities; }
 
     std::shared_ptr<InfectionCard> infect();
+    std::shared_ptr<PlayerCard> drawPlayerCard();
 
     int getInfectionRate() const;
     void increaseInfectionRate();
+    int getNumOutbreaks() const { return m_numOutbreaks; }
 
     void addDisease(std::shared_ptr<City> city);
-
-    int getNumOutbreaks() const { return m_numOutbreaks; }
 
 private:
     void addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType disease);

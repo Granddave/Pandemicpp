@@ -165,6 +165,14 @@ std::shared_ptr<InfectionCard> Board::infect()
     return card;
 }
 
+std::shared_ptr<PlayerCard> Board::drawPlayerCard()
+{
+    assert(m_playerDeck.size() > 0);
+    auto card = m_playerDeck.front();
+    m_playerDeck.pop_front();
+    return card;
+}
+
 int Board::getInfectionRate() const
 {
     if (m_infectionRateIndex < c_infectionRateSize)
