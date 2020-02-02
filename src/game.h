@@ -32,6 +32,7 @@ public:
 private:
     void initPlayers(const int numPlayers);
     int numEpidemicCards(Difficulty difficulty) const;
+    bool gameOver();
 
     bool m_gameOver = false;
     bool m_gameWon = false;

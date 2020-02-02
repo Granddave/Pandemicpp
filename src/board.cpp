@@ -8,6 +8,7 @@
 #include <ctime>
 
 #include "utils.h"
+#include "logging.h"
 
 namespace Pandemic {
 
@@ -27,12 +28,6 @@ void Board::reset()
     m_cures.clear();
     m_numOutbreaks = 0;
     m_infectionRateIndex = 0;
-}
-
-void Board::addDisease(std::shared_ptr<City> city)
-{
-    addDisease(city, false, city->getDiseaseType());
-    m_outbreakCities.clear();
 }
 
 void Board::initCures()
@@ -81,7 +76,7 @@ void Board::initInfections()
             LOG_DEBUG(card->city->getName());
             for (int i = 0; i < numCubes; i++)
             {
-                card->city->addDisease(card->city->getDiseaseType());
+                addDisease(card->city);
             }
             m_infectionDiscardPile.push_front(card);
         }
@@ -182,12 +177,62 @@ int Board::getInfectionRate() const
     return c_infectionRates[c_infectionRateSize-1];
 }
 
+int Board::getNumDiscoveredCures() const
+{
+    int discoveredCures = 0;
+    for (const auto& cure : m_cures)
+    {
+        discoveredCures += cure.discovered ? 1 : 0;
+    }
+    return discoveredCures;
+}
+
 void Board::increaseInfectionRate()
 {
     if (m_infectionRateIndex++ == c_infectionRateSize)
     {
         m_infectionRateIndex = c_infectionRateSize-1;
     }
+}
+
+void Board::epidemicInfection()
+{
+    /* 1. Draw bottom card
+     * 2. Infect city with three cubes
+     * 3. Add to discard pile
+     */
+
+    auto backCard = m_infectionDeck.back();
+    m_infectionDeck.pop_back();
+
+    for (int i = 0; i < 3; ++i)
+    {
+        addDisease(backCard->city, false, backCard->city->getDiseaseType());
+    }
+    m_outbreakCities.clear();
+
+    m_infectionDiscardPile.push_front(backCard);
+}
+
+void Board::intensify()
+{
+    /* Todo:
+     *
+     * 1. Shuffle infection discard pile
+     * 2. Place infection discard pile on top of the infection deck
+     */
+
+    std::random_shuffle(m_infectionDiscardPile.begin(), m_infectionDiscardPile.end());
+    m_infectionDeck.insert(m_infectionDeck.end(),
+                           m_infectionDiscardPile.begin(),
+                           m_infectionDiscardPile.end());
+    m_infectionDiscardPile.clear();
+}
+
+void Board::addDisease(std::shared_ptr<City> city)
+{
+    addDisease(city, false, city->getDiseaseType());
+    m_outbreakCities.clear();
 }
 
 void Board::addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType disease)

@@ -38,11 +38,14 @@ public:
 
     std::shared_ptr<InfectionCard> infect();
     std::shared_ptr<PlayerCard> drawPlayerCard();
+    size_t getNumPlayerCards() const { return m_playerDeck.size(); }
 
     int getInfectionRate() const;
-    void increaseInfectionRate();
     int getNumOutbreaks() const { return m_numOutbreaks; }
-
+    int getNumDiscoveredCures() const;
+    void increaseInfectionRate();
+    void epidemicInfection();
+    void intensify();
     void addDisease(std::shared_ptr<City> city);
 
 private:

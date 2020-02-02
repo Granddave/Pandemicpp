@@ -3,6 +3,7 @@
 #include <iostream>
 #include <assert.h>
 #include <algorithm>
+#include <memory>
 
 #include "utils.h"
 #include "logging.h"
@@ -28,6 +29,7 @@ Game::Game(const Config& config)
 
 void Game::init()
 {
+    LOG_INFO("=== Initialization started");
     m_board.initCures();
     m_board.initCities(readFile(m_config.citiesFile));
     m_board.createCityCards();
@@ -36,6 +38,7 @@ void Game::init()
     initPlayers(m_config.numPlayers);
     m_board.distributePlayerCards(m_players);
     m_board.insertEpidemicCards(numEpidemicCards(m_config.difficulty));
+    LOG_INFO("=== Initialization complete");
 }
 
 void Game::reset()
@@ -51,25 +54,62 @@ void Game::run()
 {
     while (!m_gameOver && !m_gameWon)
     {
-        // Check if game over or win
+        if (gameOver())
+        {
+            m_gameOver = true;
+            LOG_INFO("Game Over!");
+            break;
+        }
+        else if (m_board.getNumDiscoveredCures() == c_numDiseases)
+        {
+            m_gameWon = true;
+            LOG_INFO("All cures are researched - You won the game!");
+            break;
+        }
+
+        LOG_INFO("Player {}'s turn", m_currentPlayer+1);
 
         doTurn();
-        m_currentPlayer++;
+        m_currentPlayer = (m_currentPlayer+1) % m_config.numPlayers;
     }
 }
 
 void Game::doTurn()
 {
-    // Four actions
+    auto currentPlayer = m_players.at(static_cast<size_t>(m_currentPlayer));
     for (int i = 0; i < c_numActionsPerTurn; ++i)
     {
-
+        // Todo: Let player choose action
     }
 
     // Draw two player cards
     for (int i = 0; i < c_numPlayerCardsToDraw; ++i)
     {
         auto card = m_board.drawPlayerCard();
+        if (!card)
+        {
+            // No cards left, game over
+            return;
+        }
+
+        auto& playersCards = currentPlayer->getCards();
+        if (std::dynamic_pointer_cast<EpidemicCard>(card))
+        {
+            m_board.increaseInfectionRate();
+            m_board.epidemicInfection();
+            m_board.intensify();
+        }
+        else
+        {
+            playersCards.push_back(card);
+        }
+
+        while (playersCards.size() > c_handLimit)
+        {
+            // Todo: Let player choose card to discard
+
+            playersCards.pop_back(); // Will do for now...
+        }
     }
 
     // Infect cities
@@ -152,6 +192,27 @@ int Game::numEpidemicCards(Difficulty difficulty) const
         case Difficulty::Hard:   return 6;
     }
     return 4;
+}
+
+bool Game::gameOver()
+{
+    if (m_board.getNumOutbreaks() > c_maxOutbreaks)
+    {
+        LOG_INFO("Reached the maximum number of outbreaks!");
+        return true;
+    }
+    else if (m_board.getNumPlayerCards() == 0)
+    {
+        LOG_INFO("No more player cards left!");
+        return true;
+    }
+    else if (false/*m_board.getNumPlacedDiseases() > c_maxPlacedDiseaseCubes*/)
+    {
+        LOG_INFO("No more disease cubes left!");
+        return true;
+    }
+
+    return false;
 }
 
 }
