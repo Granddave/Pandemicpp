@@ -70,7 +70,6 @@ void Game::doTurn()
     for (int i = 0; i < c_numPlayerCardsToDraw; ++i)
     {
         auto card = m_board.drawPlayerCard();
-
     }
 
     // Infect cities
@@ -82,30 +81,28 @@ void Game::doTurn()
 
 void Game::printStatus()
 {
-    std::cout << "\n--- Game status\n"
-              << "- Players:\n";
+    LOG_INFO("--- Game status");
+    LOG_INFO("Players:");
     for (const auto& player : m_players)
     {
-        std::cout << roleToString(player->getRole()) << " is in "
-                  << player->getCurrentCity()->getName()
-                  << " and has " <<'\n';
-
+        LOG_INFO("{} is in {} and has {}",
+                 roleToString(player->getRole()),
+                 player->getCurrentCity()->getName());
         for (const auto& card : player->getCards())
         {
-            std::cout << " * " << card->getName() << '\n';
+            LOG_INFO(" * {}", card->getName());
         }
     }
 
-    std::cout << "\n- Diseases:\n";
+    LOG_INFO("- Diseases:");
     for (const auto& city : m_board.getCities())
     {
         const int numCubes = getNumDiseaseCubes(city->getDiseaseCubes());
         if (numCubes > 0)
         {
-            std::cout << ' ' << city->getName() << " - " << numCubes << '\n';
+            LOG_INFO("{} - {}", city->getName(), numCubes);
         }
     }
-    std::cout << std::endl;
 }
 
 void Game::initPlayers(const int numPlayers)

@@ -67,18 +67,18 @@ void Board::setStartCity(std::shared_ptr<City>& city)
 
 void Board::initInfections()
 {
-    std::cout << "--- Initializing infections\n";
+    LOG_INFO("--- Initializing infections");
     assert(m_infectionDeck.size() > 3*3);
     std::random_shuffle(m_infectionDeck.begin(), m_infectionDeck.end());
     for (int numCubes = 3; numCubes != 0; numCubes--)
     {
-        std::cout << numCubes << " cubes:\n";
+        LOG_DEBUG("{} cubes:", numCubes);
         for (int cityIx = 0; cityIx < 3; cityIx++)
         {
             std::shared_ptr<InfectionCard> card = m_infectionDeck.front();
             m_infectionDeck.pop_front();
             assert(card);
-            std::cout << " " << card->city->getName() << "\n";
+            LOG_DEBUG(card->city->getName());
             for (int i = 0; i < numCubes; i++)
             {
                 card->city->addDisease(card->city->getDiseaseType());
@@ -102,7 +102,7 @@ void Board::distributePlayerCards(std::vector<std::shared_ptr<Player>>& players)
     assert(players.size() >= c_minPlayers);
     assert(players.size() <= c_maxPlayers);
 
-    std::cout << "\n--- Distribute player cards\n";
+    LOG_INFO("--- Distribute player cards");
     std::random_shuffle(m_playerDeck.begin(), m_playerDeck.end());
     for (const std::shared_ptr<Player>& p : players)
     {
@@ -110,11 +110,11 @@ void Board::distributePlayerCards(std::vector<std::shared_ptr<Player>>& players)
          *  2 players: 4 each
          *  3 players: 3 each
          *  4 players: 2 each */
-        std::cout << roleToString(p->getRole()) << " gets \n";
+        LOG_DEBUG("{} gets ", roleToString(p->getRole()));
         for (size_t i = 0; i < 6 - players.size(); i++)
         {
             std::shared_ptr<PlayerCard> card = m_playerDeck.front();
-            std::cout << " - " << card->getName() << "\n";
+            LOG_DEBUG(" - {}", card->getName());
             m_playerDeck.pop_front();
             p->addCard(card);
         }
@@ -195,7 +195,7 @@ void Board::addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType di
     if (std::find(m_outbreakCities.begin(), m_outbreakCities.end(), city)
         != m_outbreakCities.end())
     {
-        std::cout << city->getName() << " already had an outbreak" << std::endl;
+        LOG_DEBUG("{} already had an outbreak", city->getName());
         return;
     }
 
@@ -204,12 +204,11 @@ void Board::addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType di
         disease = city->getDiseaseType();
     }
 
-    std::cout << "Adding " << diseaseToString(disease) << " disease to "
-              << city->getName() << std::endl;
+    LOG_INFO("Adding {} disease to {}", diseaseToString(disease), city->getName());
     const bool triggeredOutbreak = city->addDisease(disease);
     if (triggeredOutbreak)
     {
-        std::cout << "Outbreak in " << city->getName() << '!' << std::endl;
+        LOG_INFO("Outbreak in {}!", city->getName());
         m_numOutbreaks++;
         m_outbreakCities.push_back(city);
         for (auto& neighbour : city->getNeighbours())

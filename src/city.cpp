@@ -6,6 +6,7 @@
 #include <assert.h>
 
 #include "utils.h"
+#include "logging.h"
 
 namespace Pandemic {
 
@@ -143,7 +144,7 @@ void CityParser::createCities()
             }
         }
     }
-    std::cout << "Found " << m_cities.size() << " cities" << std::endl;
+    LOG_DEBUG("Found {} cities", m_cities.size());
 }
 
 }
