@@ -12,7 +12,6 @@
 
 namespace Pandemic {
 
-
 Board::Board()
 {
 }
@@ -200,11 +199,6 @@ void Board::increaseInfectionRate()
 
 void Board::epidemicInfection()
 {
-    /* 1. Draw bottom card
-     * 2. Infect city with three cubes
-     * 3. Add to discard pile
-     */
-
     auto backCard = m_infectionDeck.back();
     m_infectionDeck.pop_back();
 
@@ -219,13 +213,8 @@ void Board::epidemicInfection()
 
 void Board::intensify()
 {
-    /* Todo:
-     *
-     * 1. Shuffle infection discard pile
-     * 2. Place infection discard pile on top of the infection deck
-     */
-
     std::random_shuffle(m_infectionDiscardPile.begin(), m_infectionDiscardPile.end());
+
     m_infectionDeck.insert(m_infectionDeck.end(),
                            m_infectionDiscardPile.begin(),
                            m_infectionDiscardPile.end());

@@ -220,6 +220,7 @@ bool Game::gameOver()
     }
     else if (false/*m_board.getNumPlacedDiseases() > c_maxPlacedDiseaseCubes*/)
     {
+        // Todo: Add logic
         LOG_INFO("No more disease cubes left!");
         return true;
     }

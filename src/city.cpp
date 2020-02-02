@@ -83,7 +83,11 @@ void CityParser::parseContent(const std::string& str)
         parsedCity city;
         if (line.at(0) == '*')
         {
-            assert(!startCityFound); // Only one city may be the starting city
+            if (startCityFound)
+            {
+                LOG_CRIT("Only one city may be the starting city");
+                assert(!startCityFound);
+            }
             startCityFound = true;
 
             city.startCity = true;
@@ -104,7 +108,7 @@ void CityParser::parseContent(const std::string& str)
     }
     if (!startCityFound)
     {
-        std::cerr << "No start city found!" << std::endl;
+        LOG_CRIT("No start city found!");
         assert(startCityFound);
     }
 }
@@ -134,9 +138,9 @@ void CityParser::createCities()
             });
             if (*city == nullptr)
             {
-                std::cerr << "Failed to find neighbour "
-                          << m_parsedCities[i].neighbours[j]
-                          << " for " << m_parsedCities[i].name << std::endl;
+                LOG_ERROR("Failed to find neighbour {} for {}",
+                          m_parsedCities[i].neighbours[j],
+                          m_parsedCities[i].name);
             }
             else
             {
