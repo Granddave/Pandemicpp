@@ -14,5 +14,6 @@ else()
 endif()
 
 add_subdirectory(external/Catch2)
+add_subdirectory(external/spdlog)
 add_subdirectory(src)
 add_subdirectory(test)

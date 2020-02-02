@@ -18,6 +18,8 @@ add_library(pandemic-lib STATIC
     utils.cpp
     utils.h)
 target_include_directories(pandemic-lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(pandemic-lib PUBLIC
+    spdlog::spdlog)
 
 # Application
 add_executable(pandemic main.cpp)

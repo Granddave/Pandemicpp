@@ -7,7 +7,9 @@ add_executable(pandemic-test
     main_test.cpp)
 target_link_libraries(pandemic-test PRIVATE
     pandemic-lib
-    Catch2::Catch2)
+    Catch2::Catch2
+    spdlog::spdlog)
+target_compile_definitions(pandemic-test PRIVATE LOG_OFF)
 
 configure_file(
     ${CMAKE_SOURCE_DIR}/res/cities_data.txt

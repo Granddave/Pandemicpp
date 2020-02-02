@@ -5,18 +5,20 @@
 #include <algorithm>
 
 #include "utils.h"
+#include "logging.h"
 
 namespace Pandemic {
 
 Game::Game(const Config& config)
     : m_config(config)
 {
+    setupLog(loglevelFromString("info"));
     unsigned int seed = m_config.seed;
     if (m_config.seed == 0)
     {
         seed = static_cast<unsigned int>(time(nullptr));
     }
-    std::cout << "seed: " << seed << "\n";
+    LOG_INFO("Seed: {}", seed);
     srand(seed);
 
     init();
