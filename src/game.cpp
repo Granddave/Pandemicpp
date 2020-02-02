@@ -52,22 +52,14 @@ void Game::reset()
 
 void Game::run()
 {
-    while (!m_gameOver && !m_gameWon)
+    while (continueGame())
     {
-        if (gameOver())
+        LOG_INFO("--- Player {}'s turn - ", m_currentPlayer+1);
+        if (m_currentPlayer == 0)
         {
-            m_gameOver = true;
-            LOG_INFO("Game Over!");
-            break;
+            m_round++;
+            LOG_INFO("Round nr {}", m_round);
         }
-        else if (m_board.getNumDiscoveredCures() == c_numDiseases)
-        {
-            m_gameWon = true;
-            LOG_INFO("All cures are researched - You won the game!");
-            break;
-        }
-
-        LOG_INFO("Player {}'s turn", m_currentPlayer+1);
 
         doTurn();
         m_currentPlayer = (m_currentPlayer+1) % m_config.numPlayers;
@@ -91,6 +83,8 @@ void Game::doTurn()
             // No cards left, game over
             return;
         }
+
+        LOG_INFO("Picked up {}", card->getName());
 
         auto& playersCards = currentPlayer->getCards();
         if (std::dynamic_pointer_cast<EpidemicCard>(card))
@@ -194,6 +188,24 @@ int Game::numEpidemicCards(Difficulty difficulty) const
     return 4;
 }
 
+bool Game::continueGame()
+{
+    if (gameOver())
+    {
+        m_gameOver = true;
+        LOG_INFO("Game Over!");
+        return false;
+    }
+    else if (m_board.getNumDiscoveredCures() == c_numDiseases)
+    {
+        m_gameWon = true;
+        LOG_INFO("All cures are researched - You won the game!");
+        return false;
+    }
+
+    return true;
+}
+
 bool Game::gameOver()
 {
     if (m_board.getNumOutbreaks() > c_maxOutbreaks)
@@ -201,7 +213,7 @@ bool Game::gameOver()
         LOG_INFO("Reached the maximum number of outbreaks!");
         return true;
     }
-    else if (m_board.getNumPlayerCards() == 0)
+    else if (m_board.getNumPlayerCards() == 0) //BUGG
     {
         LOG_INFO("No more player cards left!");
         return true;

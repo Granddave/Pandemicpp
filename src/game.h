@@ -14,7 +14,7 @@ struct Config
     int numPlayers = 2;
     Difficulty difficulty = Difficulty::Easy;
     std::string citiesFile = "cities_data.txt";
-    unsigned int seed = 1;
+    unsigned int seed = 0;
 };
 
 class Game
@@ -32,6 +32,7 @@ public:
 private:
     void initPlayers(const int numPlayers);
     int numEpidemicCards(Difficulty difficulty) const;
+    bool continueGame();
     bool gameOver();
 
     bool m_gameOver = false;
@@ -40,6 +41,7 @@ private:
     Board m_board;
     std::vector<std::shared_ptr<Player>> m_players;
     int m_currentPlayer = 0;
+    int m_round = 0;
 };
 
 }
