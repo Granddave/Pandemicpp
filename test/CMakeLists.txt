@@ -1,17 +1,13 @@
 cmake_minimum_required(VERSION 3.13)
 
-set(SRC
+add_executable(pandemic-test
     city_test.cpp
+    commondata_test.h
     disease_test.cpp
     main_test.cpp)
-
-set(HDR
-    commondata_test.h)
-
-add_executable(pandemic-test ${SRC} ${HDR})
 target_link_libraries(pandemic-test PRIVATE
     pandemic-lib
-    catch)
+    Catch2::Catch2)
 
 configure_file(
     ${CMAKE_SOURCE_DIR}/res/cities_data.txt

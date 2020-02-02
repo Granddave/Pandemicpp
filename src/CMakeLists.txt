@@ -1,27 +1,28 @@
 cmake_minimum_required(VERSION 3.13)
 
-set(SRC
+# Lib
+add_library(pandemic-lib STATIC
     board.cpp
-    card.cpp
-    city.cpp
-    game.cpp
-    player.cpp
-    utils.cpp)
-
-set(HDR
     board.h
+    card.cpp
     card.h
+    city.cpp
     city.h
     disease.h
+    game.cpp
     game.h
+    logging.cpp
+    logging.h
+    player.cpp
     player.h
+    utils.cpp
     utils.h)
-
-add_library(pandemic-lib STATIC ${SRC} ${HDR})
 target_include_directories(pandemic-lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
+# Application
 add_executable(pandemic main.cpp)
-target_link_libraries(pandemic PRIVATE pandemic-lib)
+target_link_libraries(pandemic PRIVATE
+    pandemic-lib)
 
 configure_file(
     ${CMAKE_SOURCE_DIR}/res/cities_data.txt
