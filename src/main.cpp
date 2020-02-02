@@ -1,8 +1,7 @@
 #include <iostream>
 
 #include "game.h"
-
-#define UNUSED(x) (void)(x)
+#include "utils.h"
 
 int main(int argc, char *argv[])
 {
