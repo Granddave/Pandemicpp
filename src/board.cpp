@@ -162,10 +162,13 @@ std::shared_ptr<InfectionCard> Board::infect()
 
 std::shared_ptr<PlayerCard> Board::drawPlayerCard()
 {
-    assert(m_playerDeck.size() > 0);
-    auto card = m_playerDeck.front();
-    m_playerDeck.pop_front();
-    return card;
+    if (m_playerDeck.size() > 0)
+    {
+        auto card = m_playerDeck.front();
+        m_playerDeck.pop_front();
+        return card;
+    }
+    return nullptr;
 }
 
 int Board::getInfectionRate() const
