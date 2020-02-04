@@ -60,6 +60,7 @@ TEST_CASE("Adding and curing a disease")
     }
 
     // Cure a disease free city
+    REQUIRE(getNumDiseaseCubes(city.getDiseaseCubes()) == 0);
     city.cureDisease(disease);
     REQUIRE(getNumDiseaseCubes(city.getDiseaseCubes()) == 0);
 }

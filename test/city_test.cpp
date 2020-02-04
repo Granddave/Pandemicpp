@@ -12,9 +12,9 @@ namespace Pandemic
 
 TEST_CASE("City creation")
 {
-    City city("atlanta", DiseaseType::Blue);
+    City city("london", DiseaseType::Blue);
 
-    REQUIRE(city.getName() == "atlanta");
+    REQUIRE(city.getName() == "London");
     REQUIRE(city.getDiseaseType() == DiseaseType::Blue);
     REQUIRE(city.getHasResearchStation() == false);
     REQUIRE(getNumDiseaseCubes(city.getDiseaseCubes()) == 0);
@@ -22,10 +22,10 @@ TEST_CASE("City creation")
 
 TEST_CASE("Parse cities from string")
 {
-    CityParser parses(c_exampleCities);
+    CityParser parser(c_exampleCities);
 
-    auto cities = parses.getCities();
-    auto startCity = parses.getStartCity();
+    auto cities = parser.getCities();
+    auto startCity = parser.getStartCity();
     REQUIRE(cities.size() == 4);
     REQUIRE(startCity->getName() == "B");
     REQUIRE(startCity->getDiseaseType() == DiseaseType::Yellow);

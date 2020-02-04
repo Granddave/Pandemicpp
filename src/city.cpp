@@ -14,7 +14,7 @@ namespace Pandemic {
 // City
 
 City::City(const std::string& name, const DiseaseType diseaseType)
-    : m_name(name),
+    : m_name(titleCase(name)),
       m_diseaseType(diseaseType)
 {
     for (size_t t = 0; t < c_numDiseases; t++)
