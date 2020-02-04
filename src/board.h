@@ -12,9 +12,9 @@ namespace Pandemic {
 
 enum class Difficulty
 {
-    Easy,
-    Medium,
-    Hard
+    Introductory = 0,
+    Standard,
+    Heroic
 };
 
 class Board

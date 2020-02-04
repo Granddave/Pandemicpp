@@ -181,9 +181,9 @@ int Game::numEpidemicCards(Difficulty difficulty) const
 {
     switch (difficulty)
     {
-        case Difficulty::Easy:   return 4;
-        case Difficulty::Medium: return 5;
-        case Difficulty::Hard:   return 6;
+        case Difficulty::Introductory: return 4;
+        case Difficulty::Standard:     return 5;
+        case Difficulty::Heroic:       return 6;
     }
     return 4;
 }

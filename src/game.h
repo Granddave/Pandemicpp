@@ -12,7 +12,7 @@ const int c_numPlayerCardsToDraw = 2;
 struct Config
 {
     int numPlayers = 2;
-    Difficulty difficulty = Difficulty::Easy;
+    Difficulty difficulty = Difficulty::Introductory;
     std::string citiesFile = "cities_data.txt";
     unsigned int seed = 0;
 };
