@@ -71,6 +71,8 @@ void Game::doTurn()
     auto currentPlayer = m_players.at(static_cast<size_t>(m_currentPlayer));
     for (int i = 0; i < c_numActionsPerTurn; ++i)
     {
+        auto actions = getPossibleActions(currentPlayer);
+
         // Todo: Let player choose action
     }
 
@@ -101,7 +103,6 @@ void Game::doTurn()
         while (playersCards.size() > c_handLimit)
         {
             // Todo: Let player choose card to discard
-
             playersCards.pop_back(); // Will do for now...
         }
     }
@@ -186,6 +187,78 @@ int Game::numEpidemicCards(Difficulty difficulty) const
         case Difficulty::Heroic:       return 6;
     }
     return 4;
+}
+
+std::vector<Action> Game::getPossibleActions(const std::shared_ptr<Player>& player) const
+{
+    std::vector<Action> actions;
+
+    for (const auto& city : player->getCurrentCity()->getNeighbours())
+    {
+        UNUSED(city);
+        actions.push_back(Action::Drive);
+    }
+
+    std::vector<DiseaseType> cardTypes;
+    for (const auto& p : player->getCards())
+    {
+        const auto cityCard = std::dynamic_pointer_cast<PlayerCityCard>(p);
+        if (cityCard != nullptr)
+        {
+            actions.push_back(Action::DirectFly);
+
+            if (cityCard->city == player->getCurrentCity())
+            {
+                actions.push_back(Action::CharterFlight);
+
+                if (!player->getCurrentCity()->getHasResearchStation())
+                {
+                    actions.push_back(Action::BuildResearchStation);
+                }
+
+                // Todo: Share Knowledge - Give card to other player
+            }
+
+            cardTypes.push_back(cityCard->city->getDiseaseType());
+        }
+    }
+
+    if (!player->getCurrentCity()->getHasResearchStation() &&
+        player->getRole() == Role::OperationsExpert)
+    {
+        actions.push_back(Action::BuildResearchStation);
+    }
+
+    /* Todo: Share Knowledge -
+     *
+     * if (another player is here)
+     *     for players card
+     *         if (card == currentCity)
+     *             Share knowledge
+     */
+
+    if (player->getCurrentCity()->getHasResearchStation())
+    {
+        if (/* DISABLES CODE */ false/*numResearchStations > 1*/)
+        {
+            actions.push_back(Action::ShuttleFlight);
+        }
+
+        for (int i = 0; i < c_numDiseases; ++i)
+        {
+            auto type = static_cast<DiseaseType>(i);
+            auto cardCount = std::count(cardTypes.begin(), cardTypes.end(), type);
+            auto requiredCardCount = player->getRole() == Role::Scientist
+                                     ? c_numCardsToCure-1
+                                     : c_numCardsToCure;
+            if (cardCount >= requiredCardCount)
+            {
+                actions.push_back(Action::TreatDisease);
+            }
+        }
+    }
+
+    return actions;
 }
 
 bool Game::continueGame()
