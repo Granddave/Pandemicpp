@@ -24,8 +24,9 @@ public:
     bool getHasResearchStation() const { return m_hasResearchStation; }
     std::vector<std::shared_ptr<City>> getNeighbours() const { return m_neighbours; }
     DiseaseType getDiseaseType() const { return m_diseaseType; }
-    std::map<DiseaseCube, int> getDiseaseCubes() const { return m_diseaseCubes; }
-    int getNumDiseaseCubes(DiseaseType type) const { return m_diseaseCubes.at(type); }
+    std::vector<DiseaseType> getDiseaseCubes() const { return m_diseaseCubes; }
+    int getNumDiseaseCubes() const;
+    int getNumDiseaseCubes(const DiseaseType type) const;
 
 private:
     std::string m_name;
@@ -33,7 +34,7 @@ private:
     //point2i m_coordinates;
     std::vector<std::shared_ptr<City>> m_neighbours;
     DiseaseType m_diseaseType;
-    std::map<DiseaseCube, int> m_diseaseCubes;
+    std::vector<DiseaseType> m_diseaseCubes;
 };
 
 class CityParser

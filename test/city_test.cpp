@@ -17,7 +17,7 @@ TEST_CASE("City creation")
     REQUIRE(city.getName() == "London");
     REQUIRE(city.getDiseaseType() == DiseaseType::Blue);
     REQUIRE(city.getHasResearchStation() == false);
-    REQUIRE(getNumDiseaseCubes(city.getDiseaseCubes()) == 0);
+    REQUIRE(city.getNumDiseaseCubes() == 0);
 }
 
 TEST_CASE("Parse cities from string")

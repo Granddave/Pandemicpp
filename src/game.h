@@ -35,13 +35,14 @@ private:
     std::vector<Action/*Todo*/>getPossibleActions(const std::shared_ptr<Player>& player) const;
     bool continueGame();
     bool gameOver();
+    bool diseaseCubeCountMaxed();
 
     bool m_gameOver = false;
     bool m_gameWon = false;
     Config m_config;
     Board m_board;
     std::vector<std::shared_ptr<Player>> m_players;
-    int m_currentPlayer = 0;
+    int m_currentPlayerIx = 0;
     int m_round = 0;
 };
 

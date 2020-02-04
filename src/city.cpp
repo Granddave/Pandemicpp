@@ -17,10 +17,6 @@ City::City(const std::string& name, const DiseaseType diseaseType)
     : m_name(titleCase(name)),
       m_diseaseType(diseaseType)
 {
-    for (size_t t = 0; t < c_numDiseases; t++)
-    {
-        m_diseaseCubes.insert({ static_cast<DiseaseType>(t), 0 });
-    }
 }
 
 void City::addNeighbour(std::shared_ptr<City> other)
@@ -39,23 +35,29 @@ void City::addNeighbour(std::shared_ptr<City> other)
 
 bool City::addDisease(const DiseaseType type)
 {
-    const int num = m_diseaseCubes.at(type);
-    if (num == c_maxCubesInCity)
+    if (getNumDiseaseCubes(type) == c_maxCubesInCity)
     {
-        // Trigger outbreak
-        return true;
+        return true; // Trigger outbreak
     }
 
-    m_diseaseCubes.at(type)++;
+    m_diseaseCubes.push_back(type);
     return false;
 }
 
 void City::cureDisease(const DiseaseType type)
 {
-    if (m_diseaseCubes.count(type) > 0 && m_diseaseCubes.at(type) > 0)
-    {
-        m_diseaseCubes.at(type)--;
-    }
+    auto rmIt = std::remove(m_diseaseCubes.begin(), m_diseaseCubes.end(), type);
+    m_diseaseCubes.erase(rmIt, m_diseaseCubes.end());
+}
+
+int City::getNumDiseaseCubes() const
+{
+    return m_diseaseCubes.size();
+}
+
+int City::getNumDiseaseCubes(const DiseaseType type) const
+{
+    return std::count(m_diseaseCubes.begin(), m_diseaseCubes.end(), type);
 }
 
 // -----------------------------------------------------------------------------
@@ -127,24 +129,24 @@ void CityParser::createCities()
         m_cities.push_back(city);
     }
 
-    for (size_t i = 0; i < m_parsedCities.size(); i++)
+    for (size_t cityIx = 0; cityIx < m_parsedCities.size(); cityIx++)
     {
-        for (size_t j = 0; j < m_parsedCities[i].neighbours.size(); j++)
+        for (size_t neighIx = 0; neighIx < m_parsedCities[cityIx].neighbours.size(); neighIx++)
         {
             auto city = std::find_if(m_cities.begin(), m_cities.end(),
                                      [&](const std::shared_ptr<City>& c)
             {
-                return c->getName() == m_parsedCities[i].neighbours[j];
+                return c->getName() == m_parsedCities[cityIx].neighbours[neighIx];
             });
             if (*city == nullptr)
             {
                 LOG_ERROR("Failed to find neighbour {} for {}",
-                          m_parsedCities[i].neighbours[j],
-                          m_parsedCities[i].name);
+                          m_parsedCities[cityIx].neighbours[neighIx],
+                          m_parsedCities[cityIx].name);
             }
             else
             {
-                m_cities[i]->addNeighbour(*city);
+                m_cities[cityIx]->addNeighbour(*city);
             }
         }
     }

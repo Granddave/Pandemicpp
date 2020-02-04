@@ -46,6 +46,7 @@ public:
     void increaseInfectionRate();
     void epidemicInfection();
     void intensify();
+    int getNumDiseaseCubesOnMap(DiseaseType type) const;
     void addDisease(std::shared_ptr<City> city);
 
 private:

@@ -47,28 +47,28 @@ void Game::reset()
     m_gameWon = false;
     m_board.reset();
     m_players.clear();
-    m_currentPlayer = 0;
+    m_currentPlayerIx = 0;
 }
 
 void Game::run()
 {
     while (continueGame())
     {
-        LOG_INFO("--- Player {}'s turn - ", m_currentPlayer+1);
-        if (m_currentPlayer == 0)
+        LOG_INFO("--- Player {}'s turn - ", m_currentPlayerIx+1);
+        if (m_currentPlayerIx == 0)
         {
             m_round++;
             LOG_INFO("Round nr {}", m_round);
         }
 
         doTurn();
-        m_currentPlayer = (m_currentPlayer+1) % m_config.numPlayers;
+        m_currentPlayerIx = (m_currentPlayerIx+1) % m_config.numPlayers;
     }
 }
 
 void Game::doTurn()
 {
-    auto currentPlayer = m_players.at(static_cast<size_t>(m_currentPlayer));
+    auto currentPlayer = m_players.at(static_cast<size_t>(m_currentPlayerIx));
     for (int i = 0; i < c_numActionsPerTurn; ++i)
     {
         auto actions = getPossibleActions(currentPlayer);
@@ -79,17 +79,17 @@ void Game::doTurn()
     // Draw two player cards
     for (int i = 0; i < c_numPlayerCardsToDraw; ++i)
     {
-        auto card = m_board.drawPlayerCard();
-        if (!card)
+        auto drawnCard = m_board.drawPlayerCard();
+        if (!drawnCard)
         {
             // No cards left, game over
             return;
         }
 
-        LOG_INFO("Picked up {}", card->getName());
+        LOG_INFO("Picked up {}", drawnCard->getName());
 
         auto& playersCards = currentPlayer->getCards();
-        if (std::dynamic_pointer_cast<EpidemicCard>(card))
+        if (std::dynamic_pointer_cast<EpidemicCard>(drawnCard))
         {
             m_board.increaseInfectionRate();
             m_board.epidemicInfection();
@@ -97,13 +97,16 @@ void Game::doTurn()
         }
         else
         {
-            playersCards.push_back(card);
+            playersCards.push_back(drawnCard);
         }
 
         while (playersCards.size() > c_handLimit)
         {
             // Todo: Let player choose card to discard
-            playersCards.pop_back(); // Will do for now...
+            // Random card will do for now...
+            int index = std::rand() % playersCards.size();
+            auto droppedCard = playersCards.erase(playersCards.begin() + index);
+            LOG_INFO("Dropping {}", (*droppedCard)->getName());
         }
     }
 
@@ -132,7 +135,7 @@ void Game::printStatus()
     LOG_INFO("- Diseases:");
     for (const auto& city : m_board.getCities())
     {
-        const int numCubes = getNumDiseaseCubes(city->getDiseaseCubes());
+        const int numCubes = city->getNumDiseaseCubes();
         if (numCubes > 0)
         {
             LOG_INFO("{} - {}", city->getName(), numCubes);
@@ -291,13 +294,25 @@ bool Game::gameOver()
         LOG_INFO("No more player cards left!");
         return true;
     }
-    else if (false/*m_board.getNumPlacedDiseases() > c_maxPlacedDiseaseCubes*/)
+    else if (diseaseCubeCountMaxed())
     {
-        // Todo: Add logic
         LOG_INFO("No more disease cubes left!");
         return true;
     }
 
+    return false;
+}
+
+bool Game::diseaseCubeCountMaxed()
+{
+    for (int i = 0; i < c_numDiseases; ++i)
+    {
+        auto type = static_cast<DiseaseType>(i);
+        if (m_board.getNumDiseaseCubesOnMap(type) > c_maxPlacedDiseaseCubes)
+        {
+            return true;
+        }
+    }
     return false;
 }
 

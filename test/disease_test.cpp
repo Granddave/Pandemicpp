@@ -41,12 +41,12 @@ TEST_CASE("Adding and curing a disease")
         const bool triggeredOutbreak = city.addDisease(disease);
         if (i <= c_maxCubesInCity)
         {
-            REQUIRE(getNumDiseaseCubes(city.getDiseaseCubes()) == i);
+            REQUIRE(city.getNumDiseaseCubes() == i);
             REQUIRE(triggeredOutbreak == false);
         }
         else
         {
-            REQUIRE(getNumDiseaseCubes(city.getDiseaseCubes()) == c_maxCubesInCity);
+            REQUIRE(city.getNumDiseaseCubes() == c_maxCubesInCity);
             REQUIRE(triggeredOutbreak == true);
         }
     }
@@ -56,13 +56,13 @@ TEST_CASE("Adding and curing a disease")
     {
         CAPTURE(i);
         city.cureDisease(disease);
-        REQUIRE(getNumDiseaseCubes(city.getDiseaseCubes()) == i-1);
+        REQUIRE(city.getNumDiseaseCubes() == i-1);
     }
 
     // Cure a disease free city
-    REQUIRE(getNumDiseaseCubes(city.getDiseaseCubes()) == 0);
+    REQUIRE(city.getNumDiseaseCubes() == 0);
     city.cureDisease(disease);
-    REQUIRE(getNumDiseaseCubes(city.getDiseaseCubes()) == 0);
+    REQUIRE(city.getNumDiseaseCubes() == 0);
 }
 
 }

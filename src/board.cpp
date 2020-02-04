@@ -119,14 +119,14 @@ void Board::insertEpidemicCards(const int numEpidemicCards)
 {
     std::random_shuffle(m_playerDeck.begin(), m_playerDeck.end());
 
-    const int piles = numEpidemicCards;
+    const int numPiles = numEpidemicCards;
     const int deckSize = static_cast<int>(m_playerDeck.size());
-    const int subPileSize = deckSize / piles;
-    int remainder = deckSize % piles;
+    const int subPileSize = deckSize / numPiles;
+    int remainder = deckSize % numPiles;
     auto begin = m_playerDeck.begin();
     auto end = begin;
 
-    for (int subPileIx = 0; subPileIx < piles; subPileIx++)
+    for (int subPileIx = 0; subPileIx < numPiles; subPileIx++)
     {
         end += (remainder > 0) ? (subPileSize + !!(remainder--)) : subPileSize;
         end = m_playerDeck.insert(end, std::make_shared<EpidemicCard>());
@@ -153,6 +153,7 @@ std::shared_ptr<InfectionCard> Board::infect()
     auto card = m_infectionDeck.front();
     m_infectionDeck.pop_front();
 
+    LOG_INFO("Infecting {}", card->city->getName());
     addDisease(card->city);
 
     m_infectionDiscardPile.push_front(card);
@@ -202,9 +203,14 @@ void Board::epidemicInfection()
     auto backCard = m_infectionDeck.back();
     m_infectionDeck.pop_back();
 
-    for (int i = 0; i < 3; ++i)
+    auto city = backCard->city;
+    const int numCubesAlready = city->getNumDiseaseCubes(city->getDiseaseType());
+    const int numCubesToAdd = (numCubesAlready == 0) ? 3 : 4-numCubesAlready;
+
+    // Add 3 cubes, or enough cubes to trigger outbreak
+    for (int i = 0; i < numCubesToAdd; ++i)
     {
-        addDisease(backCard->city, false, backCard->city->getDiseaseType());
+        addDisease(city, false, city->getDiseaseType());
     }
     m_outbreakCities.clear();
 
@@ -221,8 +227,19 @@ void Board::intensify()
     m_infectionDiscardPile.clear();
 }
 
+int Board::getNumDiseaseCubesOnMap(DiseaseType type) const
+{
+    int count = 0;
+    for (const auto& city : m_cities)
+    {
+        count += city->getNumDiseaseCubes(type);
+    }
+    return count;
+}
+
 void Board::addDisease(std::shared_ptr<City> city)
 {
+    LOG_TRACE("NEW Disease in {}", city->getName());
     addDisease(city, false, city->getDiseaseType());
     m_outbreakCities.clear();
 }
@@ -241,8 +258,11 @@ void Board::addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType di
         disease = city->getDiseaseType();
     }
 
-    LOG_INFO("Adding {} disease to {}", diseaseToString(disease), city->getName());
     const bool triggeredOutbreak = city->addDisease(disease);
+    LOG_INFO("Added {} disease to {} ({})",
+             diseaseToString(disease),
+             city->getName(),
+             city->getNumDiseaseCubes(disease));
     if (triggeredOutbreak)
     {
         m_numOutbreaks++;

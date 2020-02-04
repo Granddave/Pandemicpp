@@ -35,16 +35,6 @@ inline std::string diseaseToString(const DiseaseType disease)
     return "Unknown disease";
 }
 
-inline int getNumDiseaseCubes(const std::map<DiseaseCube, int>& cubes)
-{
-    return std::accumulate(
-                std::begin(cubes), std::end(cubes), 0,
-                [] (int value, const std::map<Pandemic::DiseaseType, int>::value_type& p)
-    {
-        return value + p.second;
-    });
-}
-
 struct Cure
 {
     Cure(DiseaseType type)
