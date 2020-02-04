@@ -245,8 +245,8 @@ void Board::addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType di
     const bool triggeredOutbreak = city->addDisease(disease);
     if (triggeredOutbreak)
     {
-        LOG_INFO("Outbreak in {}!", city->getName());
         m_numOutbreaks++;
+        LOG_INFO("Outbreak no.{} in {}!", m_numOutbreaks, city->getName());
         m_outbreakCities.push_back(city);
         for (auto& neighbour : city->getNeighbours())
         {
