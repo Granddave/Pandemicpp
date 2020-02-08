@@ -71,7 +71,8 @@ void Game::doTurn()
     auto currentPlayer = m_players.at(static_cast<size_t>(m_currentPlayerIx));
     for (int i = 0; i < c_numActionsPerTurn; ++i)
     {
-        auto actions = getPossibleActions(currentPlayer);
+        LOG_TRACE("Action {}", i+1);
+        auto actions = possibleActions(currentPlayer);
 
         // Todo: Let player choose action
     }
@@ -86,9 +87,9 @@ void Game::doTurn()
             return;
         }
 
-        LOG_INFO("Picked up {}", drawnCard->getName());
+        LOG_INFO("Picked up {}", drawnCard->name());
 
-        auto& playersCards = currentPlayer->getCards();
+        auto& playersCards = currentPlayer->cards();
         if (std::dynamic_pointer_cast<EpidemicCard>(drawnCard))
         {
             m_board.increaseInfectionRate();
@@ -104,14 +105,14 @@ void Game::doTurn()
         {
             // Todo: Let player choose card to discard
             // Random card will do for now...
-            int index = std::rand() % playersCards.size();
+            int index = std::rand() % static_cast<int>(playersCards.size());
             auto droppedCard = playersCards.erase(playersCards.begin() + index);
-            LOG_INFO("Dropping {}", (*droppedCard)->getName());
+            LOG_INFO("Dropping {}", (*droppedCard)->name());
         }
     }
 
     // Infect cities
-    for (int i = 0; i < m_board.getInfectionRate(); ++i)
+    for (int i = 0; i < m_board.infectionRate(); ++i)
     {
         m_board.infect();
     }
@@ -124,21 +125,21 @@ void Game::printStatus()
     for (const auto& player : m_players)
     {
         LOG_INFO("{} is in {} and has {}",
-                 roleToString(player->getRole()),
-                 player->getCurrentCity()->getName());
-        for (const auto& card : player->getCards())
+                 roleToString(player->role()),
+                 player->currentCity()->name());
+        for (const auto& card : player->cards())
         {
-            LOG_INFO(" * {}", card->getName());
+            LOG_INFO(" * {}", card->name());
         }
     }
 
     LOG_INFO("- Diseases:");
-    for (const auto& city : m_board.getCities())
+    for (const auto& city : m_board.cities())
     {
-        const int numCubes = city->getNumDiseaseCubes();
+        const int numCubes = city->numDiseaseCubes();
         if (numCubes > 0)
         {
-            LOG_INFO("{} - {}", city->getName(), numCubes);
+            LOG_INFO("{} - {}", city->name(), numCubes);
         }
     }
 }
@@ -149,8 +150,8 @@ void Game::initPlayers(const int numPlayers)
     assert(numPlayers <= c_maxPlayers);
 
     // Find start city
-    auto cities = m_board.getCities();
-    auto startCity = m_board.getStartCity();
+    auto cities = m_board.cities();
+    auto startCity = m_board.startCity();
     assert(startCity);
 
     for (int playerIx = 0; playerIx < numPlayers; playerIx++)
@@ -165,7 +166,7 @@ void Game::initPlayers(const int numPlayers)
             auto roleCollision = std::find_if(m_players.begin(), m_players.end(),
                                               [&](const std::shared_ptr<Player>& p)
             {
-                return p->getRole() == role;
+                return p->role() == role;
             });
 
             if (roleCollision != m_players.end())
@@ -192,44 +193,44 @@ int Game::numEpidemicCards(Difficulty difficulty) const
     return 4;
 }
 
-std::vector<Action> Game::getPossibleActions(const std::shared_ptr<Player>& player) const
+std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player) const
 {
     std::vector<Action> actions;
 
-    for (const auto& city : player->getCurrentCity()->getNeighbours())
+    for (auto& city : player->currentCity()->neighbours())
     {
         UNUSED(city);
-        actions.push_back(Action::Drive);
+        actions.emplace_back(ActionType::Drive, city);
     }
 
     std::vector<DiseaseType> cardTypes;
-    for (const auto& p : player->getCards())
+    for (const auto& p : player->cards())
     {
-        const auto cityCard = std::dynamic_pointer_cast<PlayerCityCard>(p);
+        auto cityCard = std::dynamic_pointer_cast<PlayerCityCard>(p);
         if (cityCard != nullptr)
         {
-            actions.push_back(Action::DirectFly);
+            actions.emplace_back(ActionType::DirectFly, cityCard);
 
-            if (cityCard->city == player->getCurrentCity())
+            if (cityCard->city == player->currentCity())
             {
-                actions.push_back(Action::CharterFlight);
+                actions.emplace_back(ActionType::CharterFlight, cityCard);
 
-                if (!player->getCurrentCity()->getHasResearchStation())
+                if (!player->currentCity()->hasResearchStation())
                 {
-                    actions.push_back(Action::BuildResearchStation);
+                    actions.emplace_back(ActionType::BuildResearchStation);
                 }
 
                 // Todo: Share Knowledge - Give card to other player
             }
 
-            cardTypes.push_back(cityCard->city->getDiseaseType());
+            cardTypes.push_back(cityCard->city->diseaseType());
         }
     }
 
-    if (!player->getCurrentCity()->getHasResearchStation() &&
-        player->getRole() == Role::OperationsExpert)
+    if (!player->currentCity()->hasResearchStation() &&
+        player->role() == Role::OperationsExpert)
     {
-        actions.push_back(Action::BuildResearchStation);
+        actions.emplace_back(ActionType::BuildResearchStation);
     }
 
     /* Todo: Share Knowledge -
@@ -240,25 +241,34 @@ std::vector<Action> Game::getPossibleActions(const std::shared_ptr<Player>& play
      *             Share knowledge
      */
 
-    if (player->getCurrentCity()->getHasResearchStation())
+    if (player->currentCity()->hasResearchStation())
     {
-        if (/* DISABLES CODE */ false/*numResearchStations > 1*/)
+        const auto researchCities = m_board.researchStationCities();
+        if (researchCities.size() > 1)
         {
-            actions.push_back(Action::ShuttleFlight);
+            for (const auto& city : researchCities)
+            {
+                actions.emplace_back(ActionType::ShuttleFlight, city);
+            }
         }
 
         for (int i = 0; i < c_numDiseases; ++i)
         {
             auto type = static_cast<DiseaseType>(i);
             auto cardCount = std::count(cardTypes.begin(), cardTypes.end(), type);
-            auto requiredCardCount = player->getRole() == Role::Scientist
+            auto requiredCardCount = player->role() == Role::Scientist
                                      ? c_numCardsToCure-1
                                      : c_numCardsToCure;
             if (cardCount >= requiredCardCount)
             {
-                actions.push_back(Action::TreatDisease);
+                actions.push_back(ActionType::TreatDisease);
             }
         }
+    }
+
+    for (const auto& a : actions)
+    {
+        LOG_TRACE(actionToString(a.action));
     }
 
     return actions;
@@ -272,7 +282,7 @@ bool Game::continueGame()
         LOG_INFO("Game Over!");
         return false;
     }
-    else if (m_board.getNumDiscoveredCures() == c_numDiseases)
+    else if (m_board.numDiscoveredCures() == c_numDiseases)
     {
         m_gameWon = true;
         LOG_INFO("All cures are researched - You won the game!");
@@ -284,35 +294,22 @@ bool Game::continueGame()
 
 bool Game::gameOver()
 {
-    if (m_board.getNumOutbreaks() > c_maxOutbreaks)
+    if (m_board.numOutbreaks() > c_maxOutbreaks)
     {
         LOG_INFO("Reached the maximum number of outbreaks!");
         return true;
     }
-    else if (m_board.getNumPlayerCards() == 0) //BUGG
+    else if (m_board.numPlayerCards() == 0)
     {
         LOG_INFO("No more player cards left!");
         return true;
     }
-    else if (diseaseCubeCountMaxed())
+    else if (m_board.diseaseCubeCountMaxed())
     {
         LOG_INFO("No more disease cubes left!");
         return true;
     }
 
-    return false;
-}
-
-bool Game::diseaseCubeCountMaxed()
-{
-    for (int i = 0; i < c_numDiseases; ++i)
-    {
-        auto type = static_cast<DiseaseType>(i);
-        if (m_board.getNumDiseaseCubesOnMap(type) > c_maxPlacedDiseaseCubes)
-        {
-            return true;
-        }
-    }
     return false;
 }
 

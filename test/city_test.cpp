@@ -14,23 +14,23 @@ TEST_CASE("City creation")
 {
     City city("london", DiseaseType::Blue);
 
-    REQUIRE(city.getName() == "London");
-    REQUIRE(city.getDiseaseType() == DiseaseType::Blue);
-    REQUIRE(city.getHasResearchStation() == false);
-    REQUIRE(city.getNumDiseaseCubes() == 0);
+    REQUIRE(city.name() == "London");
+    REQUIRE(city.diseaseType() == DiseaseType::Blue);
+    REQUIRE(city.hasResearchStation() == false);
+    REQUIRE(city.numDiseaseCubes() == 0);
 }
 
 TEST_CASE("Parse cities from string")
 {
     CityParser parser(c_exampleCities);
 
-    auto cities = parser.getCities();
-    auto startCity = parser.getStartCity();
+    auto cities = parser.cities();
+    auto startCity = parser.startCity();
     REQUIRE(cities.size() == 4);
-    REQUIRE(startCity->getName() == "B");
-    REQUIRE(startCity->getDiseaseType() == DiseaseType::Yellow);
-    REQUIRE(cities.at(3)->getDiseaseType() == DiseaseType::Red);
-    REQUIRE(cities.at(0)->getNeighbours().at(0)->getName() == cities.at(1)->getName());
+    REQUIRE(startCity->name() == "B");
+    REQUIRE(startCity->diseaseType() == DiseaseType::Yellow);
+    REQUIRE(cities.at(3)->diseaseType() == DiseaseType::Red);
+    REQUIRE(cities.at(0)->neighbours().at(0)->name() == cities.at(1)->name());
 }
 
 TEST_CASE("Outbreaks")
@@ -40,25 +40,25 @@ TEST_CASE("Outbreaks")
     board.initCities(readFile("cities_data.txt"));
 
     for (int i = 0; i < c_maxCubesInCity; ++i) {
-        board.addDisease(board.getCity("Madrid"));
-        board.addDisease(board.getCity("Algiers"));
-        board.addDisease(board.getCity("Cairo"));
+        board.addDisease(board.city("Madrid"));
+        board.addDisease(board.city("Algiers"));
+        board.addDisease(board.city("Cairo"));
     }
 
-    board.addDisease(board.getCity("Paris"));
-    board.addDisease(board.getCity("Paris"));
-    board.addDisease(board.getCity("Istanbul"));
+    board.addDisease(board.city("Paris"));
+    board.addDisease(board.city("Paris"));
+    board.addDisease(board.city("Istanbul"));
 
     SECTION("Trigger outbreak")
     {
-        board.addDisease(board.getCity("Madrid"));
-        REQUIRE(board.getNumOutbreaks() == 1);
+        board.addDisease(board.city("Madrid"));
+        REQUIRE(board.numOutbreaks() == 1);
     }
 
     SECTION("Trigger chain outbreaks")
     {
-        board.addDisease(board.getCity("Algiers"));
-        REQUIRE(board.getNumOutbreaks() == 2);
+        board.addDisease(board.city("Algiers"));
+        REQUIRE(board.numOutbreaks() == 2);
     }
 }
 

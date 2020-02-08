@@ -11,7 +11,7 @@ namespace Pandemic
 TEST_CASE("Infection Rate")
 {
     Board board;
-    REQUIRE(board.getInfectionRate() == c_infectionRates[0]);
+    REQUIRE(board.infectionRate() == c_infectionRates[0]);
 
     // Increase more than allowed
     for (int i = 0; i < c_infectionRateSize+2; ++i)
@@ -19,14 +19,14 @@ TEST_CASE("Infection Rate")
         const int rate = i < c_infectionRateSize ?
                     c_infectionRates[i] :
                     c_infectionRates[c_infectionRateSize-1];
-        REQUIRE(board.getInfectionRate() == rate);
+        REQUIRE(board.infectionRate() == rate);
 
         board.increaseInfectionRate();
     }
 
     // Infection rate is maxed out
     const int highestRate = c_infectionRates[c_infectionRateSize-1];
-    REQUIRE(board.getInfectionRate() == highestRate);
+    REQUIRE(board.infectionRate() == highestRate);
 }
 
 TEST_CASE("Adding and curing a disease")
@@ -41,12 +41,12 @@ TEST_CASE("Adding and curing a disease")
         const bool triggeredOutbreak = city.addDisease(disease);
         if (i <= c_maxCubesInCity)
         {
-            REQUIRE(city.getNumDiseaseCubes() == i);
+            REQUIRE(city.numDiseaseCubes() == i);
             REQUIRE(triggeredOutbreak == false);
         }
         else
         {
-            REQUIRE(city.getNumDiseaseCubes() == c_maxCubesInCity);
+            REQUIRE(city.numDiseaseCubes() == c_maxCubesInCity);
             REQUIRE(triggeredOutbreak == true);
         }
     }
@@ -56,13 +56,13 @@ TEST_CASE("Adding and curing a disease")
     {
         CAPTURE(i);
         city.cureDisease(disease);
-        REQUIRE(city.getNumDiseaseCubes() == i-1);
+        REQUIRE(city.numDiseaseCubes() == i-1);
     }
 
     // Cure a disease free city
-    REQUIRE(city.getNumDiseaseCubes() == 0);
+    REQUIRE(city.numDiseaseCubes() == 0);
     city.cureDisease(disease);
-    REQUIRE(city.getNumDiseaseCubes() == 0);
+    REQUIRE(city.numDiseaseCubes() == 0);
 }
 
 }

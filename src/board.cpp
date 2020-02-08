@@ -1,4 +1,4 @@
-#include "board.h"
+﻿#include "board.h"
 
 #include <iostream>
 #include <memory>
@@ -40,8 +40,8 @@ void Board::initCures()
 void Board::initCities(const std::string& str)
 {
     CityParser reader(str);
-    m_startingCity = reader.getStartCity();
-    m_cities = reader.getCities();
+    m_startingCity = reader.startCity();
+    m_cities = reader.cities();
 }
 
 void Board::createCityCards()
@@ -55,7 +55,7 @@ void Board::createCityCards()
 
 void Board::setStartCity(std::shared_ptr<City>& city)
 {
-    city->setHasResearchStation(true);
+    city->setResearchStation(true);
     m_startingCity = city;
 }
 
@@ -72,7 +72,7 @@ void Board::initInfections()
             std::shared_ptr<InfectionCard> card = m_infectionDeck.front();
             m_infectionDeck.pop_front();
             assert(card);
-            LOG_DEBUG(card->city->getName());
+            LOG_DEBUG(card->city->name());
             for (int i = 0; i < numCubes; i++)
             {
                 addDisease(card->city);
@@ -104,11 +104,11 @@ void Board::distributePlayerCards(std::vector<std::shared_ptr<Player>>& players)
          *  2 players: 4 each
          *  3 players: 3 each
          *  4 players: 2 each */
-        LOG_DEBUG("{} gets ", roleToString(p->getRole()));
+        LOG_DEBUG("{} gets ", roleToString(p->role()));
         for (size_t i = 0; i < 6 - players.size(); i++)
         {
             std::shared_ptr<PlayerCard> card = m_playerDeck.front();
-            LOG_DEBUG(" - {}", card->getName());
+            LOG_DEBUG(" - {}", card->name());
             m_playerDeck.pop_front();
             p->addCard(card);
         }
@@ -136,15 +136,35 @@ void Board::insertEpidemicCards(const int numEpidemicCards)
     }
 }
 
-std::shared_ptr<City> Board::getCity(const std::string& cityName)
+std::shared_ptr<City> Board::city(const std::string& cityName)
 {
     auto city = std::find_if(m_cities.begin(), m_cities.end(),
                                   [&](const std::shared_ptr<City>& c)
     {
-        return c->getName() == cityName;
+        return c->name() == cityName;
     });
     assert(*city);
     return *city;
+}
+
+std::vector<std::shared_ptr<City>> Board::researchStationCities() const
+{
+    std::vector<std::shared_ptr<City>> researchCities;
+    auto it = m_cities.begin();
+    while (it != m_cities.end())
+    {
+        it = std::find_if(it, m_cities.end(), [&](const std::shared_ptr<City>& c)
+        {
+            return c->hasResearchStation();
+        });
+        if (it != m_cities.end())
+        {
+            researchCities.push_back(*it);
+            it++;
+        }
+    }
+
+    return researchCities;
 }
 
 std::shared_ptr<InfectionCard> Board::infect()
@@ -153,7 +173,7 @@ std::shared_ptr<InfectionCard> Board::infect()
     auto card = m_infectionDeck.front();
     m_infectionDeck.pop_front();
 
-    LOG_INFO("Infecting {}", card->city->getName());
+    LOG_INFO("Infecting {}", card->city->name());
     addDisease(card->city);
 
     m_infectionDiscardPile.push_front(card);
@@ -171,7 +191,7 @@ std::shared_ptr<PlayerCard> Board::drawPlayerCard()
     return nullptr;
 }
 
-int Board::getInfectionRate() const
+int Board::infectionRate() const
 {
     if (m_infectionRateIndex < c_infectionRateSize)
     {
@@ -180,7 +200,7 @@ int Board::getInfectionRate() const
     return c_infectionRates[c_infectionRateSize-1];
 }
 
-int Board::getNumDiscoveredCures() const
+int Board::numDiscoveredCures() const
 {
     int discoveredCures = 0;
     for (const auto& cure : m_cures)
@@ -204,13 +224,13 @@ void Board::epidemicInfection()
     m_infectionDeck.pop_back();
 
     auto city = backCard->city;
-    const int numCubesAlready = city->getNumDiseaseCubes(city->getDiseaseType());
+    const int numCubesAlready = city->numDiseaseCubes(city->diseaseType());
     const int numCubesToAdd = (numCubesAlready == 0) ? 3 : 4-numCubesAlready;
 
     // Add 3 cubes, or enough cubes to trigger outbreak
     for (int i = 0; i < numCubesToAdd; ++i)
     {
-        addDisease(city, false, city->getDiseaseType());
+        addDisease(city, false, city->diseaseType());
     }
     m_outbreakCities.clear();
 
@@ -227,20 +247,23 @@ void Board::intensify()
     m_infectionDiscardPile.clear();
 }
 
-int Board::getNumDiseaseCubesOnMap(DiseaseType type) const
+bool Board::diseaseCubeCountMaxed()
 {
-    int count = 0;
-    for (const auto& city : m_cities)
+    for (int i = 0; i < c_numDiseases; ++i)
     {
-        count += city->getNumDiseaseCubes(type);
+        auto type = static_cast<DiseaseType>(i);
+        if (numDiseaseCubesOnMap(type) > c_maxPlacedDiseaseCubes)
+        {
+            return true;
+        }
     }
-    return count;
+    return false;
 }
 
 void Board::addDisease(std::shared_ptr<City> city)
 {
-    LOG_TRACE("NEW Disease in {}", city->getName());
-    addDisease(city, false, city->getDiseaseType());
+    LOG_TRACE("NEW Disease in {}", city->name());
+    addDisease(city, false, city->diseaseType());
     m_outbreakCities.clear();
 }
 
@@ -249,30 +272,40 @@ void Board::addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType di
     if (std::find(m_outbreakCities.begin(), m_outbreakCities.end(), city)
         != m_outbreakCities.end())
     {
-        LOG_DEBUG("{} already had an outbreak", city->getName());
+        LOG_DEBUG("{} already had an outbreak", city->name());
         return;
     }
 
     if (!outbreak)
     {
-        disease = city->getDiseaseType();
+        disease = city->diseaseType();
     }
 
     const bool triggeredOutbreak = city->addDisease(disease);
     LOG_INFO("Added {} disease to {} ({})",
              diseaseToString(disease),
-             city->getName(),
-             city->getNumDiseaseCubes(disease));
+             city->name(),
+             city->numDiseaseCubes(disease));
     if (triggeredOutbreak)
     {
         m_numOutbreaks++;
-        LOG_INFO("Outbreak no.{} in {}!", m_numOutbreaks, city->getName());
+        LOG_INFO("Outbreak no.{} in {}!", m_numOutbreaks, city->name());
         m_outbreakCities.push_back(city);
-        for (auto& neighbour : city->getNeighbours())
+        for (auto& neighbour : city->neighbours())
         {
             addDisease(neighbour, true, disease);
         }
     }
+}
+
+int Board::numDiseaseCubesOnMap(DiseaseType type) const
+{
+    int count = 0;
+    for (const auto& city : m_cities)
+    {
+        count += city->numDiseaseCubes(type);
+    }
+    return count;
 }
 
 }

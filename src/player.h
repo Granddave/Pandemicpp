@@ -13,7 +13,7 @@ const int c_maxPlayers = 4;
 const int c_handLimit = 7;
 const int c_numRoles = 7;
 
-enum class Action
+enum class ActionType
 {
     Drive,
     DirectFly,
@@ -36,6 +36,22 @@ enum class Role
     Scientist
 };
 
+inline std::string actionToString(const ActionType type)
+{
+    switch (type)
+    {
+        case ActionType::Drive:                return "Drive";
+        case ActionType::DirectFly:            return "DirectFly";
+        case ActionType::CharterFlight:        return "CharterFlight";
+        case ActionType::ShuttleFlight:        return "ShuttleFlight";
+        case ActionType::BuildResearchStation: return "BuildResearchStation";
+        case ActionType::TreatDisease:         return "TreatDisease";
+        case ActionType::ShareKnowledge:       return "ShareKnowledge";
+        case ActionType::DiscoverCure:         return "DiscoverCure";
+    }
+    return "Unknown action";
+}
+
 inline std::string roleToString(const Role role)
 {
     switch (role)
@@ -55,17 +71,43 @@ class Player
 {
 public:
     void setCurrentCity(std::shared_ptr<City>& city);
-    std::shared_ptr<City> getCurrentCity() const { return m_currentCity; }
+    std::shared_ptr<City> currentCity() const { return m_currentCity; }
     void setRole(const Role role) { m_role = role; }
-    Role getRole() const { return m_role; }
+    Role role() const { return m_role; }
     void addCard(std::shared_ptr<PlayerCard>& card);
-    std::deque<std::shared_ptr<PlayerCard>>& getCards() { return m_cards; }
+    std::deque<std::shared_ptr<PlayerCard>>& cards() { return m_cards; }
 
 private:
     Role m_role;
     std::shared_ptr<City> m_currentCity;
     std::deque<std::shared_ptr<PlayerCard>> m_cards;
     int actionsLeft;
+};
+
+struct ShareKnowledgeData
+{
+    std::shared_ptr<PlayerCityCard> cityCard;
+    std::shared_ptr<Player> otherPlayer;
+};
+
+struct Action
+{
+    Action(ActionType action, std::shared_ptr<City> city)
+        : action(action), city(city)
+    {}
+    Action(ActionType action, std::shared_ptr<PlayerCityCard> card, std::shared_ptr<Player> player = nullptr)
+        : action(action), card(card), player(player)
+    {}
+    Action(ActionType action, DiseaseType type)
+        : action(action), diseaseType(type)
+    {}
+    Action(ActionType action) : action(action) {}
+
+    ActionType action;
+    std::shared_ptr<City> city;
+    std::shared_ptr<PlayerCityCard> card;
+    std::shared_ptr<Player> player;
+    DiseaseType diseaseType;
 };
 
 }

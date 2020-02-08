@@ -32,25 +32,27 @@ public:
     void distributePlayerCards(std::vector<std::shared_ptr<Player>>& players);
     void insertEpidemicCards(const int numEpidemicCards);
 
-    std::shared_ptr<City> getCity(const std::string& cityName);
-    std::shared_ptr<City>& getStartCity() { return m_startingCity; }
-    std::vector<std::shared_ptr<City>>& getCities() { return m_cities; }
+    std::shared_ptr<City> city(const std::string& cityName);
+    std::shared_ptr<City>& startCity() { return m_startingCity; }
+    std::vector<std::shared_ptr<City>>& cities() { return m_cities; }
+    std::vector<std::shared_ptr<City>> researchStationCities() const;
 
     std::shared_ptr<InfectionCard> infect();
     std::shared_ptr<PlayerCard> drawPlayerCard();
-    size_t getNumPlayerCards() const { return m_playerDeck.size(); }
+    size_t numPlayerCards() const { return m_playerDeck.size(); }
 
-    int getInfectionRate() const;
-    int getNumOutbreaks() const { return m_numOutbreaks; }
-    int getNumDiscoveredCures() const;
+    int infectionRate() const;
+    int numOutbreaks() const { return m_numOutbreaks; }
+    int numDiscoveredCures() const;
     void increaseInfectionRate();
     void epidemicInfection();
     void intensify();
-    int getNumDiseaseCubesOnMap(DiseaseType type) const;
+    bool diseaseCubeCountMaxed();
     void addDisease(std::shared_ptr<City> city);
 
 private:
     void addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType disease);
+    int numDiseaseCubesOnMap(DiseaseType type) const;
 
     std::deque<std::shared_ptr<PlayerCard>> m_playerDeck;
     std::deque<std::shared_ptr<PlayerCard>> m_playerDiscardPile;

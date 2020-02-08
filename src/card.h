@@ -37,7 +37,7 @@ struct PlayerCard
 {
     PlayerCard() {}
     virtual ~PlayerCard() = default;
-    virtual std::string getName() const = 0;
+    virtual std::string name() const = 0;
 };
 
 struct PlayerCityCard : PlayerCard
@@ -47,7 +47,7 @@ struct PlayerCityCard : PlayerCard
     {
     }
 
-    std::string getName() const override { return city->getName(); }
+    std::string name() const override { return city->name(); }
 
     std::shared_ptr<City> city;
     //int population;
@@ -55,7 +55,7 @@ struct PlayerCityCard : PlayerCard
 
 struct EpidemicCard : PlayerCard
 {
-    std::string getName() const override { return "--Epidemic--"; }
+    std::string name() const override { return "--Epidemic--"; }
 };
 
 struct EventCard : PlayerCard
@@ -65,7 +65,7 @@ struct EventCard : PlayerCard
     {
     }
 
-    std::string getName() const override
+    std::string name() const override
     {
         return "Event: " + eventCardToString(eventType);
     }

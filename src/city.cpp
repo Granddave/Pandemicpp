@@ -35,7 +35,7 @@ void City::addNeighbour(std::shared_ptr<City> other)
 
 bool City::addDisease(const DiseaseType type)
 {
-    if (getNumDiseaseCubes(type) == c_maxCubesInCity)
+    if (numDiseaseCubes(type) == c_maxCubesInCity)
     {
         return true; // Trigger outbreak
     }
@@ -46,18 +46,21 @@ bool City::addDisease(const DiseaseType type)
 
 void City::cureDisease(const DiseaseType type)
 {
-    auto rmIt = std::remove(m_diseaseCubes.begin(), m_diseaseCubes.end(), type);
-    m_diseaseCubes.erase(rmIt, m_diseaseCubes.end());
+    const auto rmIt = std::find(m_diseaseCubes.begin(), m_diseaseCubes.end(), type);
+    if (rmIt != m_diseaseCubes.cend())
+    {
+        m_diseaseCubes.erase(rmIt);
+    }
 }
 
-int City::getNumDiseaseCubes() const
+int City::numDiseaseCubes() const
 {
-    return m_diseaseCubes.size();
+    return static_cast<int>(m_diseaseCubes.size());
 }
 
-int City::getNumDiseaseCubes(const DiseaseType type) const
+int City::numDiseaseCubes(const DiseaseType type) const
 {
-    return std::count(m_diseaseCubes.begin(), m_diseaseCubes.end(), type);
+    return static_cast<int>(std::count(m_diseaseCubes.begin(), m_diseaseCubes.end(), type));
 }
 
 // -----------------------------------------------------------------------------
@@ -124,7 +127,7 @@ void CityParser::createCities()
         if (parsedCity.startCity)
         {
             m_startCity = city;
-            city->setHasResearchStation(true);
+            city->setResearchStation(true);
         }
         m_cities.push_back(city);
     }
@@ -136,7 +139,7 @@ void CityParser::createCities()
             auto city = std::find_if(m_cities.begin(), m_cities.end(),
                                      [&](const std::shared_ptr<City>& c)
             {
-                return c->getName() == m_parsedCities[cityIx].neighbours[neighIx];
+                return c->name() == m_parsedCities[cityIx].neighbours[neighIx];
             });
             if (*city == nullptr)
             {
