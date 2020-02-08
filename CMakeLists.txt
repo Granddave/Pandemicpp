@@ -5,13 +5,7 @@ project(pandemic
     DESCRIPTION "Pandemic in C++"
     LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
-
-if (MSVC)
-    add_compile_options(/W4 /WX)
-else()
-    add_compile_options(-Wall -Wextra -pedantic -Werror)
-endif()
+set(COMPILER_WARNINGS -Werror -Wall -Wextra)
 
 add_subdirectory(external/Catch2)
 add_subdirectory(external/spdlog)
