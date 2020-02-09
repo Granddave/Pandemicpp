@@ -4,7 +4,8 @@ add_executable(pandemic-test
     city_test.cpp
     commondata_test.h
     disease_test.cpp
-    main_test.cpp)
+    main_test.cpp
+    utils_test.cpp)
 target_link_libraries(pandemic-test PRIVATE
     pandemic
     Catch2::Catch2
