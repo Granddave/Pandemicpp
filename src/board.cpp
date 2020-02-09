@@ -1,4 +1,4 @@
-﻿#include "board.h"
+#include "board.h"
 
 #include <iostream>
 #include <memory>
@@ -150,20 +150,13 @@ std::shared_ptr<City> Board::city(const std::string& cityName)
 std::vector<std::shared_ptr<City>> Board::researchStationCities() const
 {
     std::vector<std::shared_ptr<City>> researchCities;
-    auto it = m_cities.begin();
-    while (it != m_cities.end())
+    for (const auto& city : m_cities)
     {
-        it = std::find_if(it, m_cities.end(), [&](const std::shared_ptr<City>& c)
+        if (city->hasResearchStation())
         {
-            return c->hasResearchStation();
-        });
-        if (it != m_cities.end())
-        {
-            researchCities.push_back(*it);
-            it++;
+            researchCities.push_back(city);
         }
     }
-
     return researchCities;
 }
 
@@ -208,6 +201,42 @@ int Board::numDiscoveredCures() const
         discoveredCures += cure.discovered ? 1 : 0;
     }
     return discoveredCures;
+}
+
+bool Board::isCureDiscovered(const DiseaseType type) const
+{
+    for (const Cure& cure : m_cures)
+    {
+        if (cure.type == type)
+        {
+            return cure.discovered;
+        }
+    }
+
+    LOG_WARN("Didn't find the cure {} in the list", type);
+    return false;
+}
+
+bool Board::isCureEradicated(const DiseaseType type) const
+{
+    if (isCureDiscovered(type) == false)
+    {
+        return false;
+    }
+
+    return numDiseaseCubesOnMap(type) == 0;
+}
+
+void Board::discoverCure(const DiseaseType type)
+{
+    for (Cure& cure : m_cures)
+    {
+        if (cure.type == type)
+        {
+            cure.discovered = true;
+            return;
+        }
+    }
 }
 
 void Board::increaseInfectionRate()

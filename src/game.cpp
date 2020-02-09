@@ -199,7 +199,6 @@ std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player)
 
     for (auto& city : player->currentCity()->neighbours())
     {
-        UNUSED(city);
         actions.emplace_back(ActionType::Drive, city);
     }
 
@@ -254,9 +253,9 @@ std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player)
 
         for (int i = 0; i < c_numDiseases; ++i)
         {
-            auto type = static_cast<DiseaseType>(i);
-            auto cardCount = std::count(cardTypes.begin(), cardTypes.end(), type);
-            auto requiredCardCount = player->role() == Role::Scientist
+            const auto type = static_cast<DiseaseType>(i);
+            const auto cardCount = std::count(cardTypes.begin(), cardTypes.end(), type);
+            const auto requiredCardCount = player->role() == Role::Scientist
                                      ? c_numCardsToCure-1
                                      : c_numCardsToCure;
             if (cardCount >= requiredCardCount)
@@ -282,7 +281,7 @@ bool Game::continueGame()
         LOG_INFO("Game Over!");
         return false;
     }
-    else if (m_board.numDiscoveredCures() == c_numDiseases)
+    else if (m_board.numDiscoveredCures() == c_numCures)
     {
         m_gameWon = true;
         LOG_INFO("All cures are researched - You won the game!");

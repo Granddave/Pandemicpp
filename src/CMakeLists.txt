@@ -21,7 +21,6 @@ target_include_directories(pandemic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(pandemic PUBLIC spdlog::spdlog)
 target_compile_options(pandemic PRIVATE ${COMPILER_WARNINGS})
 
-
 # Application
 add_executable(pandemic-app main.cpp)
 target_link_libraries(pandemic-app PRIVATE pandemic)

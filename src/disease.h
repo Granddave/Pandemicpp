@@ -6,6 +6,7 @@
 namespace Pandemic {
 
 const int c_numDiseases = 4;
+const int c_numCures = c_numDiseases;
 const int c_numCardsToCure = 5;
 const int c_maxPlacedDiseaseCubes = 24; // Total nof cubes of a disease in the game
 const int c_maxCubesInCity = 3;

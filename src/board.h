@@ -44,6 +44,9 @@ public:
     int infectionRate() const;
     int numOutbreaks() const { return m_numOutbreaks; }
     int numDiscoveredCures() const;
+    bool isCureDiscovered(const DiseaseType type) const;
+    bool isCureEradicated(const DiseaseType type) const;
+    void discoverCure(const DiseaseType type);
     void increaseInfectionRate();
     void epidemicInfection();
     void intensify();
