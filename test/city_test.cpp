@@ -16,8 +16,8 @@ TEST_CASE("City creation")
 
     REQUIRE(city.name() == "London");
     REQUIRE(city.diseaseType() == DiseaseType::Blue);
-    REQUIRE(city.hasResearchStation() == false);
     REQUIRE(city.numDiseaseCubes() == 0);
+    REQUIRE_FALSE(city.hasResearchStation());
 }
 
 TEST_CASE("Parse cities from string")
@@ -33,13 +33,14 @@ TEST_CASE("Parse cities from string")
     REQUIRE(cities.at(0)->neighbours().at(0)->name() == cities.at(1)->name());
 }
 
-TEST_CASE("Outbreaks")
+TEST_CASE("City diseases and outbreaks")
 {
     Board board;
     board.initCures();
     board.initCities(readFile("cities_data.txt"));
 
-    for (int i = 0; i < c_maxCubesInCity; ++i) {
+    for (int i = 0; i < c_maxCubesInCity; ++i)
+    {
         board.addDisease(board.city("Madrid"));
         board.addDisease(board.city("Algiers"));
         board.addDisease(board.city("Cairo"));
@@ -60,6 +61,15 @@ TEST_CASE("Outbreaks")
         board.addDisease(board.city("Algiers"));
         REQUIRE(board.numOutbreaks() == 2);
     }
+}
+
+TEST_CASE("Research station")
+{
+    City city("london", DiseaseType::Blue);
+
+    REQUIRE_FALSE(city.hasResearchStation());
+    city.setResearchStation(true);
+    REQUIRE(city.hasResearchStation());
 }
 
 }
