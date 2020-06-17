@@ -2,6 +2,7 @@
 
 #include <map>
 #include <numeric>
+#include <string>
 
 namespace Pandemic {
 

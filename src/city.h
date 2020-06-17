@@ -62,6 +62,5 @@ private:
     std::shared_ptr<City> m_startCity;
 };
 
-
 }
 
