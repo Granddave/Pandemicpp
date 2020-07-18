@@ -103,11 +103,11 @@ struct Action
     {}
     Action(ActionType action) : action(action) {}
 
-    ActionType action;
+    ActionType action = ActionType::Drive;
     std::shared_ptr<City> city;
     std::shared_ptr<PlayerCityCard> card;
     std::shared_ptr<Player> player;
-    DiseaseType diseaseType;
+    DiseaseType diseaseType = DiseaseType::Yellow;
 };
 
 }
