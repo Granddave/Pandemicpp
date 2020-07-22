@@ -1,10 +1,10 @@
 #!/bin/bash
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
-python3 external/run-clang-format.py \
-    -r \
-    ../src \
-    ../test \
-    -- -v
+SRC_DIRS="src test"
+FILES=$(find $SRC_DIRS -type f -regex ".*\.[ch]\(pp\)?$")
 
+clang-format \
+    $FILES \
+    -i
