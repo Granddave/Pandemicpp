@@ -250,10 +250,10 @@ void Board::increaseInfectionRate()
 
 void Board::epidemicInfection()
 {
-    auto backCard = m_infectionDeck.back();
+    auto topCard = m_infectionDeck.back();
     m_infectionDeck.pop_back();
 
-    auto city = backCard->city;
+    auto city = topCard->city;
     const int numCubesAlready = city->numDiseaseCubes(city->diseaseType());
     const int numCubesToAdd = (numCubesAlready == 0) ? 3 : 4 - numCubesAlready;
 
@@ -264,13 +264,12 @@ void Board::epidemicInfection()
     }
     m_outbreakCities.clear();
 
-    m_infectionDiscardPile.push_front(backCard);
+    m_infectionDiscardPile.push_front(topCard);
 }
 
 void Board::intensify()
 {
     shuffle(m_infectionDiscardPile.begin(), m_infectionDiscardPile.end());
-
     m_infectionDeck.insert(m_infectionDeck.end(), m_infectionDiscardPile.begin(),
                            m_infectionDiscardPile.end());
     m_infectionDiscardPile.clear();

@@ -107,7 +107,7 @@ void Game::doTurn()
         {
             // Todo: Let player choose card to discard
             // Random card will do for now...
-            int index = std::rand() % static_cast<int>(playersCards.size());
+            const int index = std::rand() % static_cast<int>(playersCards.size());
             auto droppedCard = playersCards.erase(playersCards.begin() + index);
             LOG_INFO("Dropping {}", (*droppedCard)->name());
         }
@@ -228,7 +228,7 @@ std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player)
         }
     }
 
-    if (!player->currentCity()->hasResearchStation() && player->role() == Role::OperationsExpert)
+    if (player->role() == Role::OperationsExpert && !player->currentCity()->hasResearchStation())
     {
         actions.emplace_back(ActionType::BuildResearchStation);
     }
@@ -243,15 +243,20 @@ std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player)
 
     if (player->currentCity()->hasResearchStation())
     {
+        // Shuttle flight
         const auto researchCities = m_board.researchStationCities();
         if (researchCities.size() > 1)
         {
             for (const auto& city : researchCities)
             {
-                actions.emplace_back(ActionType::ShuttleFlight, city);
+                if (player->currentCity() != city)
+                {
+                    actions.emplace_back(ActionType::ShuttleFlight, city);
+                }
             }
         }
 
+        // Treat disease
         for (int i = 0; i < c_numDiseases; ++i)
         {
             const auto type = static_cast<DiseaseType>(i);
