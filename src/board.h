@@ -8,7 +8,7 @@
 #include "player.h"
 #include "card.h"
 
-namespace Pandemic {
+namespace pandemic {
 
 enum class Difficulty
 {
@@ -20,7 +20,7 @@ enum class Difficulty
 class Board
 {
 public:
-    Board();
+    Board() = default;
     void reset();
 
     void initCures();
@@ -51,10 +51,10 @@ public:
     void epidemicInfection();
     void intensify();
     bool diseaseCubeCountMaxed();
-    void addDisease(std::shared_ptr<City> city);
+    void addDisease(const std::shared_ptr<City>& city);
 
 private:
-    void addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType disease);
+    void addDisease(const std::shared_ptr<City>& city, bool outbreak, DiseaseType disease);
     int numDiseaseCubesOnMap(DiseaseType type) const;
 
     std::deque<std::shared_ptr<PlayerCard>> m_playerDeck;
@@ -65,7 +65,7 @@ private:
     std::vector<std::shared_ptr<City>> m_outbreakCities;
     std::shared_ptr<City> m_startingCity;
     int m_numOutbreaks = 0;
-    int m_infectionRateIndex = 0;
+    size_t m_infectionRateIndex = 0;
     std::vector<Cure> m_cures;
 };
 

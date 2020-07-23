@@ -3,8 +3,9 @@
 #include <map>
 #include <numeric>
 #include <string>
+#include <array>
 
-namespace Pandemic {
+namespace pandemic {
 
 const int c_numDiseases = 4;
 const int c_numCures = c_numDiseases;
@@ -12,8 +13,7 @@ const int c_numCardsToCure = 5;
 const int c_maxPlacedDiseaseCubes = 24; // Total nof cubes of a disease in the game
 const int c_maxCubesInCity = 3;
 const int c_maxOutbreaks = 8;
-const int __attribute__((used)) c_infectionRates[] = { 2, 2, 2, 3, 3, 4, 4 };
-constexpr int c_infectionRateSize = sizeof(c_infectionRates)/sizeof(c_infectionRates[0]);
+constexpr std::array<int, 7> c_infectionRates = {2, 2, 2, 3, 3, 4, 4};
 
 enum class DiseaseType
 {

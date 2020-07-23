@@ -8,7 +8,7 @@
 
 #include "disease.h"
 
-namespace Pandemic {
+namespace pandemic {
 
 class City : public std::enable_shared_from_this<City>
 {

@@ -4,7 +4,7 @@
 #include "card.h"
 #include "player.h"
 
-namespace Pandemic {
+namespace pandemic {
 
 const int c_numActionsPerTurn = 4;
 const int c_numPlayerCardsToDraw = 2;
@@ -20,7 +20,7 @@ struct Config
 class Game
 {
 public:
-    Game(const Config& config);
+    Game(Config config);
 
     void init();
     void reset();

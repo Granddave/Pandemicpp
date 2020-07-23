@@ -6,7 +6,7 @@
 #include "card.h"
 #include "city.h"
 
-namespace Pandemic {
+namespace pandemic {
 
 const int c_minPlayers = 2;
 const int c_maxPlayers = 4;
@@ -81,7 +81,7 @@ private:
     Role m_role;
     std::shared_ptr<City> m_currentCity;
     std::deque<std::shared_ptr<PlayerCard>> m_cards;
-    int actionsLeft;
+    // TODO: Make use of `int actionsLeft;`
 };
 
 struct ShareKnowledgeData

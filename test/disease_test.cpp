@@ -5,27 +5,27 @@
 #include "city.h"
 #include "commondata_test.h"
 
-namespace Pandemic
+namespace pandemic
 {
 
 TEST_CASE("Infection Rate")
 {
     Board board;
-    REQUIRE(board.infectionRate() == c_infectionRates[0]);
+    REQUIRE(board.infectionRate() == c_infectionRates.front());
 
     // Increase more than allowed
-    for (int i = 0; i < c_infectionRateSize+2; ++i)
+    for (size_t i = 0; i < c_infectionRates.size()+2; ++i)
     {
-        const int rate = i < c_infectionRateSize ?
-                    c_infectionRates[i] :
-                    c_infectionRates[c_infectionRateSize-1];
+        const int rate = i < c_infectionRates.size() ?
+                    c_infectionRates.at(i) :
+                    c_infectionRates.back();
         REQUIRE(board.infectionRate() == rate);
 
         board.increaseInfectionRate();
     }
 
     // Infection rate is maxed out
-    const int highestRate = c_infectionRates[c_infectionRateSize-1];
+    const int highestRate = c_infectionRates.back();
     REQUIRE(board.infectionRate() == highestRate);
 }
 

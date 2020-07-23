@@ -12,7 +12,7 @@
 #define LOG_ERROR(...)   spdlog::get(LOG_SINK)->error(__VA_ARGS__)
 #define LOG_CRIT(...)    spdlog::get(LOG_SINK)->critical(__VA_ARGS__)
 
-namespace Pandemic
+namespace pandemic
 {
 
 void setupLog(const spdlog::level::level_enum level);

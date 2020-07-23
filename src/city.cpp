@@ -3,12 +3,12 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
-#include <assert.h>
+#include <cassert>
 
 #include "utils.h"
 #include "logging.h"
 
-namespace Pandemic {
+namespace pandemic {
 
 // -----------------------------------------------------------------------------
 // City
@@ -80,7 +80,7 @@ void CityParser::parseContent(const std::string& str)
     while(std::getline(ss, line))
     {
         line = trim(line);
-        if (line.size() == 0)
+        if (line.empty())
         {
             break;
         }

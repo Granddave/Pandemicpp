@@ -1,7 +1,7 @@
 #include "utils.h"
 
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -13,7 +13,7 @@ std::vector<std::string> split(const std::string& strToSplit, char delimeter)
     std::vector<std::string> splittedStrings;
     while (std::getline(ss, item, delimeter))
     {
-        if (item != "")
+        if (!item.empty())
         {
             splittedStrings.push_back(item);
         }
@@ -29,7 +29,7 @@ std::string titleCase(std::string str, char delimiter)
 
     char last = ' ';
     std::for_each(str.begin(), str.end(), [&](char& c) {
-        if(last == ' ' && c != ' ' && ::isalpha(c))
+        if(last == ' ' && c != ' ' && (::isalpha(c) != 0))
         {
             c = static_cast<char>(::toupper(c));
         }

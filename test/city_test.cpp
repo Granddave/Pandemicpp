@@ -7,7 +7,7 @@
 
 #include "commondata_test.h"
 
-namespace Pandemic
+namespace pandemic
 {
 
 TEST_CASE("City creation")

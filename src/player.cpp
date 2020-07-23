@@ -1,6 +1,6 @@
 #include "player.h"
 
-namespace Pandemic {
+namespace pandemic {
 
 void Player::setCurrentCity(std::shared_ptr<City>& city)
 {

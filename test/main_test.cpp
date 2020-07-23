@@ -5,6 +5,6 @@
 
 int main(int argc, char* argv[])
 {
-    Pandemic::setupLog("off");
+    pandemic::setupLog("off");
     return Catch::Session().run(argc, argv);
 }

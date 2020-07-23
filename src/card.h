@@ -4,7 +4,7 @@
 
 #include "city.h"
 
-namespace Pandemic {
+namespace pandemic {
 
 const int c_numEventCards = 5;
 

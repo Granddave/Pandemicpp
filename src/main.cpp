@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     UNUSED(argc); UNUSED(argv);
 
-    Pandemic::Config config;
-    Pandemic::Game game(config);
+    pandemic::Config config;
+    pandemic::Game game(config);
     return 0;
 }

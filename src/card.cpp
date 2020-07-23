@@ -1,16 +1,16 @@
 #include "card.h"
 
-std::string Pandemic::PlayerCityCard::name() const
+std::string pandemic::PlayerCityCard::name() const
 {
     return city->name();
 }
 
-std::string Pandemic::EpidemicCard::name() const
+std::string pandemic::EpidemicCard::name() const
 {
     return "--Epidemic--";
 }
 
-std::string Pandemic::EventCard::name() const
+std::string pandemic::EventCard::name() const
 {
     return "Event: " + eventCardToString(eventType);
 }

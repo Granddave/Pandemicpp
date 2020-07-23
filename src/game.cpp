@@ -1,17 +1,17 @@
 #include "game.h"
 
 #include <iostream>
-#include <assert.h>
+#include <cassert>
 #include <algorithm>
 #include <memory>
 
 #include "utils.h"
 #include "logging.h"
 
-namespace Pandemic {
+namespace pandemic {
 
-Game::Game(const Config& config)
-    : m_config(config)
+Game::Game(Config config)
+    : m_config(std::move(config))
 {
     setupLog(loglevelFromString("info"));
     const auto seed = [&]() {
@@ -262,7 +262,7 @@ std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player)
                                      : c_numCardsToCure;
             if (cardCount >= requiredCardCount)
             {
-                actions.push_back(ActionType::TreatDisease);
+                actions.emplace_back(ActionType::TreatDisease);
             }
         }
     }
@@ -283,7 +283,7 @@ bool Game::continueGame()
         LOG_INFO("Game Over!");
         return false;
     }
-    else if (m_board.numDiscoveredCures() == c_numCures)
+    if (m_board.numDiscoveredCures() == c_numCures)
     {
         m_gameWon = true;
         LOG_INFO("All cures are researched - You won the game!");
@@ -300,12 +300,12 @@ bool Game::gameOver()
         LOG_INFO("Reached the maximum number of outbreaks!");
         return true;
     }
-    else if (m_board.numPlayerCards() == 0)
+    if (m_board.numPlayerCards() == 0)
     {
         LOG_INFO("No more player cards left!");
         return true;
     }
-    else if (m_board.diseaseCubeCountMaxed())
+    if (m_board.diseaseCubeCountMaxed())
     {
         LOG_INFO("No more disease cubes left!");
         return true;
