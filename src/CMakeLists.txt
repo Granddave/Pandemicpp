@@ -11,6 +11,7 @@ add_library(pandemic STATIC
     disease.h
     game.cpp
     game.h
+    instrumentor.h
     logging.cpp
     logging.h
     player.cpp

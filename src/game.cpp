@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "utils.h"
+#include "instrumentor.h"
 #include "logging.h"
 
 namespace Pandemic {
@@ -13,6 +14,7 @@ namespace Pandemic {
 Game::Game(const Config& config)
     : m_config(config)
 {
+    PROFILE_FUNCTION();
     setupLog(loglevelFromString("info"));
     const auto seed = [&]() {
         if (m_config.seed == 0)
@@ -31,6 +33,7 @@ Game::Game(const Config& config)
 
 void Game::init()
 {
+    PROFILE_FUNCTION();
     LOG_INFO("=== Initialization started");
     m_board.initCures();
     m_board.initCities(readFile(m_config.citiesFile));
@@ -45,6 +48,7 @@ void Game::init()
 
 void Game::reset()
 {
+    PROFILE_FUNCTION();
     m_gameOver = false;
     m_gameWon = false;
     m_board.reset();
@@ -54,6 +58,7 @@ void Game::reset()
 
 void Game::run()
 {
+    PROFILE_FUNCTION();
     while (continueGame())
     {
         LOG_INFO("--- Player {}'s turn - ", m_currentPlayerIx+1);
@@ -70,6 +75,7 @@ void Game::run()
 
 void Game::doTurn()
 {
+    PROFILE_FUNCTION();
     auto currentPlayer = m_players.at(static_cast<size_t>(m_currentPlayerIx));
     for (int i = 0; i < c_numActionsPerTurn; ++i)
     {
@@ -122,6 +128,7 @@ void Game::doTurn()
 
 void Game::printStatus()
 {
+    PROFILE_FUNCTION();
     LOG_INFO("--- Game status");
     LOG_INFO("Players:");
     for (const auto& player : m_players)
@@ -148,6 +155,7 @@ void Game::printStatus()
 
 void Game::initPlayers(const int numPlayers)
 {
+    PROFILE_FUNCTION();
     assert(numPlayers >= c_minPlayers);
     assert(numPlayers <= c_maxPlayers);
 
@@ -186,6 +194,7 @@ void Game::initPlayers(const int numPlayers)
 
 int Game::numEpidemicCards(Difficulty difficulty) const
 {
+    PROFILE_FUNCTION();
     switch (difficulty)
     {
         case Difficulty::Introductory: return 4;
@@ -197,6 +206,7 @@ int Game::numEpidemicCards(Difficulty difficulty) const
 
 std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player) const
 {
+    PROFILE_FUNCTION();
     std::vector<Action> actions;
 
     for (auto& city : player->currentCity()->neighbours())
@@ -277,6 +287,7 @@ std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player)
 
 bool Game::continueGame()
 {
+    PROFILE_FUNCTION();
     if (gameOver())
     {
         m_gameOver = true;
@@ -295,6 +306,7 @@ bool Game::continueGame()
 
 bool Game::gameOver()
 {
+    PROFILE_FUNCTION();
     if (m_board.numOutbreaks() > c_maxOutbreaks)
     {
         LOG_INFO("Reached the maximum number of outbreaks!");

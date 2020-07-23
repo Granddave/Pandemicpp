@@ -8,6 +8,7 @@
 #include <ctime>
 
 #include "utils.h"
+#include "instrumentor.h"
 #include "logging.h"
 
 namespace Pandemic {
@@ -18,6 +19,7 @@ Board::Board()
 
 void Board::reset()
 {
+    PROFILE_FUNCTION();
     m_playerDeck.clear();
     m_playerDiscardPile.clear();
     m_infectionDeck.clear();
@@ -31,6 +33,7 @@ void Board::reset()
 
 void Board::initCures()
 {
+    PROFILE_FUNCTION();
     m_cures.emplace_back(DiseaseType::Yellow);
     m_cures.emplace_back(DiseaseType::Red);
     m_cures.emplace_back(DiseaseType::Blue);
@@ -39,6 +42,7 @@ void Board::initCures()
 
 void Board::initCities(const std::string& str)
 {
+    PROFILE_FUNCTION();
     CityParser reader(str);
     m_startingCity = reader.startCity();
     m_cities = reader.cities();
@@ -46,6 +50,7 @@ void Board::initCities(const std::string& str)
 
 void Board::createCityCards()
 {
+    PROFILE_FUNCTION();
     for (auto& city : m_cities)
     {
         m_playerDeck.push_back(std::make_shared<PlayerCityCard>(city));
@@ -55,12 +60,14 @@ void Board::createCityCards()
 
 void Board::setStartCity(std::shared_ptr<City>& city)
 {
+    PROFILE_FUNCTION();
     city->setResearchStation(true);
     m_startingCity = city;
 }
 
 void Board::initInfections()
 {
+    PROFILE_FUNCTION();
     LOG_INFO("--- Initializing infections");
     assert(m_infectionDeck.size() > 3*3);
     std::random_shuffle(m_infectionDeck.begin(), m_infectionDeck.end());
@@ -84,6 +91,7 @@ void Board::initInfections()
 
 void Board::insertEventCards()
 {
+    PROFILE_FUNCTION();
     for (int i = 0; i < c_numEventCards; ++i)
     {
         const auto type = static_cast<EventCardType>(i);
@@ -93,6 +101,7 @@ void Board::insertEventCards()
 
 void Board::distributePlayerCards(std::vector<std::shared_ptr<Player>>& players)
 {
+    PROFILE_FUNCTION();
     assert(players.size() >= c_minPlayers);
     assert(players.size() <= c_maxPlayers);
 
@@ -117,6 +126,7 @@ void Board::distributePlayerCards(std::vector<std::shared_ptr<Player>>& players)
 
 void Board::insertEpidemicCards(const int numEpidemicCards)
 {
+    PROFILE_FUNCTION();
     std::random_shuffle(m_playerDeck.begin(), m_playerDeck.end());
 
     const int numPiles = numEpidemicCards;
@@ -138,6 +148,7 @@ void Board::insertEpidemicCards(const int numEpidemicCards)
 
 std::shared_ptr<City> Board::city(const std::string& cityName)
 {
+    PROFILE_FUNCTION();
     auto city = std::find_if(m_cities.begin(), m_cities.end(),
                                   [&](const std::shared_ptr<City>& c)
     {
@@ -249,6 +260,7 @@ void Board::increaseInfectionRate()
 
 void Board::epidemicInfection()
 {
+    PROFILE_FUNCTION();
     auto backCard = m_infectionDeck.back();
     m_infectionDeck.pop_back();
 
@@ -268,6 +280,7 @@ void Board::epidemicInfection()
 
 void Board::intensify()
 {
+    PROFILE_FUNCTION();
     std::random_shuffle(m_infectionDiscardPile.begin(), m_infectionDiscardPile.end());
 
     m_infectionDeck.insert(m_infectionDeck.end(),
@@ -298,6 +311,7 @@ void Board::addDisease(std::shared_ptr<City> city)
 
 void Board::addDisease(std::shared_ptr<City> city, bool outbreak, DiseaseType disease)
 {
+    PROFILE_FUNCTION();
     if (std::find(m_outbreakCities.begin(), m_outbreakCities.end(), city)
         != m_outbreakCities.end())
     {
