@@ -1,12 +1,13 @@
 #pragma once
 
-#include <memory>
 #include <deque>
+#include <memory>
 
 #include "card.h"
 #include "city.h"
 
-namespace pandemic {
+namespace pandemic
+{
 
 const int c_minPlayers = 2;
 const int c_maxPlayers = 4;
@@ -40,14 +41,22 @@ inline std::string actionToString(const ActionType type)
 {
     switch (type)
     {
-        case ActionType::Drive:                return "Drive";
-        case ActionType::DirectFly:            return "DirectFly";
-        case ActionType::CharterFlight:        return "CharterFlight";
-        case ActionType::ShuttleFlight:        return "ShuttleFlight";
-        case ActionType::BuildResearchStation: return "BuildResearchStation";
-        case ActionType::TreatDisease:         return "TreatDisease";
-        case ActionType::ShareKnowledge:       return "ShareKnowledge";
-        case ActionType::DiscoverCure:         return "DiscoverCure";
+        case ActionType::Drive:
+            return "Drive";
+        case ActionType::DirectFly:
+            return "DirectFly";
+        case ActionType::CharterFlight:
+            return "CharterFlight";
+        case ActionType::ShuttleFlight:
+            return "ShuttleFlight";
+        case ActionType::BuildResearchStation:
+            return "BuildResearchStation";
+        case ActionType::TreatDisease:
+            return "TreatDisease";
+        case ActionType::ShareKnowledge:
+            return "ShareKnowledge";
+        case ActionType::DiscoverCure:
+            return "DiscoverCure";
     }
     return "Unknown action";
 }
@@ -56,13 +65,20 @@ inline std::string roleToString(const Role role)
 {
     switch (role)
     {
-        case Role::ContingencyPlanner:   return "Contingency planner";
-        case Role::Dispatcher:           return "Dispatcher";
-        case Role::Medic:                return "Medic";
-        case Role::OperationsExpert:     return "Operations expert";
-        case Role::QuarantineSpecialist: return "Quarantine specialist";
-        case Role::Researcher:           return "Researcher";
-        case Role::Scientist:            return "Scientist";
+        case Role::ContingencyPlanner:
+            return "Contingency planner";
+        case Role::Dispatcher:
+            return "Dispatcher";
+        case Role::Medic:
+            return "Medic";
+        case Role::OperationsExpert:
+            return "Operations expert";
+        case Role::QuarantineSpecialist:
+            return "Quarantine specialist";
+        case Role::Researcher:
+            return "Researcher";
+        case Role::Scientist:
+            return "Scientist";
     }
     return "Unknown role";
 }
@@ -92,15 +108,14 @@ struct ShareKnowledgeData
 
 struct Action
 {
-    Action(ActionType action, std::shared_ptr<City> city)
-        : action(action), city(city)
-    {}
-    Action(ActionType action, std::shared_ptr<PlayerCityCard> card, std::shared_ptr<Player> player = nullptr)
+    Action(ActionType action, std::shared_ptr<City> city) : action(action), city(city) {}
+    Action(ActionType action,
+           std::shared_ptr<PlayerCityCard> card,
+           std::shared_ptr<Player> player = nullptr)
         : action(action), card(card), player(player)
-    {}
-    Action(ActionType action, DiseaseType type)
-        : action(action), diseaseType(type)
-    {}
+    {
+    }
+    Action(ActionType action, DiseaseType type) : action(action), diseaseType(type) {}
     Action(ActionType action) : action(action) {}
 
     ActionType action = ActionType::Drive;
@@ -110,4 +125,4 @@ struct Action
     DiseaseType diseaseType = DiseaseType::Yellow;
 };
 
-}
+} // namespace pandemic

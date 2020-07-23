@@ -1,9 +1,9 @@
 #include "catch2/catch.hpp"
 
-#include "disease.h"
 #include "board.h"
 #include "city.h"
 #include "commondata_test.h"
+#include "disease.h"
 
 namespace pandemic
 {
@@ -14,11 +14,10 @@ TEST_CASE("Infection Rate")
     REQUIRE(board.infectionRate() == c_infectionRates.front());
 
     // Increase more than allowed
-    for (size_t i = 0; i < c_infectionRates.size()+2; ++i)
+    for (size_t i = 0; i < c_infectionRates.size() + 2; ++i)
     {
-        const int rate = i < c_infectionRates.size() ?
-                    c_infectionRates.at(i) :
-                    c_infectionRates.back();
+        const int rate =
+            i < c_infectionRates.size() ? c_infectionRates.at(i) : c_infectionRates.back();
         REQUIRE(board.infectionRate() == rate);
 
         board.increaseInfectionRate();
@@ -35,7 +34,7 @@ TEST_CASE("Adding and curing a disease")
     City city("atlanta", disease);
 
     // Add more diseases than a city can hold
-    for (int i = 1; i <= c_maxCubesInCity+1; ++i)
+    for (int i = 1; i <= c_maxCubesInCity + 1; ++i)
     {
         CAPTURE(i);
         const bool triggeredOutbreak = city.addDisease(disease);
@@ -56,7 +55,7 @@ TEST_CASE("Adding and curing a disease")
     {
         CAPTURE(i);
         city.cureDisease(disease);
-        REQUIRE(city.numDiseaseCubes() == i-1);
+        REQUIRE(city.numDiseaseCubes() == i - 1);
     }
 
     // Cure a disease free city
@@ -65,4 +64,4 @@ TEST_CASE("Adding and curing a disease")
     REQUIRE(city.numDiseaseCubes() == 0);
 }
 
-}
+} // namespace pandemic

@@ -1,11 +1,12 @@
 #pragma once
 
+#include <array>
 #include <map>
 #include <numeric>
 #include <string>
-#include <array>
 
-namespace pandemic {
+namespace pandemic
+{
 
 const int c_numDiseases = 4;
 const int c_numCures = c_numDiseases;
@@ -29,24 +30,25 @@ inline std::string diseaseToString(const DiseaseType disease)
 {
     switch (disease)
     {
-        case DiseaseType::Yellow: return "Yellow";
-        case DiseaseType::Red:    return "Red";
-        case DiseaseType::Blue:   return "Blue";
-        case DiseaseType::Black:  return "Black";
+        case DiseaseType::Yellow:
+            return "Yellow";
+        case DiseaseType::Red:
+            return "Red";
+        case DiseaseType::Blue:
+            return "Blue";
+        case DiseaseType::Black:
+            return "Black";
     }
     return "Unknown disease";
 }
 
 struct Cure
 {
-    Cure(DiseaseType type)
-        : type(type)
-    {
-    }
+    Cure(DiseaseType type) : type(type) {}
 
     DiseaseType type;
     bool discovered = false;
     bool eradicated = false;
 };
 
-}
+} // namespace pandemic

@@ -6,6 +6,7 @@ BreakBeforeBraces: Allman
 BreakConstructorInitializers: BeforeColon
 ColumnLimit: 100
 IndentWidth: 4
+KeepEmptyLinesAtTheStartOfBlocks: true
 Language: Cpp
 PointerAlignment: Left
 PointerBindsToType: false

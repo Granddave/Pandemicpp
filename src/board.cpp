@@ -1,17 +1,18 @@
 #include "board.h"
 
-#include <iostream>
-#include <memory>
 #include <algorithm>
-#include <numeric>
 #include <cassert>
 #include <ctime>
+#include <iostream>
+#include <memory>
+#include <numeric>
 #include <random>
 
-#include "utils.h"
 #include "logging.h"
+#include "utils.h"
 
-namespace pandemic {
+namespace pandemic
+{
 
 void Board::reset()
 {
@@ -59,7 +60,7 @@ void Board::setStartCity(std::shared_ptr<City>& city)
 void Board::initInfections()
 {
     LOG_INFO("--- Initializing infections");
-    assert(m_infectionDeck.size() > 3*3);
+    assert(m_infectionDeck.size() > 3 * 3);
     shuffle(m_infectionDeck.begin(), m_infectionDeck.end());
     for (int numCubes = 3; numCubes != 0; numCubes--)
     {
@@ -141,10 +142,7 @@ void Board::insertEpidemicCards(const int numEpidemicCards)
 std::shared_ptr<City> Board::city(const std::string& cityName)
 {
     auto city = std::find_if(m_cities.begin(), m_cities.end(),
-                                  [&](const std::shared_ptr<City>& c)
-    {
-        return c->name() == cityName;
-    });
+                             [&](const std::shared_ptr<City>& c) { return c->name() == cityName; });
     assert(*city);
     return *city;
 }
@@ -244,9 +242,9 @@ void Board::discoverCure(const DiseaseType type)
 void Board::increaseInfectionRate()
 {
     m_infectionRateIndex++;
-    if (m_infectionRateIndex > c_infectionRates.size()-1)
+    if (m_infectionRateIndex > c_infectionRates.size() - 1)
     {
-        m_infectionRateIndex = c_infectionRates.size()-1;
+        m_infectionRateIndex = c_infectionRates.size() - 1;
     }
 }
 
@@ -257,7 +255,7 @@ void Board::epidemicInfection()
 
     auto city = backCard->city;
     const int numCubesAlready = city->numDiseaseCubes(city->diseaseType());
-    const int numCubesToAdd = (numCubesAlready == 0) ? 3 : 4-numCubesAlready;
+    const int numCubesToAdd = (numCubesAlready == 0) ? 3 : 4 - numCubesAlready;
 
     // Add 3 cubes, or enough cubes to trigger outbreak
     for (int i = 0; i < numCubesToAdd; ++i)
@@ -273,8 +271,7 @@ void Board::intensify()
 {
     shuffle(m_infectionDiscardPile.begin(), m_infectionDiscardPile.end());
 
-    m_infectionDeck.insert(m_infectionDeck.end(),
-                           m_infectionDiscardPile.begin(),
+    m_infectionDeck.insert(m_infectionDeck.end(), m_infectionDiscardPile.begin(),
                            m_infectionDiscardPile.end());
     m_infectionDiscardPile.clear();
 }
@@ -301,8 +298,7 @@ void Board::addDisease(const std::shared_ptr<City>& city)
 
 void Board::addDisease(const std::shared_ptr<City>& city, bool outbreak, DiseaseType disease)
 {
-    if (std::find(m_outbreakCities.begin(), m_outbreakCities.end(), city)
-        != m_outbreakCities.end())
+    if (std::find(m_outbreakCities.begin(), m_outbreakCities.end(), city) != m_outbreakCities.end())
     {
         LOG_DEBUG("{} already had an outbreak", city->name());
         return;
@@ -314,9 +310,7 @@ void Board::addDisease(const std::shared_ptr<City>& city, bool outbreak, Disease
     }
 
     const bool triggeredOutbreak = city->addDisease(disease);
-    LOG_INFO("Added {} disease to {} ({})",
-             diseaseToString(disease),
-             city->name(),
+    LOG_INFO("Added {} disease to {} ({})", diseaseToString(disease), city->name(),
              city->numDiseaseCubes(disease));
     if (triggeredOutbreak)
     {
@@ -340,4 +334,4 @@ int Board::numDiseaseCubesOnMap(DiseaseType type) const
     return count;
 }
 
-}
+} // namespace pandemic

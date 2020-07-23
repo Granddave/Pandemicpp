@@ -7,7 +7,7 @@
 
 #define UNUSED(x) (void)(x)
 
-template<typename Iterator>
+template <typename Iterator>
 void shuffle(Iterator first, Iterator last)
 {
     std::shuffle(first, last, std::mt19937(std::random_device()()));

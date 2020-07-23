@@ -1,14 +1,15 @@
 #pragma once
 
-#include <vector>
 #include <deque>
+#include <vector>
 
+#include "card.h"
 #include "city.h"
 #include "disease.h"
 #include "player.h"
-#include "card.h"
 
-namespace pandemic {
+namespace pandemic
+{
 
 enum class Difficulty
 {
@@ -69,4 +70,4 @@ private:
     std::vector<Cure> m_cures;
 };
 
-}
+} // namespace pandemic

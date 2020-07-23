@@ -1,14 +1,15 @@
 #pragma once
 
-#include <string>
 #include <istream>
-#include <memory>
-#include <vector>
 #include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "disease.h"
 
-namespace pandemic {
+namespace pandemic
+{
 
 class City : public std::enable_shared_from_this<City>
 {
@@ -31,7 +32,7 @@ public:
 private:
     std::string m_name;
     bool m_hasResearchStation = false;
-    //point2i m_coordinates;
+    // point2i m_coordinates;
     std::vector<std::shared_ptr<City>> m_neighbours;
     DiseaseType m_diseaseType;
     std::vector<DiseaseType> m_diseaseCubes;
@@ -62,5 +63,4 @@ private:
     std::shared_ptr<City> m_startCity;
 };
 
-}
-
+} // namespace pandemic

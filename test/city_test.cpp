@@ -72,4 +72,4 @@ TEST_CASE("Research station")
     REQUIRE(city.hasResearchStation());
 }
 
-}
+} // namespace pandemic

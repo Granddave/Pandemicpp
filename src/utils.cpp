@@ -2,8 +2,8 @@
 
 #include <algorithm>
 #include <cassert>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
 std::vector<std::string> split(const std::string& strToSplit, char delimeter)
@@ -24,12 +24,12 @@ std::vector<std::string> split(const std::string& strToSplit, char delimeter)
 std::string titleCase(std::string str, char delimiter)
 {
     std::transform(str.begin(), str.end(), str.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
+                   [](unsigned char c) { return std::tolower(c); });
     std::replace(str.begin(), str.end(), delimiter, ' ');
 
     char last = ' ';
     std::for_each(str.begin(), str.end(), [&](char& c) {
-        if(last == ' ' && c != ' ' && (::isalpha(c) != 0))
+        if (last == ' ' && c != ' ' && (::isalpha(c) != 0))
         {
             c = static_cast<char>(::toupper(c));
         }

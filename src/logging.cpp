@@ -1,12 +1,13 @@
 #include "logging.h"
 
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/null_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <iostream>
 
 #include "utils.h"
 
-namespace pandemic {
+namespace pandemic
+{
 
 void setupLog(const spdlog::level::level_enum level)
 {
@@ -38,4 +39,4 @@ spdlog::level::level_enum loglevelFromString(const std::string& levelString)
     return level;
 }
 
-}
+} // namespace pandemic

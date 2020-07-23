@@ -4,7 +4,8 @@
 
 #include "city.h"
 
-namespace pandemic {
+namespace pandemic
+{
 
 const int c_numEventCards = 5;
 
@@ -21,11 +22,16 @@ inline std::string eventCardToString(const EventCardType card)
 {
     switch (card)
     {
-        case EventCardType::ResilientPopulation: return "Resilient Population";
-        case EventCardType::Airlift:             return "Airlift";
-        case EventCardType::Forecast:            return "Forecast";
-        case EventCardType::OneQuietNight:       return "One Quiet Night";
-        case EventCardType::GovernmentGrant:     return "Government Grant";
+        case EventCardType::ResilientPopulation:
+            return "Resilient Population";
+        case EventCardType::Airlift:
+            return "Airlift";
+        case EventCardType::Forecast:
+            return "Forecast";
+        case EventCardType::OneQuietNight:
+            return "One Quiet Night";
+        case EventCardType::GovernmentGrant:
+            return "Government Grant";
     }
     return "Unknown role";
 }
@@ -42,15 +48,12 @@ struct PlayerCard
 
 struct PlayerCityCard : PlayerCard
 {
-    PlayerCityCard(std::shared_ptr<City> city)
-        : city(city)
-    {
-    }
+    PlayerCityCard(std::shared_ptr<City> city) : city(city) {}
 
     std::string name() const override;
 
     std::shared_ptr<City> city;
-    //int population;
+    // int population;
 };
 
 struct EpidemicCard : PlayerCard
@@ -60,10 +63,7 @@ struct EpidemicCard : PlayerCard
 
 struct EventCard : PlayerCard
 {
-    EventCard(const EventCardType eventType)
-        : eventType(eventType)
-    {
-    }
+    EventCard(const EventCardType eventType) : eventType(eventType) {}
 
     std::string name() const override;
 
@@ -75,12 +75,9 @@ struct EventCard : PlayerCard
 
 struct InfectionCard
 {
-    InfectionCard(std::shared_ptr<City> city)
-        : city(city)
-    {
-    }
+    InfectionCard(std::shared_ptr<City> city) : city(city) {}
 
     std::shared_ptr<City> city;
 };
 
-}
+} // namespace pandemic

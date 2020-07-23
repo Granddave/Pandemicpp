@@ -1,17 +1,17 @@
 #include "game.h"
 
-#include <iostream>
-#include <cassert>
 #include <algorithm>
+#include <cassert>
+#include <iostream>
 #include <memory>
 
-#include "utils.h"
 #include "logging.h"
+#include "utils.h"
 
-namespace pandemic {
+namespace pandemic
+{
 
-Game::Game(Config config)
-    : m_config(std::move(config))
+Game::Game(Config config) : m_config(std::move(config))
 {
     setupLog(loglevelFromString("info"));
     const auto seed = [&]() {
@@ -56,7 +56,7 @@ void Game::run()
 {
     while (continueGame())
     {
-        LOG_INFO("--- Player {}'s turn - ", m_currentPlayerIx+1);
+        LOG_INFO("--- Player {}'s turn - ", m_currentPlayerIx + 1);
         if (m_currentPlayerIx == 0)
         {
             m_round++;
@@ -64,7 +64,7 @@ void Game::run()
         }
 
         doTurn();
-        m_currentPlayerIx = (m_currentPlayerIx+1) % m_config.numPlayers;
+        m_currentPlayerIx = (m_currentPlayerIx + 1) % m_config.numPlayers;
     }
 }
 
@@ -73,7 +73,7 @@ void Game::doTurn()
     auto currentPlayer = m_players.at(static_cast<size_t>(m_currentPlayerIx));
     for (int i = 0; i < c_numActionsPerTurn; ++i)
     {
-        LOG_TRACE("Action {}", i+1);
+        LOG_TRACE("Action {}", i + 1);
         auto actions = possibleActions(currentPlayer);
 
         // Todo: Let player choose action
@@ -126,8 +126,7 @@ void Game::printStatus()
     LOG_INFO("Players:");
     for (const auto& player : m_players)
     {
-        LOG_INFO("{} is in {} and has {}",
-                 roleToString(player->role()),
+        LOG_INFO("{} is in {} and has {}", roleToString(player->role()),
                  player->currentCity()->name());
         for (const auto& card : player->cards())
         {
@@ -165,11 +164,9 @@ void Game::initPlayers(const int numPlayers)
         while (true)
         {
             Role role = static_cast<Role>(std::rand() % c_numRoles);
-            auto roleCollision = std::find_if(m_players.begin(), m_players.end(),
-                                              [&](const std::shared_ptr<Player>& p)
-            {
-                return p->role() == role;
-            });
+            auto roleCollision =
+                std::find_if(m_players.begin(), m_players.end(),
+                             [&](const std::shared_ptr<Player>& p) { return p->role() == role; });
 
             if (roleCollision != m_players.end())
             {
@@ -188,9 +185,12 @@ int Game::numEpidemicCards(Difficulty difficulty) const
 {
     switch (difficulty)
     {
-        case Difficulty::Introductory: return 4;
-        case Difficulty::Standard:     return 5;
-        case Difficulty::Heroic:       return 6;
+        case Difficulty::Introductory:
+            return 4;
+        case Difficulty::Standard:
+            return 5;
+        case Difficulty::Heroic:
+            return 6;
     }
     return 4;
 }
@@ -228,8 +228,7 @@ std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player)
         }
     }
 
-    if (!player->currentCity()->hasResearchStation() &&
-        player->role() == Role::OperationsExpert)
+    if (!player->currentCity()->hasResearchStation() && player->role() == Role::OperationsExpert)
     {
         actions.emplace_back(ActionType::BuildResearchStation);
     }
@@ -257,9 +256,8 @@ std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player)
         {
             const auto type = static_cast<DiseaseType>(i);
             const auto cardCount = std::count(cardTypes.begin(), cardTypes.end(), type);
-            const auto requiredCardCount = player->role() == Role::Scientist
-                                     ? c_numCardsToCure-1
-                                     : c_numCardsToCure;
+            const auto requiredCardCount =
+                player->role() == Role::Scientist ? c_numCardsToCure - 1 : c_numCardsToCure;
             if (cardCount >= requiredCardCount)
             {
                 actions.emplace_back(ActionType::TreatDisease);
@@ -314,4 +312,4 @@ bool Game::gameOver()
     return false;
 }
 
-}
+} // namespace pandemic

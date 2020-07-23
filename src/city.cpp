@@ -1,30 +1,28 @@
 #include "city.h"
 
 #include <algorithm>
+#include <cassert>
 #include <iostream>
 #include <sstream>
-#include <cassert>
 
-#include "utils.h"
 #include "logging.h"
+#include "utils.h"
 
-namespace pandemic {
+namespace pandemic
+{
 
 // -----------------------------------------------------------------------------
 // City
 
 City::City(const std::string& name, const DiseaseType diseaseType)
-    : m_name(titleCase(name)),
-      m_diseaseType(diseaseType)
+    : m_name(titleCase(name)), m_diseaseType(diseaseType)
 {
 }
 
 void City::addNeighbour(std::shared_ptr<City> other)
 {
     auto it = std::find_if(m_neighbours.begin(), m_neighbours.end(),
-                           [&](std::shared_ptr<City> const& p) {
-        return p == other;
-    });
+                           [&](std::shared_ptr<City> const& p) { return p == other; });
 
     if (it == m_neighbours.end())
     {
@@ -77,7 +75,7 @@ void CityParser::parseContent(const std::string& str)
     bool startCityFound = false;
     std::string line;
     std::stringstream ss(str);
-    while(std::getline(ss, line))
+    while (std::getline(ss, line))
     {
         line = trim(line);
         if (line.empty())
@@ -136,16 +134,14 @@ void CityParser::createCities()
     {
         for (size_t neighIx = 0; neighIx < m_parsedCities[cityIx].neighbours.size(); neighIx++)
         {
-            auto city = std::find_if(m_cities.begin(), m_cities.end(),
-                                     [&](const std::shared_ptr<City>& c)
-            {
-                return c->name() == m_parsedCities[cityIx].neighbours[neighIx];
-            });
+            auto city =
+                std::find_if(m_cities.begin(), m_cities.end(), [&](const std::shared_ptr<City>& c) {
+                    return c->name() == m_parsedCities[cityIx].neighbours[neighIx];
+                });
             if (*city == nullptr)
             {
                 LOG_ERROR("Failed to find neighbour {} for {}",
-                          m_parsedCities[cityIx].neighbours[neighIx],
-                          m_parsedCities[cityIx].name);
+                          m_parsedCities[cityIx].neighbours[neighIx], m_parsedCities[cityIx].name);
             }
             else
             {
@@ -156,4 +152,4 @@ void CityParser::createCities()
     LOG_DEBUG("Found {} cities", m_cities.size());
 }
 
-}
+} // namespace pandemic
