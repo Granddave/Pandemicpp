@@ -195,13 +195,14 @@ int Game::numEpidemicCards(Difficulty difficulty) const
     return 4;
 }
 
-std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player) const
+std::vector<std::unique_ptr<Action>> Game::possibleActions(
+    const std::shared_ptr<Player>& player) const
 {
-    std::vector<Action> actions;
+    std::vector<std::unique_ptr<Action>> actions;
 
     for (auto& city : player->currentCity()->neighbours())
     {
-        actions.emplace_back(ActionType::Drive, city);
+        actions.push_back(std::make_unique<ActionDrive>(city));
     }
 
     std::vector<DiseaseType> cardTypes;
@@ -210,18 +211,20 @@ std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player)
         auto cityCard = std::dynamic_pointer_cast<PlayerCityCard>(p);
         if (cityCard != nullptr)
         {
-            actions.emplace_back(ActionType::DirectFly, cityCard);
-
             if (cityCard->city == player->currentCity())
             {
-                actions.emplace_back(ActionType::CharterFlight, cityCard);
+                actions.push_back(std::make_unique<ActionCharterFly>(cityCard->city));
 
                 if (!player->currentCity()->hasResearchStation())
                 {
-                    actions.emplace_back(ActionType::BuildResearchStation);
+                    actions.push_back(std::make_unique<ActionBuildResearchStation>());
                 }
 
-                // Todo: Share Knowledge - Give card to other player
+                // TODO: Share Knowledge - Give card to other player
+            }
+            else
+            {
+                actions.push_back(std::make_unique<ActionDirectFly>(cityCard->city));
             }
 
             cardTypes.push_back(cityCard->city->diseaseType());
@@ -230,10 +233,10 @@ std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player)
 
     if (player->role() == Role::OperationsExpert && !player->currentCity()->hasResearchStation())
     {
-        actions.emplace_back(ActionType::BuildResearchStation);
+        actions.push_back(std::make_unique<ActionBuildResearchStation>());
     }
 
-    /* Todo: Share Knowledge -
+    /* TODO: Share Knowledge -
      *
      * if (another player is here)
      *     for players card
@@ -251,7 +254,7 @@ std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player)
             {
                 if (player->currentCity() != city)
                 {
-                    actions.emplace_back(ActionType::ShuttleFlight, city);
+                    actions.push_back(std::make_unique<ActionShuttleFly>(city));
                 }
             }
         }
@@ -259,20 +262,16 @@ std::vector<Action> Game::possibleActions(const std::shared_ptr<Player>& player)
         // Treat disease
         for (int i = 0; i < c_numDiseases; ++i)
         {
-            const auto type = static_cast<DiseaseType>(i);
-            const auto cardCount = std::count(cardTypes.begin(), cardTypes.end(), type);
+            const auto diseaseType = static_cast<DiseaseType>(i);
+            const auto cardCount = std::count(cardTypes.begin(), cardTypes.end(), diseaseType);
+            // TODO: Refactor to function:
             const auto requiredCardCount =
                 player->role() == Role::Scientist ? c_numCardsToCure - 1 : c_numCardsToCure;
             if (cardCount >= requiredCardCount)
             {
-                actions.emplace_back(ActionType::TreatDisease);
+                actions.push_back(std::make_unique<ActionTreatDisease>(diseaseType));
             }
         }
-    }
-
-    for (const auto& a : actions)
-    {
-        LOG_TRACE(actionToString(a.action));
     }
 
     return actions;

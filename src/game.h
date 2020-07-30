@@ -33,7 +33,8 @@ public:
 private:
     void initPlayers(const int numPlayers);
     int numEpidemicCards(Difficulty difficulty) const;
-    std::vector<Action> possibleActions(const std::shared_ptr<Player>& player) const;
+    std::vector<std::unique_ptr<Action>> possibleActions(
+        const std::shared_ptr<Player>& player) const;
     bool continueGame();
     bool gameOver();
 

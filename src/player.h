@@ -14,18 +14,6 @@ const int c_maxPlayers = 4;
 const int c_handLimit = 7;
 const int c_numRoles = 7;
 
-enum class ActionType
-{
-    Drive,
-    DirectFly,
-    CharterFlight,
-    ShuttleFlight,
-    BuildResearchStation,
-    TreatDisease,
-    ShareKnowledge,
-    DiscoverCure
-};
-
 enum class Role
 {
     ContingencyPlanner,
@@ -36,30 +24,6 @@ enum class Role
     Researcher,
     Scientist
 };
-
-inline std::string actionToString(const ActionType type)
-{
-    switch (type)
-    {
-        case ActionType::Drive:
-            return "Drive";
-        case ActionType::DirectFly:
-            return "DirectFly";
-        case ActionType::CharterFlight:
-            return "CharterFlight";
-        case ActionType::ShuttleFlight:
-            return "ShuttleFlight";
-        case ActionType::BuildResearchStation:
-            return "BuildResearchStation";
-        case ActionType::TreatDisease:
-            return "TreatDisease";
-        case ActionType::ShareKnowledge:
-            return "ShareKnowledge";
-        case ActionType::DiscoverCure:
-            return "DiscoverCure";
-    }
-    return "Unknown action";
-}
 
 inline std::string roleToString(const Role role)
 {
@@ -86,11 +50,11 @@ inline std::string roleToString(const Role role)
 class Player
 {
 public:
-    void setCurrentCity(std::shared_ptr<City>& city);
+    void setCurrentCity(const std::shared_ptr<City>& city) { m_currentCity = city; }
     std::shared_ptr<City> currentCity() const { return m_currentCity; }
     void setRole(const Role role) { m_role = role; }
     Role role() const { return m_role; }
-    void addCard(std::shared_ptr<PlayerCard>& card);
+    void addCard(std::shared_ptr<PlayerCard>& card) { m_cards.push_back(card); }
     std::deque<std::shared_ptr<PlayerCard>>& cards() { return m_cards; }
 
 private:
@@ -100,29 +64,101 @@ private:
     // TODO: Make use of `int actionsLeft;`
 };
 
-struct ShareKnowledgeData
+// --- Super classes ---
+class Action
 {
-    std::shared_ptr<PlayerCityCard> cityCard;
-    std::shared_ptr<Player> otherPlayer;
+public:
+    virtual ~Action() = default;
+    virtual std::string description() = 0;
 };
 
-struct Action
+class ActionCity : public Action
 {
-    Action(ActionType action, std::shared_ptr<City> city) : action(action), city(city) {}
-    Action(ActionType action,
-           std::shared_ptr<PlayerCityCard> card,
-           std::shared_ptr<Player> player = nullptr)
-        : action(action), card(card), player(player)
-    {
-    }
-    Action(ActionType action, DiseaseType type) : action(action), diseaseType(type) {}
-    Action(ActionType action) : action(action) {}
+public:
+    ActionCity(std::shared_ptr<City> city);
+    virtual ~ActionCity() override = default;
 
-    ActionType action = ActionType::Drive;
-    std::shared_ptr<City> city;
-    std::shared_ptr<PlayerCityCard> card;
-    std::shared_ptr<Player> player;
-    DiseaseType diseaseType = DiseaseType::Yellow;
+    virtual std::string description() override = 0;
+    std::shared_ptr<City> city();
+
+protected:
+    std::shared_ptr<City> m_city;
+};
+
+// --- Sub classes ---
+class ActionDrive : public ActionCity
+{
+public:
+    ActionDrive(const std::shared_ptr<City>& city) : ActionCity(city) {}
+
+    std::string description() override;
+};
+
+class ActionDirectFly : public ActionCity
+{
+public:
+    ActionDirectFly(const std::shared_ptr<City>& city) : ActionCity(city) {}
+
+    std::string description() override;
+};
+
+class ActionCharterFly : public ActionCity
+{
+public:
+    ActionCharterFly(const std::shared_ptr<City>& city) : ActionCity(city) {}
+
+    std::string description() override;
+    // TODO: Add destination as well?
+};
+
+class ActionShuttleFly : public ActionCity
+{
+public:
+    ActionShuttleFly(const std::shared_ptr<City>& city) : ActionCity(city) {}
+
+    std::string description() override;
+};
+
+class ActionBuildResearchStation : public Action
+{
+public:
+    ActionBuildResearchStation() {}
+
+    std::string description() override;
+};
+
+class ActionTreatDisease : public Action
+{
+public:
+    ActionTreatDisease(DiseaseType diseaseType) : m_diseaseType(diseaseType) {}
+
+    std::string description() override;
+
+private:
+    DiseaseType m_diseaseType;
+};
+
+class ActionShareKnowledge : public Action
+{
+public:
+    ActionShareKnowledge(std::shared_ptr<PlayerCityCard> cityCard,
+                         std::shared_ptr<Player> otherPlayer);
+
+    std::string description() override;
+    std::shared_ptr<PlayerCityCard> cityCard();
+    std::shared_ptr<Player> otherPlayer();
+
+private:
+    std::shared_ptr<PlayerCityCard> m_cityCard;
+    std::shared_ptr<Player> m_otherPlayer;
+};
+
+class ActionDiscoverCure : public Action
+{
+public:
+    ActionDiscoverCure() {}
+
+    std::string description() override;
 };
 
 } // namespace pandemic
