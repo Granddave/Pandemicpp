@@ -53,7 +53,6 @@ struct PlayerCityCard : PlayerCard
     std::string name() const override;
 
     std::shared_ptr<City> city;
-    // int population;
 };
 
 struct EpidemicCard : PlayerCard

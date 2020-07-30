@@ -24,8 +24,6 @@ enum class DiseaseType
     Black = 3
 };
 
-using DiseaseCube = DiseaseType;
-
 inline std::string diseaseToString(const DiseaseType disease)
 {
     switch (disease)

@@ -33,6 +33,7 @@ private:
     std::string m_name;
     bool m_hasResearchStation = false;
     // point2i m_coordinates;
+    // int population;
     std::vector<std::shared_ptr<City>> m_neighbours;
     DiseaseType m_diseaseType;
     std::vector<DiseaseType> m_diseaseCubes;

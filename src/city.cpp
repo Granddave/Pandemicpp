@@ -21,8 +21,8 @@ City::City(const std::string& name, const DiseaseType diseaseType)
 
 void City::addNeighbour(std::shared_ptr<City> other)
 {
-    auto it = std::find_if(m_neighbours.begin(), m_neighbours.end(),
-                           [&](std::shared_ptr<City> const& p) { return p == other; });
+    const auto it = std::find_if(m_neighbours.begin(), m_neighbours.end(),
+                                 [&](std::shared_ptr<City> const& p) { return p == other; });
 
     if (it == m_neighbours.end())
     {
@@ -72,6 +72,17 @@ CityParser::CityParser(const std::string& str)
 
 void CityParser::parseContent(const std::string& str)
 {
+    // City parser format:
+    //
+    // ['*' if starting city]['0-3' disease type] ['city_name'] [Neighbouring cities...]
+    //
+    // Short example:
+    // ...
+    // 1 tokyo san_francisco osaka shanghai seoul
+    // *2 atlanta washington miami chicago
+    // 2 chicago montreal atlanta mexico_city los_angeles san_francisco
+    // ...
+    //
     bool startCityFound = false;
     std::string line;
     std::stringstream ss(str);
@@ -100,6 +111,13 @@ void CityParser::parseContent(const std::string& str)
         std::vector<std::string> splittedLine = split(line, ' ');
         assert(splittedLine.size() > 2);
         city.diseaseType = std::stoi(splittedLine.at(0));
+        const bool validDiseaseType = city.diseaseType >= 0 && city.diseaseType < c_numDiseases;
+        if (!validDiseaseType)
+        {
+            LOG_CRIT("Disease type out of range ({}) for city: {}", city.name, city.diseaseType);
+            assert(validDiseaseType);
+        }
+
         city.name = titleCase(splittedLine.at(1));
 
         for (size_t i = 2; i < splittedLine.size(); i++)
@@ -120,7 +138,7 @@ void CityParser::createCities()
 {
     for (const parsedCity& parsedCity : m_parsedCities)
     {
-        auto diseaseType = static_cast<DiseaseType>(parsedCity.diseaseType);
+        const auto diseaseType = static_cast<DiseaseType>(parsedCity.diseaseType);
         auto city = std::make_shared<City>(parsedCity.name, diseaseType);
         if (parsedCity.startCity)
         {

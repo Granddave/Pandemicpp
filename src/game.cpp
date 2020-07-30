@@ -50,6 +50,7 @@ void Game::reset()
     m_board.reset();
     m_players.clear();
     m_currentPlayerIx = 0;
+    m_round = 0;
 }
 
 void Game::run()
@@ -76,7 +77,12 @@ void Game::doTurn()
         LOG_TRACE("Action {}", i + 1);
         auto actions = possibleActions(currentPlayer);
 
-        // Todo: Let player choose action
+        for (const auto& action : actions)
+        {
+            LOG_TRACE(action->description());
+        }
+
+        // TODO: Let player choose action
     }
 
     // Draw two player cards
@@ -91,7 +97,6 @@ void Game::doTurn()
 
         LOG_INFO("Picked up {}", drawnCard->name());
 
-        auto& playersCards = currentPlayer->cards();
         if (std::dynamic_pointer_cast<EpidemicCard>(drawnCard))
         {
             m_board.increaseInfectionRate();
@@ -100,16 +105,16 @@ void Game::doTurn()
         }
         else
         {
-            playersCards.push_back(drawnCard);
+            currentPlayer->cards().push_back(drawnCard);
         }
 
-        while (playersCards.size() > c_handLimit)
+        while (currentPlayer->cards().size() > c_handLimit)
         {
-            // Todo: Let player choose card to discard
+            // TODO: Let player choose card to discard
             // Random card will do for now...
-            const int index = std::rand() % static_cast<int>(playersCards.size());
-            auto droppedCard = playersCards.erase(playersCards.begin() + index);
-            LOG_INFO("Dropping {}", (*droppedCard)->name());
+            const int index = std::rand() % static_cast<int>(currentPlayer->cards().size());
+            auto droppedCard = (*currentPlayer->cards().erase(currentPlayer->cards().begin() + index));
+            LOG_INFO("Dropping {} from hand", droppedCard->name());
         }
     }
 
@@ -151,13 +156,12 @@ void Game::initPlayers(const int numPlayers)
     assert(numPlayers <= c_maxPlayers);
 
     // Find start city
-    auto cities = m_board.cities();
-    auto startCity = m_board.startCity();
+    const auto startCity = m_board.startCity();
     assert(startCity);
 
     for (int playerIx = 0; playerIx < numPlayers; playerIx++)
     {
-        std::shared_ptr<Player> player = std::make_shared<Player>();
+        auto player = std::make_shared<Player>();
         player->setCurrentCity(startCity);
 
         // Randomize the players role
