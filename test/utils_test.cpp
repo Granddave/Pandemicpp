@@ -29,18 +29,21 @@ TEST_CASE("Title case string")
 
 TEST_CASE("Trim string")
 {
-    REQUIRE(trim("abcd", "ad") == "bc");
-    REQUIRE(trim("		 foo bar ") == "foo bar");
     REQUIRE(trim(" foo bar") == "foo bar");
+    REQUIRE(trim("		 foo bar ") == "foo bar");
+    REQUIRE(trim("\tfoo bar", "\t") == "foo bar");
+    REQUIRE(trim("  foo bar", "\t") == "  foo bar");
+    REQUIRE(trim("abcd", "ad") == "bc");
 }
 
 TEST_CASE("Read from file")
 {
     const std::string filepath("/tmp/testingfile");
+    const std::string filecontent = "row 1\nrow 2";
 
     std::ofstream outfile(filepath);
-    outfile << "row 1\nrow 2";
+    outfile << filecontent;
     outfile.close();
 
-    REQUIRE(readFile(filepath) == "row 1\nrow 2");
+    REQUIRE(readFile(filepath) == filecontent);
 }

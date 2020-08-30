@@ -40,7 +40,11 @@ public:
 
     std::shared_ptr<InfectionCard> infect();
     std::shared_ptr<PlayerCard> drawPlayerCard();
-    size_t numPlayerCards() const { return m_playerDeck.size(); }
+    void addCardToPlayerDiscardPile(const std::shared_ptr<PlayerCard>& card);
+    size_t numPlayerCards() const
+    {
+        return m_playerDeck.size();
+    }
 
     int infectionRate() const;
     int numOutbreaks() const { return m_numOutbreaks; }

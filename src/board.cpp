@@ -184,6 +184,12 @@ std::shared_ptr<PlayerCard> Board::drawPlayerCard()
     return nullptr;
 }
 
+void Board::addCardToPlayerDiscardPile(const std::shared_ptr<PlayerCard>& card)
+{
+    // TODO: Write test
+    m_playerDiscardPile.push_front(card);
+}
+
 int Board::infectionRate() const
 {
     if (m_infectionRateIndex < c_infectionRates.size())
@@ -195,12 +201,8 @@ int Board::infectionRate() const
 
 int Board::numDiscoveredCures() const
 {
-    int discoveredCures = 0;
-    for (const auto& cure : m_cures)
-    {
-        discoveredCures += cure.discovered ? 1 : 0;
-    }
-    return discoveredCures;
+    return static_cast<int>(std::count_if(
+        m_cures.cbegin(), m_cures.cend(), [](const Cure cure) { return cure.discovered; }));
 }
 
 bool Board::isCureDiscovered(const DiseaseType type) const
@@ -213,7 +215,7 @@ bool Board::isCureDiscovered(const DiseaseType type) const
         }
     }
 
-    LOG_WARN("Didn't find the cure {} in the list", type);
+    LOG_ERROR("Didn't find the cure {} in the list", type);
     return false;
 }
 
@@ -237,6 +239,8 @@ void Board::discoverCure(const DiseaseType type)
             return;
         }
     }
+
+    LOG_ERROR("Didn't find the cure {} in the list", type);
 }
 
 void Board::increaseInfectionRate()
@@ -250,12 +254,14 @@ void Board::increaseInfectionRate()
 
 void Board::epidemicInfection()
 {
+    // TODO: Write test
     auto topCard = m_infectionDeck.back();
     m_infectionDeck.pop_back();
 
     auto city = topCard->city;
     const int numCubesAlready = city->numDiseaseCubes(city->diseaseType());
-    const int numCubesToAdd = (numCubesAlready == 0) ? 3 : 4 - numCubesAlready;
+    // const int numCubesToAdd = (numCubesAlready == 0) ? 3 : 4 - numCubesAlready;
+    const int numCubesToAdd = 3 - numCubesAlready;
 
     // Add 3 cubes, or enough cubes to trigger outbreak
     for (int i = 0; i < numCubesToAdd; ++i)
