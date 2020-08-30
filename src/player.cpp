@@ -2,8 +2,9 @@
 
 namespace pandemic
 {
-
-ActionCity::ActionCity(std::shared_ptr<City> city) : m_city(std::move(city)) {}
+ActionCity::ActionCity(std::shared_ptr<City> city) : m_city(std::move(city))
+{
+}
 
 std::shared_ptr<City> ActionCity::city()
 {

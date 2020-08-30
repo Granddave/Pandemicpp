@@ -8,7 +8,6 @@
 
 namespace pandemic
 {
-
 TEST_CASE("Infection Rate")
 {
     Board board;

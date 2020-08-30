@@ -7,7 +7,6 @@
 
 namespace pandemic
 {
-
 const int c_numDiseases = 4;
 const int c_numCures = c_numDiseases;
 const int c_numCardsToCure = 5;
@@ -42,7 +41,9 @@ inline std::string diseaseToString(const DiseaseType disease)
 
 struct Cure
 {
-    Cure(DiseaseType type) : type(type) {}
+    Cure(DiseaseType type) : type(type)
+    {
+    }
 
     DiseaseType type;
     bool discovered = false;

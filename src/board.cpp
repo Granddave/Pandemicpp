@@ -13,7 +13,6 @@
 
 namespace pandemic
 {
-
 void Board::reset()
 {
     m_playerDeck.clear();
@@ -141,8 +140,9 @@ void Board::insertEpidemicCards(const int numEpidemicCards)
 
 std::shared_ptr<City> Board::city(const std::string& cityName)
 {
-    auto city = std::find_if(m_cities.begin(), m_cities.end(),
-                             [&](const std::shared_ptr<City>& c) { return c->name() == cityName; });
+    auto city = std::find_if(m_cities.begin(), m_cities.end(), [&](const std::shared_ptr<City>& c) {
+        return c->name() == cityName;
+    });
     assert(*city);
     return *city;
 }
@@ -221,6 +221,7 @@ bool Board::isCureDiscovered(const DiseaseType type) const
 
 bool Board::isCureEradicated(const DiseaseType type) const
 {
+    // TODO: Write test
     if (!isCureDiscovered(type))
     {
         return false;
@@ -276,8 +277,8 @@ void Board::epidemicInfection()
 void Board::intensify()
 {
     shuffle(m_infectionDiscardPile.begin(), m_infectionDiscardPile.end());
-    m_infectionDeck.insert(m_infectionDeck.end(), m_infectionDiscardPile.begin(),
-                           m_infectionDiscardPile.end());
+    m_infectionDeck.insert(
+        m_infectionDeck.end(), m_infectionDiscardPile.begin(), m_infectionDiscardPile.end());
     m_infectionDiscardPile.clear();
 }
 
@@ -315,7 +316,9 @@ void Board::addDisease(const std::shared_ptr<City>& city, bool outbreak, Disease
     }
 
     const bool triggeredOutbreak = city->addDisease(disease);
-    LOG_INFO("Added {} disease to {} ({})", diseaseToString(disease), city->name(),
+    LOG_INFO("Added {} disease to {} ({})",
+             diseaseToString(disease),
+             city->name(),
              city->numDiseaseCubes(disease));
     if (triggeredOutbreak)
     {

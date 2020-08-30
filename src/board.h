@@ -10,7 +10,6 @@
 
 namespace pandemic
 {
-
 enum class Difficulty
 {
     Introductory = 0,
@@ -34,8 +33,14 @@ public:
     void insertEpidemicCards(const int numEpidemicCards);
 
     std::shared_ptr<City> city(const std::string& cityName);
-    std::shared_ptr<City>& startCity() { return m_startingCity; }
-    std::vector<std::shared_ptr<City>>& cities() { return m_cities; }
+    std::shared_ptr<City>& startCity()
+    {
+        return m_startingCity;
+    }
+    std::vector<std::shared_ptr<City>>& cities()
+    {
+        return m_cities;
+    }
     std::vector<std::shared_ptr<City>> researchStationCities() const;
 
     std::shared_ptr<InfectionCard> infect();
@@ -47,8 +52,15 @@ public:
     }
 
     int infectionRate() const;
-    int numOutbreaks() const { return m_numOutbreaks; }
+    int numOutbreaks() const
+    {
+        return m_numOutbreaks;
+    }
     int numDiscoveredCures() const;
+    std::vector<Cure> cures() const
+    {
+        return m_cures;
+    }
     bool isCureDiscovered(const DiseaseType type) const;
     bool isCureEradicated(const DiseaseType type) const;
     void discoverCure(const DiseaseType type);
@@ -62,6 +74,7 @@ private:
     void addDisease(const std::shared_ptr<City>& city, bool outbreak, DiseaseType disease);
     int numDiseaseCubesOnMap(DiseaseType type) const;
 
+    // TODO: Should the cards be unique_ptr?
     std::deque<std::shared_ptr<PlayerCard>> m_playerDeck;
     std::deque<std::shared_ptr<PlayerCard>> m_playerDiscardPile;
     std::deque<std::shared_ptr<InfectionCard>> m_infectionDeck;

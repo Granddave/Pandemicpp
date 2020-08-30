@@ -10,7 +10,6 @@
 
 namespace pandemic
 {
-
 // -----------------------------------------------------------------------------
 // City
 
@@ -21,7 +20,8 @@ City::City(const std::string& name, const DiseaseType diseaseType)
 
 void City::addNeighbour(std::shared_ptr<City> other)
 {
-    const auto it = std::find_if(m_neighbours.begin(), m_neighbours.end(),
+    const auto it = std::find_if(m_neighbours.begin(),
+                                 m_neighbours.end(),
                                  [&](std::shared_ptr<City> const& p) { return p == other; });
 
     if (it == m_neighbours.end())
@@ -159,7 +159,8 @@ void CityParser::createCities()
             if (*city == nullptr)
             {
                 LOG_ERROR("Failed to find neighbour {} for {}",
-                          m_parsedCities[cityIx].neighbours[neighIx], m_parsedCities[cityIx].name);
+                          m_parsedCities[cityIx].neighbours[neighIx],
+                          m_parsedCities[cityIx].name);
             }
             else
             {

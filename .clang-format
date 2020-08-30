@@ -1,12 +1,16 @@
 ---
 AccessModifierOffset: -4
 AlignTrailingComments: true
+AllowShortFunctionsOnASingleLine: false
+AllowAllParametersOfDeclarationOnNextLine: true
 BasedOnStyle: Chromium
+BinPackArguments: false
+BinPackParameters: false
 BreakBeforeBraces: Allman
 BreakConstructorInitializers: BeforeColon
 ColumnLimit: 100
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
 IndentWidth: 4
-KeepEmptyLinesAtTheStartOfBlocks: true
 Language: Cpp
 PointerAlignment: Left
 PointerBindsToType: false

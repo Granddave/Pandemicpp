@@ -10,7 +10,6 @@
 
 namespace pandemic
 {
-
 Game::Game(Config config) : m_config(std::move(config))
 {
     setupLog(loglevelFromString("info"));
@@ -113,7 +112,8 @@ void Game::doTurn()
             // TODO: Let player choose card to discard
             // Random card will do for now...
             const int index = std::rand() % static_cast<int>(currentPlayer->cards().size());
-            auto droppedCard = (*currentPlayer->cards().erase(currentPlayer->cards().begin() + index));
+            auto droppedCard =
+                (*currentPlayer->cards().erase(currentPlayer->cards().begin() + index));
             LOG_INFO("Dropping {} from hand", droppedCard->name());
         }
     }
@@ -131,8 +131,8 @@ void Game::printStatus()
     LOG_INFO("Players:");
     for (const auto& player : m_players)
     {
-        LOG_INFO("{} is in {} and has {}", roleToString(player->role()),
-                 player->currentCity()->name());
+        LOG_INFO(
+            "{} is in {} and has {}", roleToString(player->role()), player->currentCity()->name());
         for (const auto& card : player->cards())
         {
             LOG_INFO(" * {}", card->name());
@@ -168,9 +168,10 @@ void Game::initPlayers(const int numPlayers)
         while (true)
         {
             Role role = static_cast<Role>(std::rand() % c_numRoles);
-            auto roleCollision =
-                std::find_if(m_players.begin(), m_players.end(),
-                             [&](const std::shared_ptr<Player>& p) { return p->role() == role; });
+            auto roleCollision = std::find_if(
+                m_players.begin(), m_players.end(), [&](const std::shared_ptr<Player>& p) {
+                    return p->role() == role;
+                });
 
             if (roleCollision != m_players.end())
             {

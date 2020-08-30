@@ -6,7 +6,6 @@
 
 namespace pandemic
 {
-
 const int c_numEventCards = 5;
 
 enum class EventCardType
@@ -41,14 +40,18 @@ inline std::string eventCardToString(const EventCardType card)
 
 struct PlayerCard
 {
-    PlayerCard() {}
+    PlayerCard()
+    {
+    }
     virtual ~PlayerCard() = default;
     virtual std::string name() const = 0;
 };
 
 struct PlayerCityCard : PlayerCard
 {
-    PlayerCityCard(std::shared_ptr<City> city) : city(city) {}
+    PlayerCityCard(std::shared_ptr<City> city) : city(city)
+    {
+    }
 
     std::string name() const override;
 
@@ -62,7 +65,9 @@ struct EpidemicCard : PlayerCard
 
 struct EventCard : PlayerCard
 {
-    EventCard(const EventCardType eventType) : eventType(eventType) {}
+    EventCard(const EventCardType eventType) : eventType(eventType)
+    {
+    }
 
     std::string name() const override;
 
@@ -74,7 +79,9 @@ struct EventCard : PlayerCard
 
 struct InfectionCard
 {
-    InfectionCard(std::shared_ptr<City> city) : city(city) {}
+    InfectionCard(std::shared_ptr<City> city) : city(city)
+    {
+    }
 
     std::shared_ptr<City> city;
 };

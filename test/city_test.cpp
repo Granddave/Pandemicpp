@@ -9,7 +9,6 @@
 
 namespace pandemic
 {
-
 TEST_CASE("City creation")
 {
     City city("london", DiseaseType::Blue);

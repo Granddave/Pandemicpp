@@ -23,8 +23,8 @@ std::vector<std::string> split(const std::string& strToSplit, char delimeter)
 
 std::string titleCase(std::string str, char delimiter)
 {
-    std::transform(str.begin(), str.end(), str.begin(),
-                   [](unsigned char c) { return std::tolower(c); });
+    std::transform(
+        str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::tolower(c); });
     std::replace(str.begin(), str.end(), delimiter, ' ');
 
     char last = ' ';

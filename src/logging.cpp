@@ -8,7 +8,6 @@
 
 namespace pandemic
 {
-
 void setupLog(const spdlog::level::level_enum level)
 {
 #ifdef LOG_OFF

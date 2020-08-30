@@ -10,7 +10,6 @@
 
 namespace pandemic
 {
-
 class City : public std::enable_shared_from_this<City>
 {
 public:
@@ -18,14 +17,32 @@ public:
 
     void addNeighbour(std::shared_ptr<City> other);
     bool addDisease(const DiseaseType type);
-    void setResearchStation(const bool b) { m_hasResearchStation = b; }
+    void setResearchStation(const bool b)
+    {
+        m_hasResearchStation = b;
+    }
     void cureDisease(const DiseaseType type);
 
-    std::string name() const { return m_name; }
-    bool hasResearchStation() const { return m_hasResearchStation; }
-    std::vector<std::shared_ptr<City>> neighbours() const { return m_neighbours; }
-    DiseaseType diseaseType() const { return m_diseaseType; }
-    std::vector<DiseaseType> diseaseCubes() const { return m_diseaseCubes; }
+    std::string name() const
+    {
+        return m_name;
+    }
+    bool hasResearchStation() const
+    {
+        return m_hasResearchStation;
+    }
+    std::vector<std::shared_ptr<City>> neighbours() const
+    {
+        return m_neighbours;
+    }
+    DiseaseType diseaseType() const
+    {
+        return m_diseaseType;
+    }
+    std::vector<DiseaseType> diseaseCubes() const
+    {
+        return m_diseaseCubes;
+    }
     int numDiseaseCubes() const;
     int numDiseaseCubes(const DiseaseType type) const;
 
@@ -44,8 +61,14 @@ class CityParser
 public:
     CityParser(const std::string& str);
 
-    std::vector<std::shared_ptr<City>> cities() const { return m_cities; }
-    std::shared_ptr<City> startCity() const { return m_startCity; }
+    std::vector<std::shared_ptr<City>> cities() const
+    {
+        return m_cities;
+    }
+    std::shared_ptr<City> startCity() const
+    {
+        return m_startCity;
+    }
 
 private:
     struct parsedCity

@@ -14,7 +14,6 @@
 
 namespace pandemic
 {
-
 void setupLog(const spdlog::level::level_enum level);
 void setupLog(const std::string& level = "info");
 spdlog::level::level_enum loglevelFromString(const std::string& levelString);

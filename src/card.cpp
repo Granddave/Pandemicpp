@@ -2,7 +2,6 @@
 
 namespace pandemic
 {
-
 std::string PlayerCityCard::name() const
 {
     return city->name();

@@ -10,7 +10,10 @@ class TestBoard : Board
 {
 public:
     TestBoard();
-    std::deque<std::shared_ptr<PlayerCard>>& playerDeck() { return m_playerDeck; }
+    std::deque<std::shared_ptr<PlayerCard>>& playerDeck()
+    {
+        return m_playerDeck;
+    }
     // std::deque<std::shared_ptr<PlayerCard>>& playerDiscardPile;
     // std::deque<std::shared_ptr<InfectionCard>>& infectionDeck;
     // std::deque<std::shared_ptr<InfectionCard>>& infectionDiscardPile;
