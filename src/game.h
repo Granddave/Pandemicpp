@@ -34,8 +34,8 @@ private:
     int numEpidemicCards(Difficulty difficulty) const;
     std::vector<std::unique_ptr<Action>> possibleActions(
         const std::shared_ptr<Player>& player) const;
-    bool continueGame();
-    bool gameOver();
+    bool shouldContinueGame();
+    bool isGameOver();
 
     bool m_gameOver = false;
     bool m_gameWon = false;

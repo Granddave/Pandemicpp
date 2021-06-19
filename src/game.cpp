@@ -53,7 +53,7 @@ void Game::reset()
 
 void Game::run()
 {
-    while (continueGame())
+    while (shouldContinueGame())
     {
         LOG_INFO("--- Player {}'s turn - ", m_currentPlayerIx + 1);
         if (m_currentPlayerIx == 0)
@@ -281,9 +281,9 @@ std::vector<std::unique_ptr<Action>> Game::possibleActions(
     return actions;
 }
 
-bool Game::continueGame()
+bool Game::shouldContinueGame()
 {
-    if (gameOver())
+    if (isGameOver())
     {
         m_gameOver = true;
         LOG_INFO("Game Over!");
@@ -299,7 +299,7 @@ bool Game::continueGame()
     return true;
 }
 
-bool Game::gameOver()
+bool Game::isGameOver()
 {
     if (m_board.numOutbreaks() > c_maxOutbreaks)
     {
