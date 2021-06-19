@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "city.h"
+#include "utils.h"
 
 namespace pandemic
 {
@@ -32,6 +33,8 @@ inline std::string eventCardToString(const EventCardType card)
         case EventCardType::GovernmentGrant:
             return "Government Grant";
     }
+
+    VERIFY_NOT_REACHED();
     return "Unknown role";
 }
 

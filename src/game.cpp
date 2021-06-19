@@ -196,6 +196,8 @@ int Game::numEpidemicCards(Difficulty difficulty) const
         case Difficulty::Heroic:
             return 6;
     }
+
+    VERIFY_NOT_REACHED();
     return 4;
 }
 

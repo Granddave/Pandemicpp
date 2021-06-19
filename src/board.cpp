@@ -215,7 +215,7 @@ bool Board::isCureDiscovered(const DiseaseType type) const
     }
 
     LOG_ERROR("Didn't find the cure {} in the list", type);
-    return false;
+    VERIFY_NOT_REACHED();
 }
 
 bool Board::isCureEradicated(const DiseaseType type) const
@@ -241,6 +241,7 @@ void Board::discoverCure(const DiseaseType type)
     }
 
     LOG_ERROR("Didn't find the cure {} in the list", type);
+    VERIFY_NOT_REACHED();
 }
 
 void Board::increaseInfectionRate()

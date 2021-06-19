@@ -19,6 +19,8 @@
         VERIFY(expr);          \
     }
 
+#define VERIFY_NOT_REACHED() VERIFY(false)
+
 template <typename Iterator>
 void shuffle(Iterator first, Iterator last)
 {

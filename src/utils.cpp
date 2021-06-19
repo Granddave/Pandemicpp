@@ -58,7 +58,7 @@ std::string readFile(const std::string& filepath)
     if (!file.is_open() || !file.good())
     {
         std::cerr << "Failed to open file: " << filepath << std::endl;
-        assert(0);
+        VERIFY_NOT_REACHED();
         return std::string();
     }
     std::stringstream ss;

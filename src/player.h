@@ -3,6 +3,7 @@
 #include <deque>
 #include <memory>
 
+#include "utils.h"
 #include "card.h"
 #include "city.h"
 
@@ -43,6 +44,8 @@ inline std::string roleToString(const Role role)
         case Role::Scientist:
             return "Scientist";
     }
+
+    VERIFY_NOT_REACHED();
     return "Unknown role";
 }
 

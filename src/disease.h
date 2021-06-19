@@ -5,6 +5,8 @@
 #include <numeric>
 #include <string>
 
+#include "utils.h"
+
 namespace pandemic
 {
 const int c_numDiseases = 4;
@@ -36,6 +38,8 @@ inline std::string diseaseToString(const DiseaseType disease)
         case DiseaseType::Black:
             return "Black";
     }
+
+    VERIFY_NOT_REACHED();
     return "Unknown disease";
 }
 
