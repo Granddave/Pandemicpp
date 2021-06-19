@@ -9,6 +9,9 @@
 
 namespace pandemic
 {
+constexpr int c_numActionsPerTurn = 4;
+constexpr int c_numPlayerCardsToDraw = 2;
+
 Game::Game(Config config) : m_config(std::move(config))
 {
     setupLog(loglevelFromString("info"));
@@ -112,7 +115,7 @@ void Game::doTurn()
             // Random card will do for now...
             const int index = std::rand() % static_cast<int>(currentPlayer->cards().size());
             auto droppedCard =
-                (*currentPlayer->cards().erase(currentPlayer->cards().begin() + index));
+                *currentPlayer->cards().erase(currentPlayer->cards().begin() + index);
             LOG_INFO("Dropping {} from hand", droppedCard->name());
         }
     }
@@ -214,8 +217,7 @@ std::vector<std::unique_ptr<Action>> Game::possibleActions(
     std::vector<DiseaseType> cardTypes;
     for (const auto& p : player->cards())
     {
-        auto cityCard = std::dynamic_pointer_cast<PlayerCityCard>(p);
-        if (cityCard != nullptr)
+        if (auto cityCard = std::dynamic_pointer_cast<PlayerCityCard>(p))
         {
             if (cityCard->city == player->currentCity())
             {

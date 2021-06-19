@@ -6,9 +6,6 @@
 
 namespace pandemic
 {
-const int c_numActionsPerTurn = 4;
-const int c_numPlayerCardsToDraw = 2;
-
 struct Config
 {
     int numPlayers = 2;

@@ -3,16 +3,16 @@
 #include <deque>
 #include <memory>
 
-#include "utils.h"
 #include "card.h"
 #include "city.h"
+#include "utils.h"
 
 namespace pandemic
 {
-const int c_minPlayers = 2;
-const int c_maxPlayers = 4;
-const int c_handLimit = 7;
-const int c_numRoles = 7;
+constexpr int c_minPlayers = 2;
+constexpr int c_maxPlayers = 4;
+constexpr int c_handLimit = 7;
+constexpr int c_numRoles = 7;
 
 enum class Role
 {
@@ -140,6 +140,7 @@ class ActionShuttleFly final : public ActionCity
 public:
     ActionShuttleFly(const std::shared_ptr<City>& city) : ActionCity(city)
     {
+        VERIFY(city->hasResearchStation());
     }
 
     std::string description() override;

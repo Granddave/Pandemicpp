@@ -92,6 +92,7 @@ void Board::distributePlayerCards(std::vector<std::shared_ptr<Player>>& players)
     VERIFY(players.size() >= c_minPlayers);
     VERIFY(players.size() <= c_maxPlayers);
 
+    const size_t numPlayerCardsToDistribute = 6 - players.size();
     LOG_INFO("--- Distribute player cards");
     shuffle(m_playerDeck.begin(), m_playerDeck.end());
     for (const std::shared_ptr<Player>& p : players)
@@ -101,7 +102,7 @@ void Board::distributePlayerCards(std::vector<std::shared_ptr<Player>>& players)
          *  3 players: 3 each
          *  4 players: 2 each */
         LOG_DEBUG("{} gets ", roleToString(p->role()));
-        for (size_t i = 0; i < 6 - players.size(); i++)
+        for (size_t i = 0; i < numPlayerCardsToDistribute; i++)
         {
             std::shared_ptr<PlayerCard> card = m_playerDeck.front();
             LOG_DEBUG(" - {}", card->name());
