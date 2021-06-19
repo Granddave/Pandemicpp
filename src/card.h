@@ -40,16 +40,14 @@ inline std::string eventCardToString(const EventCardType card)
 
 struct PlayerCard
 {
-    PlayerCard()
-    {
-    }
+    PlayerCard() = default;
     virtual ~PlayerCard() = default;
     virtual std::string name() const = 0;
 };
 
-struct PlayerCityCard : PlayerCard
+struct PlayerCityCard final : public PlayerCard
 {
-    PlayerCityCard(std::shared_ptr<City> city) : city(city)
+    PlayerCityCard(std::shared_ptr<City> city) : city(std::move(city))
     {
     }
 
@@ -58,12 +56,12 @@ struct PlayerCityCard : PlayerCard
     std::shared_ptr<City> city;
 };
 
-struct EpidemicCard : PlayerCard
+struct EpidemicCard final : public PlayerCard
 {
     std::string name() const override;
 };
 
-struct EventCard : PlayerCard
+struct EventCard final : public PlayerCard
 {
     EventCard(const EventCardType eventType) : eventType(eventType)
     {

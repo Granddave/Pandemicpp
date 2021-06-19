@@ -93,7 +93,7 @@ void CityParser::parseContent(const std::string& str)
             break;
         }
 
-        parsedCity city;
+        ParsedCity city;
         if (line.at(0) == '*')
         {
             VERIFY_LOG(!startCityFound, "Only one city may be the starting city");
@@ -126,7 +126,7 @@ void CityParser::parseContent(const std::string& str)
 
 void CityParser::createCities()
 {
-    for (const parsedCity& parsedCity : m_parsedCities)
+    for (const ParsedCity& parsedCity : m_parsedCities)
     {
         const auto diseaseType = static_cast<DiseaseType>(parsedCity.diseaseType);
         auto city = std::make_shared<City>(parsedCity.name, diseaseType);

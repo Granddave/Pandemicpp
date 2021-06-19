@@ -6,11 +6,6 @@ ActionCity::ActionCity(std::shared_ptr<City> city) : m_city(std::move(city))
 {
 }
 
-std::shared_ptr<City> ActionCity::city()
-{
-    return m_city;
-}
-
 std::string ActionDrive::description()
 {
     return "Drive to " + m_city->name();

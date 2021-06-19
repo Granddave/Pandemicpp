@@ -85,6 +85,7 @@ private:
 class Action
 {
 public:
+    Action() = default;
     virtual ~Action() = default;
     virtual std::string description() = 0;
 };
@@ -93,17 +94,14 @@ class ActionCity : public Action
 {
 public:
     ActionCity(std::shared_ptr<City> city);
-    virtual ~ActionCity() override = default;
-
-    virtual std::string description() override = 0;
-    std::shared_ptr<City> city();
+    virtual ~ActionCity() = default;
 
 protected:
     std::shared_ptr<City> m_city;
 };
 
 // --- Sub classes ---
-class ActionDrive : public ActionCity
+class ActionDrive final : public ActionCity
 {
 public:
     ActionDrive(const std::shared_ptr<City>& city) : ActionCity(city)
@@ -113,7 +111,7 @@ public:
     std::string description() override;
 };
 
-class ActionDirectFly : public ActionCity
+class ActionDirectFly final : public ActionCity
 {
 public:
     ActionDirectFly(const std::shared_ptr<City>& city) : ActionCity(city)
@@ -123,7 +121,7 @@ public:
     std::string description() override;
 };
 
-class ActionCharterFly : public ActionCity
+class ActionCharterFly final : public ActionCity
 {
 public:
     ActionCharterFly(const std::shared_ptr<City>& city) : ActionCity(city)
@@ -134,7 +132,7 @@ public:
     // TODO: Add destination as well?
 };
 
-class ActionShuttleFly : public ActionCity
+class ActionShuttleFly final : public ActionCity
 {
 public:
     ActionShuttleFly(const std::shared_ptr<City>& city) : ActionCity(city)
@@ -144,17 +142,14 @@ public:
     std::string description() override;
 };
 
-class ActionBuildResearchStation : public Action
+class ActionBuildResearchStation final : public Action
 {
 public:
-    ActionBuildResearchStation()
-    {
-    }
-
+    ActionBuildResearchStation() = default;
     std::string description() override;
 };
 
-class ActionTreatDisease : public Action
+class ActionTreatDisease final : public Action
 {
 public:
     ActionTreatDisease(DiseaseType diseaseType) : m_diseaseType(diseaseType)
@@ -167,7 +162,7 @@ private:
     DiseaseType m_diseaseType;
 };
 
-class ActionShareKnowledge : public Action
+class ActionShareKnowledge final : public Action
 {
 public:
     ActionShareKnowledge(std::shared_ptr<PlayerCityCard> cityCard,
@@ -182,13 +177,10 @@ private:
     std::shared_ptr<Player> m_otherPlayer;
 };
 
-class ActionDiscoverCure : public Action
+class ActionDiscoverCure final : public Action
 {
 public:
-    ActionDiscoverCure()
-    {
-    }
-
+    ActionDiscoverCure() = default;
     std::string description() override;
 };
 

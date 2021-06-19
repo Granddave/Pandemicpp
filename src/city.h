@@ -71,7 +71,7 @@ public:
     }
 
 private:
-    struct parsedCity
+    struct ParsedCity
     {
         std::string name;
         std::vector<std::string> neighbours;
@@ -82,7 +82,7 @@ private:
     void parseContent(const std::string& str);
     void createCities();
 
-    std::vector<parsedCity> m_parsedCities;
+    std::vector<ParsedCity> m_parsedCities;
     std::vector<std::shared_ptr<City>> m_cities;
     std::shared_ptr<City> m_startCity;
 };
