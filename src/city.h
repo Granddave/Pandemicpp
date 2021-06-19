@@ -21,7 +21,7 @@ public:
     {
         m_hasResearchStation = b;
     }
-    void cureDisease(const DiseaseType type);
+    void treatDisease(const DiseaseType type);
 
     std::string name() const
     {
@@ -45,6 +45,7 @@ public:
     }
     int numDiseaseCubes() const;
     int numDiseaseCubes(const DiseaseType type) const;
+    std::vector<DiseaseType> diseaseCubeTypes() const;
 
 private:
     std::string m_name;

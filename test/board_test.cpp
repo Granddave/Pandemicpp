@@ -70,7 +70,7 @@ TEST_CASE("Eradication")
         REQUIRE_FALSE(board.isCureEradicated(disease));
 
         board.discoverCure(disease);
-        board.city("A")->cureDisease(disease);
+        board.city("A")->treatDisease(disease);
     }
 
     REQUIRE(board.isCureEradicated(disease));

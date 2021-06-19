@@ -184,8 +184,14 @@ private:
 class ActionDiscoverCure final : public Action
 {
 public:
-    ActionDiscoverCure() = default;
+    ActionDiscoverCure(DiseaseType diseaseType) : m_diseaseType(diseaseType)
+    {
+    }
+
     std::string description() override;
+
+private:
+    DiseaseType m_diseaseType;
 };
 
 } // namespace pandemic

@@ -252,6 +252,15 @@ std::vector<std::unique_ptr<Action>> Game::possibleActions(
      *             Share knowledge
      */
 
+    // Treat disease
+    if (player->currentCity()->numDiseaseCubes() > 0)
+    {
+        for (const DiseaseType diseaseType : player->currentCity()->diseaseCubeTypes())
+        {
+            actions.push_back(std::make_unique<ActionTreatDisease>(diseaseType));
+        }
+    }
+
     if (player->currentCity()->hasResearchStation())
     {
         // Shuttle flight
@@ -267,20 +276,21 @@ std::vector<std::unique_ptr<Action>> Game::possibleActions(
             }
         }
 
-        // Treat disease
+        // Discover cure
         for (int i = 0; i < c_numDiseases; ++i)
         {
             const auto diseaseType = static_cast<DiseaseType>(i);
             const auto cardCount = std::count(cardTypes.begin(), cardTypes.end(), diseaseType);
-            // TODO: Refactor to function:
             const auto requiredCardCount =
                 player->role() == Role::Scientist ? c_numCardsToCure - 1 : c_numCardsToCure;
             if (cardCount >= requiredCardCount)
             {
-                actions.push_back(std::make_unique<ActionTreatDisease>(diseaseType));
+                actions.push_back(std::make_unique<ActionDiscoverCure>(diseaseType));
             }
         }
     }
+
+    // TODO: Add role specific actions
 
     return actions;
 }

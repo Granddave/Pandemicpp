@@ -54,13 +54,13 @@ TEST_CASE("Adding and curing a disease")
     for (int i = c_maxCubesInCity; i != 0; --i)
     {
         CAPTURE(i);
-        city.cureDisease(disease);
+        city.treatDisease(disease);
         REQUIRE(city.numDiseaseCubes() == i - 1);
     }
 
     // Cure a disease free city
     REQUIRE(city.numDiseaseCubes() == 0);
-    city.cureDisease(disease);
+    city.treatDisease(disease);
     REQUIRE(city.numDiseaseCubes() == 0);
 }
 

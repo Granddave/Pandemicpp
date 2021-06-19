@@ -41,7 +41,7 @@ bool City::addDisease(const DiseaseType type)
     return false;
 }
 
-void City::cureDisease(const DiseaseType type)
+void City::treatDisease(const DiseaseType type)
 {
     const auto rmIt = std::find(m_diseaseCubes.begin(), m_diseaseCubes.end(), type);
     if (rmIt != m_diseaseCubes.cend())
@@ -58,6 +58,20 @@ int City::numDiseaseCubes() const
 int City::numDiseaseCubes(const DiseaseType type) const
 {
     return static_cast<int>(std::count(m_diseaseCubes.begin(), m_diseaseCubes.end(), type));
+}
+
+std::vector<DiseaseType> City::diseaseCubeTypes() const
+{
+    std::vector<DiseaseType> types;
+    for (int i = 0; i < c_numDiseases; ++i)
+    {
+        const auto type = static_cast<DiseaseType>(i);
+        if (std::count(m_diseaseCubes.begin(), m_diseaseCubes.end(), type) > 0)
+        {
+            types.emplace_back(type);
+        }
+    }
+    return types;
 }
 
 // -----------------------------------------------------------------------------
