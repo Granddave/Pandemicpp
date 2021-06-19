@@ -1,7 +1,6 @@
 #include "board.h"
 
 #include <algorithm>
-#include <cassert>
 #include <ctime>
 #include <iostream>
 #include <memory>
@@ -59,7 +58,7 @@ void Board::setStartCity(std::shared_ptr<City>& city)
 void Board::initInfections()
 {
     LOG_INFO("--- Initializing infections");
-    assert(m_infectionDeck.size() > 3 * 3);
+    VERIFY(m_infectionDeck.size() > 3 * 3);
     shuffle(m_infectionDeck.begin(), m_infectionDeck.end());
     for (int numCubes = 3; numCubes != 0; numCubes--)
     {
@@ -68,7 +67,7 @@ void Board::initInfections()
         {
             std::shared_ptr<InfectionCard> card = m_infectionDeck.front();
             m_infectionDeck.pop_front();
-            assert(card);
+            VERIFY_LOG(card, "Failed to get card for city {}", cityIx);
             LOG_DEBUG(card->city->name());
             for (int i = 0; i < numCubes; i++)
             {
@@ -90,8 +89,8 @@ void Board::insertEventCards()
 
 void Board::distributePlayerCards(std::vector<std::shared_ptr<Player>>& players)
 {
-    assert(players.size() >= c_minPlayers);
-    assert(players.size() <= c_maxPlayers);
+    VERIFY(players.size() >= c_minPlayers);
+    VERIFY(players.size() <= c_maxPlayers);
 
     LOG_INFO("--- Distribute player cards");
     shuffle(m_playerDeck.begin(), m_playerDeck.end());
@@ -143,7 +142,7 @@ std::shared_ptr<City> Board::city(const std::string& cityName)
     auto city = std::find_if(m_cities.begin(), m_cities.end(), [&](const std::shared_ptr<City>& c) {
         return c->name() == cityName;
     });
-    assert(*city);
+    VERIFY_LOG(*city, "Failed to find city with name '{}'", cityName);
     return *city;
 }
 
@@ -162,7 +161,7 @@ std::vector<std::shared_ptr<City>> Board::researchStationCities() const
 
 std::shared_ptr<InfectionCard> Board::infect()
 {
-    assert(m_infectionDeck.size() > 0);
+    VERIFY(m_infectionDeck.size() > 0);
     auto card = m_infectionDeck.front();
     m_infectionDeck.pop_front();
 

@@ -1,7 +1,6 @@
 #include "game.h"
 
 #include <algorithm>
-#include <cassert>
 #include <iostream>
 #include <memory>
 
@@ -152,12 +151,12 @@ void Game::printStatus()
 
 void Game::initPlayers(const int numPlayers)
 {
-    assert(numPlayers >= c_minPlayers);
-    assert(numPlayers <= c_maxPlayers);
+    VERIFY(numPlayers >= c_minPlayers);
+    VERIFY(numPlayers <= c_maxPlayers);
 
     // Find start city
     const auto startCity = m_board.startCity();
-    assert(startCity);
+    VERIFY(startCity);
 
     for (int playerIx = 0; playerIx < numPlayers; playerIx++)
     {

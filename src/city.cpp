@@ -1,7 +1,6 @@
 #include "city.h"
 
 #include <algorithm>
-#include <cassert>
 #include <iostream>
 #include <sstream>
 
@@ -97,26 +96,21 @@ void CityParser::parseContent(const std::string& str)
         parsedCity city;
         if (line.at(0) == '*')
         {
-            if (startCityFound)
-            {
-                LOG_CRIT("Only one city may be the starting city");
-                assert(!startCityFound);
-            }
+            VERIFY_LOG(!startCityFound, "Only one city may be the starting city");
             startCityFound = true;
 
             city.startCity = true;
             line.erase(0, 1); // Remove first character
         }
 
-        std::vector<std::string> splittedLine = split(line, ' ');
-        assert(splittedLine.size() > 2);
+        const std::vector<std::string> splittedLine = split(line, ' ');
+        VERIFY(splittedLine.size() > 2);
         city.diseaseType = std::stoi(splittedLine.at(0));
         const bool validDiseaseType = city.diseaseType >= 0 && city.diseaseType < c_numDiseases;
-        if (!validDiseaseType)
-        {
-            LOG_CRIT("Disease type out of range ({}) for city: {}", city.name, city.diseaseType);
-            assert(validDiseaseType);
-        }
+        VERIFY_LOG(validDiseaseType,
+                   "Disease type out of range ({}) for city: {}",
+                   city.name,
+                   city.diseaseType);
 
         city.name = titleCase(splittedLine.at(1));
 
@@ -127,11 +121,7 @@ void CityParser::parseContent(const std::string& str)
 
         m_parsedCities.push_back(city);
     }
-    if (!startCityFound)
-    {
-        LOG_CRIT("No start city found!");
-        assert(startCityFound);
-    }
+    VERIFY_LOG(startCityFound, "No start city found!");
 }
 
 void CityParser::createCities()

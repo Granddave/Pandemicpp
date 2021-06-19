@@ -1,11 +1,23 @@
 #pragma once
 
 #include <algorithm>
+#include <cassert>
 #include <random>
 #include <string>
 #include <vector>
 
+#include "logging.h"
+
 #define UNUSED(x) (void)(x)
+
+#define VERIFY(expr) assert(expr);
+
+#define VERIFY_LOG(expr, ...)  \
+    if (!(expr))               \
+    {                          \
+        LOG_CRIT(__VA_ARGS__); \
+        VERIFY(expr);          \
+    }
 
 template <typename Iterator>
 void shuffle(Iterator first, Iterator last)
