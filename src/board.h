@@ -17,6 +17,12 @@ enum class Difficulty
     Heroic
 };
 
+enum class TriggersOutbreak
+{
+    No,
+    Yes
+};
+
 class Board
 {
 public:
@@ -71,7 +77,9 @@ public:
     void addDisease(const std::shared_ptr<City>& city);
 
 private:
-    void addDisease(const std::shared_ptr<City>& city, bool outbreak, DiseaseType disease);
+    void addDisease(const std::shared_ptr<City>& city,
+                    TriggersOutbreak triggersOutbreak,
+                    DiseaseType disease);
     int numDiseaseCubesOnMap(DiseaseType type) const;
 
     // TODO: Should the cards be unique_ptr?

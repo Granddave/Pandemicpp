@@ -266,7 +266,7 @@ void Board::epidemicInfection()
     // Add 3 cubes, or enough cubes to trigger outbreak
     for (int i = 0; i < numCubesToAdd; ++i)
     {
-        addDisease(city, false, city->diseaseType());
+        addDisease(city, TriggersOutbreak::No, city->diseaseType());
     }
     m_outbreakCities.clear();
 
@@ -297,11 +297,13 @@ bool Board::diseaseCubeCountMaxed()
 void Board::addDisease(const std::shared_ptr<City>& city)
 {
     LOG_TRACE("NEW Disease in {}", city->name());
-    addDisease(city, false, city->diseaseType());
+    addDisease(city, TriggersOutbreak::No, city->diseaseType());
     m_outbreakCities.clear();
 }
 
-void Board::addDisease(const std::shared_ptr<City>& city, bool outbreak, DiseaseType disease)
+void Board::addDisease(const std::shared_ptr<City>& city,
+                       TriggersOutbreak triggersOutbreak,
+                       DiseaseType disease)
 {
     if (std::find(m_outbreakCities.begin(), m_outbreakCities.end(), city) != m_outbreakCities.end())
     {
@@ -309,7 +311,7 @@ void Board::addDisease(const std::shared_ptr<City>& city, bool outbreak, Disease
         return;
     }
 
-    if (!outbreak)
+    if (triggersOutbreak == TriggersOutbreak::No)
     {
         disease = city->diseaseType();
     }
@@ -326,7 +328,7 @@ void Board::addDisease(const std::shared_ptr<City>& city, bool outbreak, Disease
         m_outbreakCities.push_back(city);
         for (auto& neighbour : city->neighbours())
         {
-            addDisease(neighbour, true, disease);
+            addDisease(neighbour, TriggersOutbreak::Yes, disease);
         }
     }
 }
