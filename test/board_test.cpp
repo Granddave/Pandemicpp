@@ -3,7 +3,7 @@
 #include "board.h"
 #include "commondata_test.h"
 
-namespace Pandemic
+namespace pandemic
 {
 // Class to expose for testing
 class TestBoard : Board
@@ -111,4 +111,4 @@ TEST_CASE("Infect a city with Infection card")
     // Todo
 }
 
-} // namespace Pandemic
+} // namespace pandemic
