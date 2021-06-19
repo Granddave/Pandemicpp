@@ -115,14 +115,14 @@ void Board::insertEpidemicCards(const int numEpidemicCards)
 {
     shuffle(m_playerDeck.begin(), m_playerDeck.end());
 
-    const int numPiles = numEpidemicCards;
-    const int deckSize = static_cast<int>(m_playerDeck.size());
-    const int subPileSize = deckSize / numPiles;
-    int remainder = deckSize % numPiles;
+    const auto numPiles = static_cast<size_t>(numEpidemicCards);
+    const size_t deckSize = m_playerDeck.size();
+    const auto subPileSize = static_cast<long int>(deckSize / numPiles);
+    auto remainder = deckSize % numPiles;
     auto begin = m_playerDeck.begin();
     auto end = begin;
 
-    for (int subPileIx = 0; subPileIx < numPiles; subPileIx++)
+    for (size_t subPileIx = 0; subPileIx < numPiles; subPileIx++)
     {
         end += subPileSize;
         if (remainder > 0)
