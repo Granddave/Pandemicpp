@@ -20,7 +20,7 @@ struct Config
 class Game
 {
 public:
-    Game(Config config);
+    Game(Config);
 
     void init();
     void reset();
@@ -31,9 +31,8 @@ public:
 
 private:
     void initPlayers(const int numPlayers);
-    int numEpidemicCards(Difficulty difficulty) const;
-    std::vector<std::unique_ptr<Action>> possibleActions(
-        const std::shared_ptr<Player>& player) const;
+    int numEpidemicCards(Difficulty) const;
+    std::vector<std::unique_ptr<Action>> possibleActions(const std::shared_ptr<Player>&) const;
     bool shouldContinueGame();
     bool isGameOver();
 
