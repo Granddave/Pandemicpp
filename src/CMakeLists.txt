@@ -20,13 +20,13 @@ add_library(pandemic STATIC
 target_include_directories(pandemic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(pandemic PUBLIC spdlog::spdlog)
 target_compile_options(pandemic PRIVATE ${COMPILER_WARNINGS})
-set_target_properties(pandemic PROPERTIES CXX_STANDARD 17)
+set_target_properties(pandemic PROPERTIES CXX_STANDARD 20)
 
 # Application
 add_executable(pandemic-app main.cpp)
 target_link_libraries(pandemic-app PRIVATE pandemic)
 target_compile_options(pandemic-app PRIVATE ${COMPILER_WARNINGS})
-set_target_properties(pandemic-app PROPERTIES CXX_STANDARD 17)
+set_target_properties(pandemic-app PROPERTIES CXX_STANDARD 20)
 
 configure_file(
     ${CMAKE_SOURCE_DIR}/res/cities_data.txt

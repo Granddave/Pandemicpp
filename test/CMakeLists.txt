@@ -12,7 +12,7 @@ target_link_libraries(pandemic-test PRIVATE
     spdlog::spdlog)
 target_compile_definitions(pandemic-test PRIVATE LOG_OFF)
 target_compile_options(pandemic-test PRIVATE ${COMPILER_WARNINGS})
-set_target_properties(pandemic-test PROPERTIES CXX_STANDARD 17)
+set_target_properties(pandemic-test PROPERTIES CXX_STANDARD 20)
 
 configure_file(
     ${CMAKE_SOURCE_DIR}/res/cities_data.txt
