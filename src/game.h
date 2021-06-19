@@ -17,7 +17,7 @@ struct Config
 class Game
 {
 public:
-    Game(Config);
+    explicit Game(Config);
 
     void init();
     void reset();

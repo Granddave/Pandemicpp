@@ -23,6 +23,8 @@ Game::Game(Config config) : m_config(std::move(config))
         return m_config.seed;
     }();
     LOG_INFO("Seed: {}", seed);
+
+    // FIXME: This seed does not work for modern random generators.
     srand(seed);
 
     init();

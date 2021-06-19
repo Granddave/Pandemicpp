@@ -45,7 +45,7 @@ inline std::string diseaseToString(const DiseaseType disease)
 
 struct Cure
 {
-    Cure(DiseaseType type) : type(type)
+    explicit Cure(DiseaseType t) : type(t)
     {
     }
 

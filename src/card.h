@@ -50,7 +50,7 @@ struct PlayerCard
 
 struct PlayerCityCard final : public PlayerCard
 {
-    PlayerCityCard(std::shared_ptr<City> city) : city(std::move(city))
+    explicit PlayerCityCard(std::shared_ptr<City> c) : city(std::move(c))
     {
     }
 
@@ -66,7 +66,7 @@ struct EpidemicCard final : public PlayerCard
 
 struct EventCard final : public PlayerCard
 {
-    EventCard(const EventCardType eventType) : eventType(eventType)
+    explicit EventCard(const EventCardType et) : eventType(et)
     {
     }
 
@@ -80,7 +80,7 @@ struct EventCard final : public PlayerCard
 
 struct InfectionCard
 {
-    InfectionCard(std::shared_ptr<City> city) : city(city)
+    explicit InfectionCard(std::shared_ptr<City> c) : city(c)
     {
     }
 

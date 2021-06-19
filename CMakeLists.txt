@@ -10,6 +10,7 @@ set(COMPILER_WARNINGS
     -Wall
     -Wextra
     -Wpedantic
+    -Wshadow
     -Wnon-virtual-dtor
     -Wold-style-cast
     -Wunused
@@ -22,6 +23,7 @@ set(COMPILER_WARNINGS
     -Wlogical-op
     -Wnull-dereference
     -Wuseless-cast
+    -Wswitch
 )
 
 add_subdirectory(external/Catch2)

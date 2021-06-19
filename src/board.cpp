@@ -207,12 +207,12 @@ int Board::numDiscoveredCures() const
 
 bool Board::isCureDiscovered(const DiseaseType type) const
 {
-    for (const Cure& cure : m_cures)
+    auto cure = std::find_if(
+        m_cures.begin(), m_cures.end(), [=](const Cure c) { return c.type == type; });
+
+    if (cure != m_cures.end())
     {
-        if (cure.type == type)
-        {
-            return cure.discovered;
-        }
+        return cure->discovered;
     }
 
     LOG_ERROR("Didn't find the cure {} in the list", type);
@@ -232,13 +232,13 @@ bool Board::isCureEradicated(const DiseaseType type) const
 
 void Board::discoverCure(const DiseaseType type)
 {
-    for (Cure& cure : m_cures)
+    auto cure = std::find_if(
+        m_cures.begin(), m_cures.end(), [=](const Cure c) { return c.type == type; });
+
+    if (cure != m_cures.end())
     {
-        if (cure.type == type)
-        {
-            cure.discovered = true;
-            return;
-        }
+        cure->discovered = true;
+        return;
     }
 
     LOG_ERROR("Didn't find the cure {} in the list", type);
@@ -337,11 +337,10 @@ void Board::addDisease(const std::shared_ptr<City>& city,
 
 int Board::numDiseaseCubesOnMap(DiseaseType type) const
 {
-    int count = 0;
-    for (const auto& city : m_cities)
-    {
-        count += city->numDiseaseCubes(type);
-    }
+    auto count = std::accumulate(m_cities.begin(), m_cities.end(), 0, [&](auto cubes, auto city) {
+        return cubes + city->numDiseaseCubes(type);
+    });
+
     return count;
 }
 

@@ -13,7 +13,7 @@ namespace pandemic
 class City : public std::enable_shared_from_this<City>
 {
 public:
-    City(const std::string& name, const DiseaseType diseaseType);
+    explicit City(const std::string& name, const DiseaseType diseaseType);
 
     void addNeighbour(std::shared_ptr<City> other);
     bool addDisease(const DiseaseType type);
@@ -60,7 +60,7 @@ private:
 class CityParser
 {
 public:
-    CityParser(const std::string& str);
+    explicit CityParser(const std::string& str);
 
     std::vector<std::shared_ptr<City>> cities() const
     {

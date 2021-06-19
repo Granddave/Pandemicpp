@@ -78,7 +78,7 @@ public:
     }
 
 private:
-    Role m_role;
+    Role m_role{};
     std::shared_ptr<City> m_currentCity;
     std::deque<std::shared_ptr<PlayerCard>> m_cards;
     // TODO: Make use of `int actionsLeft;`
@@ -96,7 +96,7 @@ public:
 class ActionCity : public Action
 {
 public:
-    ActionCity(std::shared_ptr<City> city);
+    explicit ActionCity(std::shared_ptr<City> city);
     virtual ~ActionCity() = default;
 
 protected:
@@ -107,7 +107,7 @@ protected:
 class ActionDrive final : public ActionCity
 {
 public:
-    ActionDrive(const std::shared_ptr<City>& city) : ActionCity(city)
+    explicit ActionDrive(const std::shared_ptr<City>& city) : ActionCity(city)
     {
     }
 
@@ -117,7 +117,7 @@ public:
 class ActionDirectFly final : public ActionCity
 {
 public:
-    ActionDirectFly(const std::shared_ptr<City>& city) : ActionCity(city)
+    explicit ActionDirectFly(const std::shared_ptr<City>& city) : ActionCity(city)
     {
     }
 
@@ -127,7 +127,7 @@ public:
 class ActionCharterFly final : public ActionCity
 {
 public:
-    ActionCharterFly(const std::shared_ptr<City>& city) : ActionCity(city)
+    explicit ActionCharterFly(const std::shared_ptr<City>& city) : ActionCity(city)
     {
     }
 
@@ -138,7 +138,7 @@ public:
 class ActionShuttleFly final : public ActionCity
 {
 public:
-    ActionShuttleFly(const std::shared_ptr<City>& city) : ActionCity(city)
+    explicit ActionShuttleFly(const std::shared_ptr<City>& city) : ActionCity(city)
     {
         VERIFY(city->hasResearchStation());
     }
@@ -156,7 +156,7 @@ public:
 class ActionTreatDisease final : public Action
 {
 public:
-    ActionTreatDisease(DiseaseType diseaseType) : m_diseaseType(diseaseType)
+    explicit ActionTreatDisease(DiseaseType diseaseType) : m_diseaseType(diseaseType)
     {
     }
 
@@ -169,8 +169,8 @@ private:
 class ActionShareKnowledge final : public Action
 {
 public:
-    ActionShareKnowledge(std::shared_ptr<PlayerCityCard> cityCard,
-                         std::shared_ptr<Player> otherPlayer);
+    explicit ActionShareKnowledge(std::shared_ptr<PlayerCityCard> cityCard,
+                                  std::shared_ptr<Player> otherPlayer);
 
     std::string description() override;
     std::shared_ptr<PlayerCityCard> cityCard();
@@ -184,7 +184,7 @@ private:
 class ActionDiscoverCure final : public Action
 {
 public:
-    ActionDiscoverCure(DiseaseType diseaseType) : m_diseaseType(diseaseType)
+    explicit ActionDiscoverCure(DiseaseType diseaseType) : m_diseaseType(diseaseType)
     {
     }
 
