@@ -99,6 +99,11 @@ public:
     explicit ActionCity(std::shared_ptr<City> city);
     virtual ~ActionCity() = default;
 
+    std::shared_ptr<City> city() const
+    {
+        return m_city;
+    };
+
 protected:
     std::shared_ptr<City> m_city;
 };
@@ -161,6 +166,10 @@ public:
     }
 
     std::string description() override;
+    DiseaseType diseaseType() const
+    {
+        return m_diseaseType;
+    }
 
 private:
     DiseaseType m_diseaseType;
@@ -189,6 +198,10 @@ public:
     }
 
     std::string description() override;
+    DiseaseType diseaseType() const
+    {
+        return m_diseaseType;
+    }
 
 private:
     DiseaseType m_diseaseType;

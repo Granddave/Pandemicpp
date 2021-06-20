@@ -20,6 +20,7 @@
     }
 
 #define VERIFY_NOT_REACHED() VERIFY(false)
+#define TODO() VERIFY(false)
 
 template <typename Iterator>
 void shuffle(Iterator first, Iterator last)

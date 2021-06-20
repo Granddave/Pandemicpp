@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "logging.h"
+#include "player.h"
 #include "utils.h"
 
 namespace pandemic
@@ -77,15 +78,26 @@ void Game::doTurn()
     auto currentPlayer = m_players.at(static_cast<size_t>(m_currentPlayerIx));
     for (int i = 0; i < c_numActionsPerTurn; ++i)
     {
-        LOG_TRACE("Action {}", i + 1);
+        printStatus();
         auto actions = possibleActions(currentPlayer);
 
-        for (const auto& action : actions)
+        LOG_INFO("Currently in {}", currentPlayer->currentCity()->name());
+        LOG_INFO("{} possible actions:", actions.size());
+        for (size_t actionIx = 0; actionIx < actions.size(); ++actionIx)
         {
-            LOG_TRACE(action->description());
+            LOG_INFO("  {}: {}", actionIx + 1, actions.at(actionIx)->description());
         }
 
-        // TODO: Let player choose action
+        std::string input;
+        LOG_INFO("Choose an action...");
+        std::cin >> input;
+        auto option = static_cast<size_t>(std::stoi(input));
+        VERIFY_LOG(option > 0, "Invalid input: {}", option);
+        option -= 1;
+        LOG_TRACE(option);
+        doAction(actions.at(option));
+
+        LOG_INFO("---");
     }
 
     // Draw two player cards
@@ -135,8 +147,7 @@ void Game::printStatus()
     LOG_INFO("Players:");
     for (const auto& player : m_players)
     {
-        LOG_INFO(
-            "{} is in {} and has {}", roleToString(player->role()), player->currentCity()->name());
+        LOG_INFO("{} is in {}. Cards:", roleToString(player->role()), player->currentCity()->name());
         for (const auto& card : player->cards())
         {
             LOG_INFO(" * {}", card->name());
@@ -206,14 +217,14 @@ int Game::numEpidemicCards(Difficulty difficulty) const
     return 4;
 }
 
-std::vector<std::unique_ptr<Action>> Game::possibleActions(
+std::vector<std::shared_ptr<Action>> Game::possibleActions(
     const std::shared_ptr<Player>& player) const
 {
-    std::vector<std::unique_ptr<Action>> actions;
+    std::vector<std::shared_ptr<Action>> actions;
 
     for (auto& city : player->currentCity()->neighbours())
     {
-        actions.push_back(std::make_unique<ActionDrive>(city));
+        actions.push_back(std::make_shared<ActionDrive>(city));
     }
 
     std::vector<DiseaseType> cardTypes;
@@ -223,18 +234,18 @@ std::vector<std::unique_ptr<Action>> Game::possibleActions(
         {
             if (cityCard->city == player->currentCity())
             {
-                actions.push_back(std::make_unique<ActionCharterFly>(cityCard->city));
+                actions.push_back(std::make_shared<ActionCharterFly>(cityCard->city));
 
                 if (!player->currentCity()->hasResearchStation())
                 {
-                    actions.push_back(std::make_unique<ActionBuildResearchStation>());
+                    actions.push_back(std::make_shared<ActionBuildResearchStation>());
                 }
 
                 // TODO: Share Knowledge - Give card to other player
             }
             else
             {
-                actions.push_back(std::make_unique<ActionDirectFly>(cityCard->city));
+                actions.push_back(std::make_shared<ActionDirectFly>(cityCard->city));
             }
 
             cardTypes.push_back(cityCard->city->diseaseType());
@@ -243,7 +254,7 @@ std::vector<std::unique_ptr<Action>> Game::possibleActions(
 
     if (player->role() == Role::OperationsExpert && !player->currentCity()->hasResearchStation())
     {
-        actions.push_back(std::make_unique<ActionBuildResearchStation>());
+        actions.push_back(std::make_shared<ActionBuildResearchStation>());
     }
 
     /* TODO: Share Knowledge -
@@ -259,7 +270,7 @@ std::vector<std::unique_ptr<Action>> Game::possibleActions(
     {
         for (const DiseaseType diseaseType : player->currentCity()->diseaseCubeTypes())
         {
-            actions.push_back(std::make_unique<ActionTreatDisease>(diseaseType));
+            actions.push_back(std::make_shared<ActionTreatDisease>(diseaseType));
         }
     }
 
@@ -273,7 +284,7 @@ std::vector<std::unique_ptr<Action>> Game::possibleActions(
             {
                 if (player->currentCity() != city)
                 {
-                    actions.push_back(std::make_unique<ActionShuttleFly>(city));
+                    actions.push_back(std::make_shared<ActionShuttleFly>(city));
                 }
             }
         }
@@ -287,7 +298,7 @@ std::vector<std::unique_ptr<Action>> Game::possibleActions(
                 player->role() == Role::Scientist ? c_numCardsToCure - 1 : c_numCardsToCure;
             if (cardCount >= requiredCardCount)
             {
-                actions.push_back(std::make_unique<ActionDiscoverCure>(diseaseType));
+                actions.push_back(std::make_shared<ActionDiscoverCure>(diseaseType));
             }
         }
     }
@@ -295,6 +306,69 @@ std::vector<std::unique_ptr<Action>> Game::possibleActions(
     // TODO: Add role specific actions
 
     return actions;
+}
+
+void Game::doAction(std::shared_ptr<Action> baseAction)
+{
+    auto currentPlayer = m_players.at(static_cast<size_t>(m_currentPlayerIx));
+
+    if (auto action = std::dynamic_pointer_cast<ActionDrive>(baseAction))
+    {
+        auto city = action->city();
+        LOG_INFO("Driving to {}", city->name());
+        currentPlayer->setCurrentCity(city);
+        return;
+    }
+    if (auto action = std::dynamic_pointer_cast<ActionDirectFly>(baseAction))
+    {
+        auto city = action->city();
+        LOG_INFO("Flying directly to {}", city->name());
+        currentPlayer->setCurrentCity(city);
+        return;
+    }
+    if (auto action = std::dynamic_pointer_cast<ActionCharterFly>(baseAction))
+    {
+        auto city = action->city();
+        LOG_INFO("Flying charter to {}", city->name());
+        currentPlayer->setCurrentCity(city);
+        return;
+    }
+    if (auto action = std::dynamic_pointer_cast<ActionShuttleFly>(baseAction))
+    {
+        auto city = action->city();
+        LOG_INFO("Shuttle flying to {}", city->name());
+        currentPlayer->setCurrentCity(city);
+        return;
+    }
+    if (auto action = std::dynamic_pointer_cast<ActionBuildResearchStation>(baseAction))
+    {
+        auto city = currentPlayer->currentCity();
+        LOG_INFO("Building research station in {}", city->name());
+        city->setResearchStation(true);
+        return;
+    }
+    if (auto action = std::dynamic_pointer_cast<ActionTreatDisease>(baseAction))
+    {
+        auto city = currentPlayer->currentCity();
+        LOG_INFO("Treating {} disease in {}", diseaseToString(action->diseaseType()), city->name());
+
+        city->treatDisease(action->diseaseType());
+        // TODO: Medic ability
+        // TODO: Cured diseases
+        return;
+    }
+    if (auto action = std::dynamic_pointer_cast<ActionShareKnowledge>(baseAction))
+    {
+        TODO()
+        return;
+    }
+    if (auto action = std::dynamic_pointer_cast<ActionDiscoverCure>(baseAction))
+    {
+        m_board.discoverCure(action->diseaseType());
+        return;
+    }
+
+    TODO();
 }
 
 bool Game::shouldContinueGame()

@@ -30,13 +30,13 @@ inline std::string diseaseToString(const DiseaseType disease)
     switch (disease)
     {
         case DiseaseType::Yellow:
-            return "Yellow";
+            return "yellow";
         case DiseaseType::Red:
-            return "Red";
+            return "red";
         case DiseaseType::Blue:
-            return "Blue";
+            return "blue";
         case DiseaseType::Black:
-            return "Black";
+            return "black";
     }
 
     VERIFY_NOT_REACHED();

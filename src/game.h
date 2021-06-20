@@ -29,7 +29,8 @@ public:
 private:
     void initPlayers(const int numPlayers);
     int numEpidemicCards(Difficulty) const;
-    std::vector<std::unique_ptr<Action>> possibleActions(const std::shared_ptr<Player>&) const;
+    std::vector<std::shared_ptr<Action>> possibleActions(const std::shared_ptr<Player>&) const;
+    void doAction(std::shared_ptr<Action>);
     bool shouldContinueGame();
     bool isGameOver();
 
