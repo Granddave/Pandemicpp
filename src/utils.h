@@ -20,6 +20,7 @@
     }
 
 #define VERIFY_NOT_REACHED() VERIFY(false)
+#define VERIFY_NOT_REACHED_LOG(...) VERIFY_LOG(false, __VA_ARGS__)
 #define TODO() VERIFY(false)
 
 template <typename Iterator>

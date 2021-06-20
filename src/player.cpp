@@ -36,26 +36,10 @@ std::string ActionTreatDisease::description()
     return "Treat " + diseaseToString(m_diseaseType) + " disease";
 }
 
-ActionShareKnowledge::ActionShareKnowledge(std::shared_ptr<PlayerCityCard> cityCard,
-                                           std::shared_ptr<Player> otherPlayer)
-    : m_cityCard(std::move(cityCard)), m_otherPlayer(std::move(otherPlayer))
-{
-}
-
 std::string ActionShareKnowledge::description()
 {
-    return "Share knowledge of " + m_cityCard->name() + " to " +
-           roleToString(m_otherPlayer->role());
-}
-
-std::shared_ptr<PlayerCityCard> ActionShareKnowledge::cityCard()
-{
-    return m_cityCard;
-}
-
-std::shared_ptr<Player> ActionShareKnowledge::otherPlayer()
-{
-    return m_otherPlayer;
+    return "Share knowledge of " + m_cityCard->name() + " from " + roleToString(m_giver->role()) +
+           " to " + roleToString(m_receiver->role());
 }
 
 std::string ActionDiscoverCure::description()

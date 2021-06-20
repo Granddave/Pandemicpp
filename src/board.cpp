@@ -207,8 +207,8 @@ int Board::numDiscoveredCures() const
 
 bool Board::isCureDiscovered(const DiseaseType type) const
 {
-    auto cure = std::find_if(
-        m_cures.begin(), m_cures.end(), [=](const Cure c) { return c.type == type; });
+    auto cure =
+        std::find_if(m_cures.begin(), m_cures.end(), [=](const Cure c) { return c.type == type; });
 
     if (cure != m_cures.end())
     {
@@ -232,8 +232,8 @@ bool Board::isCureEradicated(const DiseaseType type) const
 
 void Board::discoverCure(const DiseaseType type)
 {
-    auto cure = std::find_if(
-        m_cures.begin(), m_cures.end(), [=](const Cure c) { return c.type == type; });
+    auto cure =
+        std::find_if(m_cures.begin(), m_cures.end(), [=](const Cure c) { return c.type == type; });
 
     if (cure != m_cures.end())
     {
@@ -319,10 +319,10 @@ void Board::addDisease(const std::shared_ptr<City>& city,
     }
 
     const bool triggeredOutbreak = city->addDisease(disease);
-    LOG_INFO("Added {} disease to {} ({})",
-             diseaseToString(disease),
-             city->name(),
-             city->numDiseaseCubes(disease));
+    LOG_DEBUG("Added {} disease to {} ({})",
+              diseaseToString(disease),
+              city->name(),
+              city->numDiseaseCubes(disease));
     if (triggeredOutbreak)
     {
         m_numOutbreaks++;

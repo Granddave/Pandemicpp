@@ -76,6 +76,38 @@ public:
     {
         return m_cards;
     }
+    void removeCard(std::shared_ptr<PlayerCard>& card)
+    {
+        LOG_DEBUG("Removing playercard: {} from {}", card->name(), roleToString(m_role));
+        const auto rmIt = std::find(m_cards.begin(), m_cards.end(), card);
+        if (rmIt != m_cards.cend())
+        {
+            m_cards.erase(rmIt);
+            return;
+        }
+
+        VERIFY_NOT_REACHED_LOG("Failed to find card in players stack");
+    }
+    void removeCard(std::shared_ptr<City>& city)
+    {
+        LOG_DEBUG("Removing citycard: {} from {}", city->name(), roleToString(m_role));
+        const auto rmIt = std::find_if(
+            m_cards.begin(), m_cards.end(), [&city](std::shared_ptr<PlayerCard>& card) {
+                if (auto cityCard = std::dynamic_pointer_cast<PlayerCityCard>(card))
+                {
+                    return cityCard->city == city;
+                }
+                return false;
+            });
+
+        if (rmIt != m_cards.cend())
+        {
+            m_cards.erase(rmIt);
+            return;
+        }
+
+        VERIFY_NOT_REACHED_LOG("Failed to find card in players stack");
+    }
 
 private:
     Role m_role{};
@@ -179,15 +211,32 @@ class ActionShareKnowledge final : public Action
 {
 public:
     explicit ActionShareKnowledge(std::shared_ptr<PlayerCityCard> cityCard,
-                                  std::shared_ptr<Player> otherPlayer);
+                                  std::shared_ptr<Player> giver,
+                                  std::shared_ptr<Player> receiver)
+        : m_cityCard(std::move(cityCard)),
+          m_giver(std::move(giver)),
+          m_receiver(std::move(receiver))
+    {
+    }
 
     std::string description() override;
-    std::shared_ptr<PlayerCityCard> cityCard();
-    std::shared_ptr<Player> otherPlayer();
+    std::shared_ptr<PlayerCityCard> cityCard()
+    {
+        return m_cityCard;
+    }
+    std::shared_ptr<Player> giver()
+    {
+        return m_giver;
+    }
+    std::shared_ptr<Player> receiver()
+    {
+        return m_receiver;
+    }
 
 private:
     std::shared_ptr<PlayerCityCard> m_cityCard;
-    std::shared_ptr<Player> m_otherPlayer;
+    std::shared_ptr<Player> m_giver;
+    std::shared_ptr<Player> m_receiver;
 };
 
 class ActionDiscoverCure final : public Action
