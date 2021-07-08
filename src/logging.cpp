@@ -15,7 +15,7 @@ void setupLog(const spdlog::level::level_enum level)
     spdlog::null_logger_mt(LOG_SINK);
 #else
     spdlog::stdout_color_mt(LOG_SINK);
-    spdlog::set_pattern("[%Y-%m-%d %T.%f] [%l] %v");
+    spdlog::set_pattern("[%Y-%m-%dT%T.%f%z] [%l] %v");
     spdlog::set_level(level);
     LOG_INFO("Log level: {}", spdlog::level::to_string_view(level));
 
